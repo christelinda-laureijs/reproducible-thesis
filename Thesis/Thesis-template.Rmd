@@ -408,7 +408,7 @@ ap_data <- ap_data %>%
 
 # Import CSV with info on sex, synapses, X, Y, treatment, animal, etc.
 cell_characteristics <-
-  read.csv(here("Data/Plaintext-Cell-Characteristics.csv"))
+  read.csv(here("Data/Sample-cell-info.csv"))
 
 # Merge datasets to get complete AP dataset
 full_ap_df <-
@@ -930,7 +930,7 @@ if (save_choice == "yes") {
 ```{r eEPSC-data-import-data, include = FALSE}
 # --------------- eEPSC Analysis --------------------------------------------------------------------------------------
 
-raw_df <- read.csv(here("Data/Raw-eEPSC-Data.csv"), header = T) %>%
+raw_df <- read.csv(here("Data/Sample-data.csv"), header = T) %>%
   
   # Remove letters with known issues
   filter(!Letter %in% c("GE", "GN", "GJ"))
