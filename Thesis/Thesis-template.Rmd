@@ -1,6 +1,5 @@
 ---
-title: The effect of insulin on excitatory synaptic transmission in the rat dorsomedial
-  hypothalamus
+title: Thesis Title
 bibliography:
   - "../Templates/thesis-citations.bib"
   - ../Templates/packages.bib
@@ -257,7 +256,7 @@ theme_set(
 )
 ```
 
-```{=tex}
+
 \begin{centering}
 \begin{spacing}{1}
 \Large
@@ -266,18 +265,17 @@ by
 
 \LARGE
 
-Christelinda Laureijs
+Author
 
 \end{spacing}
 \end{centering}
-```
-```{=tex}
+
 \large
 \vspace*{\fill}
-```
+
 <!-- Although it is not ideal, I am manually setting the linebreaks here. This is to conform to MtA's title page standards -->
 
-```{=tex}
+
 \begin{centering}
 \begin{spacing}{1}
 A thesis submitted to the\\
@@ -287,38 +285,42 @@ in partial fulfillment of the requirements for the\\
 Bachelor of Science degree with Honours\\
 in Biology
 
-April 10, 2024
+Date
 
 \end{spacing}
 \end{centering}
-```
-```{=tex}
+
+
 \newpage
 \vspace*{\fill}
 \large
-```
- <!--\adforn{20} *COLOPHON* \adforn{48}-->
+
+
+<!-- The preamble includes \usepackage{adforn}. Adforn enables you to add fancy decorative embellishments. Look up adforn on CTAN to see a list of available symbols. -->
+
+\adforn{20} *COLOPHON* \adforn{48}
 
 \normalsize
 
-This thesis was typeset in R Markdown and the text was set in EB Garamond. The data and code used to produce this document are available at [*https://github.com/christelinda-laureijs/honours-thesis*](https://github.com/christelinda-laureijs/honours-thesis).
+This thesis was typeset in R Markdown and the text was set in EB Garamond. The data and code used to produce this document are available at [*https://github.com/christelinda-laureijs/reproducible-thesis*](https://github.com/christelinda-laureijs/reproducible-thesis).
 
-```{=tex}
 \newpage
 \pagenumbering{roman}
-```
+
+
 # Abstract
 
-Insulin plays a key role in regulating blood glucose levels and it also acts in brain regions involved with appetite regulation. The dorsomedial hypothalamus (DMH) is one such brain region, and although it is a major site of insulin receptors, virtually nothing is known about the effect of insulin on neuronal activity and communication between DMH neurons. Since DMH neurons stimulate appetite and insulin is a satiety hormone, I hypothesized that insulin inhibits both neuronal activity and neuronal communication in the DMH. I used whole-cell patch clamp electrophysiology to record from living DMH neurons taken from young male and female Sprague-Dawley rats. I compared recordings before and after applying 500 nM of insulin [@labouebeetal2013] to determine the effect of insulin on action potentials (a measure of neuronal excitability) and excitatory synaptic transmission (a measure of neuronal communication). Insulin significantly decreased action potential frequency and excitatory current amplitudes in both sexes, indicating that insulin decreases neuronal excitability and excitatory synaptic transmission in the DMH. Recordings taken with various insulin receptor blockers present suggested that insulin binds to insulin-like growth factor 1 receptors. Insulin signalling in the DMH is also independent of feeding state, suggesting that it is involved with regulating physiological processes beyond appetite regulation. This research contributes to our understanding of how insulin acts in the brain to influence energy metabolism, with direct applications to research on the pathophysiological effects of insulin resistance in obesity and diabetes.
+Text
 
-```{=tex}
+
 \setcounter{tocdepth}{2}
 \tableofcontents
-```
 \listoffigures
 
 
 # List of Abbreviations
+
+<!--Tab depth is defined in the preamble through the tabto package-->
 
 DMH \tab{Dorsomedial hypothalamus}\
 GABA \tab{Gamma-aminobutyric acid}\
@@ -327,28 +329,42 @@ PPR \tab{Paired pulse ratio}\
 HNMPA \tab{Hydroxy-2-naphthalenylmethylphosphonic acid}\
 PPP \tab{Picropodophyllotoxin}
 
-```{r}
-knitr::knit_exit()
-```
 
-
-```{=tex}
 \cleardoublepage
 \normalsize
 \pagenumbering{arabic}
-```
+
 
 # Introduction
 
 Text here
 
 
-## Insulin
+## Inserting Images
 
-Insulin is a hormone that regulates blood glucose levels, digestive processes, and body weight [@demeyts2000]. After a meal, the pancreas releases insulin into the bloodstream, where it activates molecular pathways that lower blood glucose levels [@demeyts2000]. Insulin also interacts with digestive organs to influence metabolic pathways that maximize an animal’s available energy resources. Insulin carries out these functions by binding to insulin receptors or insulin-like growth factor-1 receptors and activating downstream molecular pathways (Figure \ref{insulin-pathway}). In addition to acting on body cells, insulin also acts in the brain.
+Here is an example of an in-text citation: Insulin is a hormone that regulates blood glucose levels, digestive processes, and body weight [@demeyts2000].
+
+You can plot figures in R.
+
+```{r}
+#| fig.cap = "Here is an example of a figure caption",
+#| fig.scap = "Sample plot in R",
+#| out.width = "100%"
+
+
+cars %>% 
+  ggplot(aes(x = speed, y = dist)) +
+  geom_point() +
+  labs(x = "Speed", y = "Distance")
+```
+
+
+
+You can insert images through knitr. fig.cap can be quite long, and you can also add a label in the form of '\\\\label{text}' When you write a reference to Figure '\\\\label{insulin-pathway}', \LaTeX will print out Figure \ref{insulin-pathway}.
+
 
 ```{r insulin-schematic}
-#| fig.cap = "When insulin binds to a cell, it activates a series of molecular pathways involved in energy metabolism and gene expression. Insulin can bind to either an insulin receptor (IR) or an insulin-like growth factor 1 receptor (IGF-1R). The phosphatidylinositol 3-kinase (P13K) pathway is primarily involved in regulating metabolic processes such as glucose metabolism, lipid metabolism, and gluconeogenesis, while the mitogen activated protein kinase (MAPK) pathway is primarily involved with regulating gene expression and cell division (De Meyts, 2000). Parts of the P13K pathway can affect synaptic transmission and neuronal activity, with mechanistic target of rapamycin (mTOR) playing a key role in synaptic transmission (McCabe et al., 2020). Although it looks like there are two distinct pathways, the downstream components of the P13K and MAPK pathways frequently interact with one another (De Meyts, 2000). \\label{insulin-pathway}",
+#| fig.cap = "When insulin binds to a cell, it activates a series of molecular pathways involved in energy metabolism and gene expression...[if your figure caption is too long, you should define a short figure caption (fig.scap) which will go into the list of figures]...although it looks like there are two distinct pathways, the downstream components of the P13K and MAPK pathways frequently interact with one another (De Meyts, 2000). \\label{insulin-pathway}",
 #| fig.scap = "Insulin binding activates a series of molecular pathways.",
 #| out.width = "100%",
 #| purl = FALSE
@@ -371,7 +387,15 @@ knitr::include_graphics(here("Figures/Insulin-schematic.png"))
 
 # Methods
 
-## Animals
+# Results
+
+# Discussion
+
+# Acknowledgements
+
+# References
+
+
 
 ```{r}
 knitr::knit_exit()
