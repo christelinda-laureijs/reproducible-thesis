@@ -1,0 +1,21 @@
+Variable,Type,Description
+Letter,character,Letter ID of the recording for easy cross-referencing to my lab book
+Synapses,character,Synapses being observed
+Sex,character,Biological sex of the animal
+Treatment,character,"Treatment applied, see README file"
+Time,numeric,Time in minutes
+ID,character,ID from Clampex; not used in this file
+P1,numeric,The first evoked excitatory post-synaptic current (eEPSC) amplitude
+P2,numeric,The second eEPSC amplitude
+X,numeric,Location of the cell in $\mu$M lateral to the top of the third ventricle
+Y,numeric,Location of the cell in $\mu$M ventral to the top of the third ventricle
+Age,integer,Age of the animal in days
+Animal,numeric,Unique ID of the animal; could be adapted to include both n and N on graphs
+Category,factor: 3 levels,Experiment category; see below in README for further explanations
+PPR,numeric,*The paired pulse ratio is the ratio of P2/P1
+Interval,factor: 6 levels,*Divides time into six 5-min intervals for MANOVAR
+baseline_range,logic,*Returns TRUE if Time <= 5 min. Required for the normalization function later
+baseline_mean,numeric,*Mean current amplitude within the baseline period of each recording
+P1_transformed,numeric,*P1 normalized as a percentage relative to the baseline
+P2_transformed,numeric,*P2 normalized as a percentage relative to the baseline
+Animal_factor,factor: many levels,*Animal column coded as a factor
