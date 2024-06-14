@@ -1,0 +1,99 @@
+% Suppress page numbers on page 1
+\pagenumbering{gobble}
+
+% Package to add space between paragraphs
+\usepackage[skip=20pt plus1pt, indent=0pt]{parskip}
+
+% The package ebgaramond uses the Octavio Pardo version, which does not have contextual alternates
+% I downloaded the George Duffner version
+% This has the contextual alternates and many more features
+% I placed the fonts in a folder called font/
+% Then, I used this code to manually set the main font
+% +calt ensures that the Q.long is used
+\setmainfont{EBGaramond}[
+  Path=../Templates/EBGaramond-0.016/otf/,
+  Extension=.otf,
+  UprightFont=*12-Regular,
+  ItalicFont=*12-Italic,
+  RawFeature=+calt,
+]
+
+%https://tex.stackexchange.com/questions/162584/preventing-floats-of-being-before-section
+% Prevent floats from going 'backward'
+%\usepackage{flafter}
+
+% The first version of the thesis had unattractive blank spots with one word (widows and orphans)
+% I applied high penalties to widows and orphans
+\clubpenalty = 10000
+\widowpenalty = 10000
+\displaywidowpenalty = 10000
+
+
+% Define a new style that allows for a bigger size than \HUGE
+\newcommand{\BIG}{\fontsize{36}{43}\selectfont}
+
+% Use tocbibind to include the list of figures in the TOC.
+\usepackage[nottoc]{tocbibind}
+
+% Package to style the section headers
+\usepackage{sectsty}
+
+% Style the section headers to have some space before and after and use a larger font size
+% https://tex.stackexchange.com/questions/381256/how-to-adjust-the-title-spacing-using-sectsty-package
+
+% was originally       {\newpage\vspace*{0.25in}\normalfont\Huge\bfseries\SS@sectfont}}
+\makeatletter
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+      {-7ex \@plus -1ex \@minus -.2ex}%
+      {7ex \@plus.2ex}%
+      {\newpage\vspace*{-0.2in}\normalfont\BIG\SS@sectfont}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+      {-3.5ex\@plus -1ex \@minus -.2ex}%
+      {3.5ex \@plus .2ex}%
+      {\normalfont\LARGE\itshape\SS@subsectfont}}
+\makeatother
+
+\usepackage{titling}
+\pretitle{\linespread{1}\begin{center}\vspace{2cm}\Huge}
+
+% Make spacing between list items smaller
+% Used partopsep = -1ex to make the distance between body text and lists smaller
+\usepackage{enumitem}
+\setlist{topsep = -5pt,itemsep = -1ex, partopsep = -1ex, parsep = 1ex}
+
+% Allows me to insert ornaments
+\usepackage{adforn}
+
+% Adjust spacing between table caption and table content
+\usepackage{caption} 
+\captionsetup[table]{skip=10pt}
+
+% Enable tabbing to fixed level from start of line
+% https://tex.stackexchange.com/questions/263765/tabbing-from-the-beginning-of-a-line
+
+\usepackage{tabto}
+\TabPositions{5em}
+
+
+% Ignore; troubleshooting notes
+
+% Adjust spacing between code chunk and text
+%\setlength{\OuterFrameSep}{14pt}
+%\makeatletter
+%\preto{\@verbatim}{\topsep=0pt \partopsep=-10pt }
+%\makeatother
+
+%https://tex.stackexchange.com/questions/36423/random-unwanted-space-between-paragraphs
+%\raggedbottom
+
+
+
+% Break long URLs in bibliography
+%https://tex.stackexchange.com/questions/115690/urls-in-bibliography-latex-not-breaking-line-as-expected
+% Did not work for Statistics Canada reference
+%\usepackage{url}
+%\def\UrlBreaks{\do\/\do-\do.}
+%\usepackage{hyperref}
+%usepackage{breakurl}
+%\usepackage[breaklinks]{hyperref}
+

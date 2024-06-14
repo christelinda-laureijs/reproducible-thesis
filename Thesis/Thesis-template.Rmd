@@ -3,15 +3,15 @@ title: The effect of insulin on excitatory synaptic transmission in the rat dors
   hypothalamus
 bibliography:
   - "../Templates/thesis-citations.bib"
-# - ../Templates/packages.bib
+  - ../Templates/packages.bib
 csl: ../Templates/apa.csl
 output:
   pdf_document:
     toc: false
     latex_engine: xelatex
     fig_caption: true
-    #includes:
-    #  in_header: "../Templates/MtA-Thesis-Preamble.tex"
+    includes:
+      in_header: "../Templates/MtA-Thesis-Preamble.tex"
 fontsize: 12pt
 geometry:
 - margin = 1in
@@ -310,16 +310,13 @@ This thesis was typeset in R Markdown and the text was set in EB Garamond. The d
 # Abstract
 
 Insulin plays a key role in regulating blood glucose levels and it also acts in brain regions involved with appetite regulation. The dorsomedial hypothalamus (DMH) is one such brain region, and although it is a major site of insulin receptors, virtually nothing is known about the effect of insulin on neuronal activity and communication between DMH neurons. Since DMH neurons stimulate appetite and insulin is a satiety hormone, I hypothesized that insulin inhibits both neuronal activity and neuronal communication in the DMH. I used whole-cell patch clamp electrophysiology to record from living DMH neurons taken from young male and female Sprague-Dawley rats. I compared recordings before and after applying 500 nM of insulin [@labouebeetal2013] to determine the effect of insulin on action potentials (a measure of neuronal excitability) and excitatory synaptic transmission (a measure of neuronal communication). Insulin significantly decreased action potential frequency and excitatory current amplitudes in both sexes, indicating that insulin decreases neuronal excitability and excitatory synaptic transmission in the DMH. Recordings taken with various insulin receptor blockers present suggested that insulin binds to insulin-like growth factor 1 receptors. Insulin signalling in the DMH is also independent of feeding state, suggesting that it is involved with regulating physiological processes beyond appetite regulation. This research contributes to our understanding of how insulin acts in the brain to influence energy metabolism, with direct applications to research on the pathophysiological effects of insulin resistance in obesity and diabetes.
-```{r}
-knitr::knit_exit()
-```
-
 
 ```{=tex}
 \setcounter{tocdepth}{2}
 \tableofcontents
 ```
-listoffigures
+\listoffigures
+
 
 # List of Abbreviations
 
