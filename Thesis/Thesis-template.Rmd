@@ -1,17 +1,17 @@
 ---
 title: The effect of insulin on excitatory synaptic transmission in the rat dorsomedial
   hypothalamus
-# bibliography:
-# - "../Templates/thesis-citations.bib"
+bibliography:
+  - "../Templates/thesis-citations.bib"
 # - ../Templates/packages.bib
-# csl: ../Templates/apa.csl
+csl: ../Templates/apa.csl
 output:
   pdf_document:
     toc: false
     latex_engine: xelatex
     fig_caption: true
-    includes:
-      in_header: "../Templates/MtA-Thesis-Preamble.tex"
+    #includes:
+    #  in_header: "../Templates/MtA-Thesis-Preamble.tex"
 fontsize: 12pt
 geometry:
 - margin = 1in
@@ -297,7 +297,7 @@ April 10, 2024
 \vspace*{\fill}
 \large
 ```
-\adforn{20} *COLOPHON* \adforn{48}
+ <!--\adforn{20} *COLOPHON* \adforn{48}-->
 
 \normalsize
 
@@ -310,12 +310,16 @@ This thesis was typeset in R Markdown and the text was set in EB Garamond. The d
 # Abstract
 
 Insulin plays a key role in regulating blood glucose levels and it also acts in brain regions involved with appetite regulation. The dorsomedial hypothalamus (DMH) is one such brain region, and although it is a major site of insulin receptors, virtually nothing is known about the effect of insulin on neuronal activity and communication between DMH neurons. Since DMH neurons stimulate appetite and insulin is a satiety hormone, I hypothesized that insulin inhibits both neuronal activity and neuronal communication in the DMH. I used whole-cell patch clamp electrophysiology to record from living DMH neurons taken from young male and female Sprague-Dawley rats. I compared recordings before and after applying 500 nM of insulin [@labouebeetal2013] to determine the effect of insulin on action potentials (a measure of neuronal excitability) and excitatory synaptic transmission (a measure of neuronal communication). Insulin significantly decreased action potential frequency and excitatory current amplitudes in both sexes, indicating that insulin decreases neuronal excitability and excitatory synaptic transmission in the DMH. Recordings taken with various insulin receptor blockers present suggested that insulin binds to insulin-like growth factor 1 receptors. Insulin signalling in the DMH is also independent of feeding state, suggesting that it is involved with regulating physiological processes beyond appetite regulation. This research contributes to our understanding of how insulin acts in the brain to influence energy metabolism, with direct applications to research on the pathophysiological effects of insulin resistance in obesity and diabetes.
+```{r}
+knitr::knit_exit()
+```
+
 
 ```{=tex}
 \setcounter{tocdepth}{2}
 \tableofcontents
 ```
-\listoffigures
+listoffigures
 
 # List of Abbreviations
 
@@ -325,6 +329,11 @@ eEPSC \tab{Evoked excitatory post-synaptic current}\
 PPR \tab{Paired pulse ratio}\
 HNMPA \tab{Hydroxy-2-naphthalenylmethylphosphonic acid}\
 PPP \tab{Picropodophyllotoxin}
+
+```{r}
+knitr::knit_exit()
+```
+
 
 ```{=tex}
 \cleardoublepage
@@ -366,6 +375,10 @@ knitr::include_graphics(here("Figures/Insulin-schematic.png"))
 # Methods
 
 ## Animals
+
+```{r}
+knitr::knit_exit()
+```
 
 
 ```{r AP-data-import-and-merge, include=F}
@@ -1531,7 +1544,6 @@ max_percent_change <- cell_coordinates %>%
 
 The primary goal of this study was to examine the effect of insulin on neuronal excitability and communication in DMH neurons. I used whole-cell patch clamp electrophysiology to record action potentials and evoked excitatory currents from `r nrow(summary_df_wide_addinsulin)` unique neurons in the DMH. I analyzed recordings taken before, while and after DMH neurons were exposed to 500 nM insulin. By comparing parameters like action potential frequency and evoked current amplitude across conditions, I was able to draw conclusions about the effect of insulin on intrinsic neuronal excitability, excitatory synaptic transmission, and neurotransmitter release onto DMH neurons.
 
-The second goal of the study was to determine the mechanism of insulin signalling within DMH neurons. I used receptor blockers like HNMPA (which blocks insulin receptors) and PPP (which blocks insulin-like growth factor 1 receptors) to determine the receptors that insulin binds to, and to explore intracellular signalling pathways that might be activated by insulin binding. I also examined changes in the paired pulse ratio to determine if insulin signalling uses pre- or post-synaptic mechanisms. Lastly, I exposed rats to a 24-hour fasting protocol before tissue extraction to assess if hunger affects insulin signalling within the DMH relative to control experiments from satiated animals.
 
 ## DMH neurons are less excitable with insulin
 
@@ -1593,11 +1605,7 @@ The changes in evoked current amplitudes were not significantly different across
 
 ```{r import-representative-traces}
 # Import representative traces
-male_control_trace <- png::readPNG(here("Figures/Representative-Traces/Male-Control-Trace-H.png")) %>% rasterGrob()
 female_control_trace <- png::readPNG(here("Figures/Representative-Traces/Female-Control-Trace-AV.png")) %>% rasterGrob()
-male_HNMPA_trace <- png::readPNG(here("Figures/Representative-Traces/Male-HNMPA-Trace-BO.png")) %>% rasterGrob()
-
-male_fasting_trace <- png::readPNG(here("Figures/Representative-Traces/Male-Fasting-Trace-FG.png")) %>% rasterGrob()
 
 female_PPP_trace <- png::readPNG(here("Figures/Representative-Traces/Female-PPP-Trace-GF.png")) %>% rasterGrob()
 
@@ -1630,58 +1638,10 @@ make_pruned_summary_plots(category = 2,
 kable_manovar_table_eEPSC
 ```
 
-## Insulin may bind to insulin-like growth factor 1 receptors on DMH neurons
-
-After verifying that insulin acts on DMH neurons, the next step was to determine which receptors insulin can bind to. I performed the same evoked currents protocol, but with HNMPA in the intracellular solution. HNMPA is an insulin receptor antagonist that inhibits tyrosine kinase activity [@sapersteinetal1989]. Since insulin receptors belong to the tyrosine kinase superfamily [@demeyts2000], HNMPA would have blocked insulin from binding to insulin receptors. However, insulin also significantly decreased evoked current amplitudes within the first 5 minutes of exposure (\emph{t}(`r t_test_eEPSCs %>%   filter(Treatment == "HNMPA" & group2 == "t5to10") %>%   pull(df)`) = `r t_test_eEPSCs %>%   filter(Treatment == "HNMPA" & group2 == "t5to10") %>%   pull(statistic)`, \emph{p} = `r t_test_eEPSCs %>%   filter(Treatment == "HNMPA" & group2 == "t5to10") %>%   pull(p_string)`; Figure \ref{summary-plot-HNMPA}) even with HNMPA present. Since DMH neurons show the same response to insulin with HNMPA relative to control conditions, this suggested that insulin acts on DMH neurons through a different receptor.
-
-```{r plot-HNMPA}
-#| fig.dim = c(8,5),
-#| fig.cap = "Insulin significantly decreases current amplitude over time in both sexes, even when the insulin receptor blocker HNMPA is applied. This suggests that insulin may not require insulin receptors to bind to DMH neurons and influence excitatory synaptic transmission. Each point represents the mean ± SE eEPSC amplitude and \\emph{n} represents the number of unique cells. The asterisks indicate a statistically significant decrease in current amplitude relative to the baseline (t-test; * = p < 0.05, ** = p < 0.01, *** = p < 0.001). The representative traces consist of eEPSCs from one cell averaged over the baseline period (0 to 5 min) and last interval (20 to 25 min) of the recording, and the scale bar represents 50 pA/20 ms. \\label{summary-plot-HNMPA}",
-#| fig.scap = "Insulin signalling at DMH neurons is not dependent on insulin receptors",
-#| out.width = "100%"
-
-make_pruned_summary_plots(category = 2,
-                          treatment = "HNMPA",
-                          data = pruned_df,
-                          color_choice = 5,
-                          representative_trace = male_HNMPA_trace)
-```
-
-Insulin-like growth factor receptors have many structural similarities to insulin receptors and they are also responsive to insulin [@nagaoetal2021]. I performed the evoked currents protocol in the presence of an insulin-like growth factor 1 receptor antagonist (PPP). With PPP present, insulin did not significantly decrease evoked current amplitudes over time, even 20 minutes after adding insulin (\emph{t}(`r t_test_eEPSCs %>%   filter(Treatment == "PPP" & group2 == "t5to10") %>%   pull(df)`) = `r t_test_eEPSCs %>%   filter(Treatment == "PPP" & group2 == "t5to10") %>%   pull(statistic)`, \emph{p} = `r t_test_eEPSCs %>%   filter(Treatment == "PPP" & group2 == "t5to10") %>%   pull(p_string)`). However, since the changes in evoked current amplitudes over time with PPP was still not significantly different than the other treatments (Treatment\*Times, \emph{p} = `r tidy_manovar$'p-value'[6]`; Figure \ref{eEPSC-treatment-comparisons-plot}), this suggests that insulin is not fully dependent on insulin-like growth factor 1 receptors to bind to DMH neurons.
-
-```{r plot-PPP}
-#| fig.dim = c(8,5),
-#| fig.cap = "Insulin does not significantly decrease current amplitude over time with PPP present. PPP is an insulin-like growth factor 1 receptor antagonist. Since blocking these receptors reduced the changes in excitatory synaptic transmission seen in control recordings, insulin may require insulin-like growth factor 1 receptors to act on DMH neurons. Each point represents the mean ± SE eEPSC amplitude and \\emph{n} represents the number of unique cells. There are no asterisks because the decrease in eEPSC amplitude was not statistically significant relative to the baseline. The representative traces consist of eEPSCs from one cell averaged over the baseline period (0 to 5 min) and last interval (20 to 25 min) of the recording, and the scale bar represents 50 pA/20 ms. \\label{summary-plot-PPP}",
-#| fig.scap = "Insulin may bind to insulin-like growth factor 1 receptors to influence excitatory synaptic transmission at DMH neurons",
-#| out.width = "100%"
-make_pruned_summary_plots(category = 2,
-                         treatment = "PPP",
-                         data = pruned_df,
-                         color_choice = 2,
-                         representative_trace = female_PPP_trace)
-```
-
-## Feeding state does not affect insulin signalling in DMH neurons
-
-Since insulin and DMH neurons are both involved with appetite and digestion [@demeyts2000; @daltonetal1981], I measured evoked excitatory currents over time in rats who had fasted 24 hours before brain removal. Hunger increases the activity of DMH neurons [@angeles-castellanosetal2004], and it is also associated with lowered insulin levels in the bloodstream, which may alter insulin signalling in DMH neurons. Within the first 5 minutes of insulin exposure, evoked current amplitudes in the DMH neurons of fasted rats decreased significantly (\emph{t}(`r t_test_eEPSCs %>%   filter(Treatment == "Fasting" & group2 == "t5to10") %>%   pull(df)`) = `r t_test_eEPSCs %>%   filter(Treatment == "Fasting" & group2 == "t5to10") %>%   pull(statistic)`, \emph{p} = `r t_test_eEPSCs %>%   filter(Treatment == "Fasting" & group2 == "t5to10") %>%   pull(p_string)`; Figure \ref{summary-plot-fasting}).
-
-```{r plot-Fasting}
-#| fig.dim = c(8,5),
-#| fig.cap = "Insulin significantly decreases current amplitude over time in both sexes after a 24-hour fasting protocol. This suggests that insulin signalling in the DMH is associated with processes beyond appetite regulation. Each point represents the mean ± SE eEPSC amplitude and \\emph{n} represents the number of unique cells. The asterisks indicate a statistically significant decrease in current amplitude relative to the baseline (t-test; * = p < 0.05, ** = p < 0.01, *** = p < 0.001). The representative traces consist of eEPSCs from one cell averaged over the baseline period (0 to 5 min) and last interval (20 to 25 min) of the recording, and the scale bar represents 50 pA/20 ms. \\label{summary-plot-fasting}",
-#| fig.scap = "Insulin signalling at the excitatory synapses of DMH neurons is independent of feeding state",
-#| out.width = "100%"
-make_pruned_summary_plots(category = 2,
-                         treatment = "Fasting",
-                         data = pruned_df,
-                         color_choice = 3,
-                         representative_trace = male_fasting_trace)
-```
 
 ## Synaptic transmission is likely affected by a postsynaptic mechanism
 
-To further explore the mechanism of insulin signalling at the DMH, I used a paired t-test to quantify changes in the PPR over time (Figure \ref{ppr-comparisons-plot}). I used PPRs that were averaged per cell over two five-minute intervals: the baseline (0 to 5 minutes) and the last interval of the recording (20 to 25 minutes), which corresponded to 20 minutes of continuous insulin exposure. The PPR did not change significantly relative to baseline values in the control group (\emph{t}(`r t_test_PPR %>%   filter(Treatment == "Control") %>%   pull(df)`) = `r t_test_PPR %>%   filter(Treatment == "Control") %>%   pull(statistic)`, \emph{p} = `r t_test_PPR %>%   filter(Treatment == "Control") %>%   pull(p_string)`), fasted group (\emph{t}(`r t_test_PPR %>%   filter(Treatment == "Fasting") %>%   pull(df)`) = `r t_test_PPR %>%   filter(Treatment == "Fasting") %>%   pull(statistic)`, \emph{p} = `r t_test_PPR %>%   filter(Treatment == "Fasting") %>%   pull(p_string)`), or PPP-treated cells (\emph{t}(`r t_test_PPR %>%   filter(Treatment == "PPP") %>%   pull(df)`) = `r t_test_PPR %>%   filter(Treatment == "PPP") %>%   pull(statistic)`, \emph{p} = `r t_test_PPR %>%   filter(Treatment == "PPP") %>%   pull(p_string)`). Since the PPR indicates the probability of neurotransmitter release from presynaptic cells, and there was no significant change in PPR with insulin, insulin binding to DMH neurons likely activates postsynaptic signalling pathways.
-
-In the HNMPA treatment group, the paired pulse ratio increased significantly relative to the baseline (\emph{t}(`r t_test_PPR %>%   filter(Treatment == "HNMPA") %>%   pull(df)`) = `r t_test_PPR %>%   filter(Treatment == "HNMPA") %>%   pull(statistic)`, \emph{p} = `r t_test_PPR %>%   filter(Treatment == "HNMPA") %>%   pull(p_string)`), suggesting that preventing insulin from binding to insulin receptors may activate an alternative presynaptic mechanism that ultimately results in the same decrease in excitatory synaptic transmission.
+To further explore the mechanism of insulin signalling at the DMH, I used a paired t-test to quantify changes in the PPR over time (Figure \ref{ppr-comparisons-plot}). I used PPRs that were averaged per cell over two five-minute intervals: the baseline (0 to 5 minutes) and the last interval of the recording (20 to 25 minutes), which corresponded to 20 minutes of continuous insulin exposure. The PPR did not change significantly relative to baseline values in the control group (\emph{t}(`r t_test_PPR %>%   filter(Treatment == "Control") %>%   pull(df)`) = `r t_test_PPR %>%   filter(Treatment == "Control") %>%   pull(statistic)`, \emph{p} = `r t_test_PPR %>%   filter(Treatment == "Control") %>%   pull(p_string)`) or PPP-treated cells (\emph{t}(`r t_test_PPR %>%   filter(Treatment == "PPP") %>%   pull(df)`) = `r t_test_PPR %>%   filter(Treatment == "PPP") %>%   pull(statistic)`, \emph{p} = `r t_test_PPR %>%   filter(Treatment == "PPP") %>%   pull(p_string)`).
 
 ```{r PPR-data-final-summary-plot, warning=F, message=F}
 #| fig.cap = "The paired pulse ratio (PPR) did not change significantly after insulin exposure for most of the treatment groups. The change in the PPR relative to the baseline was non-significant for the control, fasting, and PPP treatment groups, but it was statistically significant for the HNMPA-treated cells. Each dot represents the mean PPR of a single cell averaged over the baseline period (0 to 5 minutes) or the last 20 to 25 minutes of the evoked currents protocol. The asterisks indicate a statistically significant difference in the PPR between the two intervals (t-test; * = p < 0.05, ** = p < 0.01, *** = p < 0.001). The solid black circle and triangle overlay represents the mean PPR (± SE) per sex. \\label{ppr-comparisons-plot}",
