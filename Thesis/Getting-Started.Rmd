@@ -59,7 +59,7 @@ library(ggpubr) # Required for significance brackets
 # Generate a bibliography of all packages used in this file
 # I will use this later to cite all packages that I used in my bibliography
 
-knitr::write_bib(file = here("Templates","packages.bib"))
+#knitr::write_bib(file = here("Templates","packages.bib"))
 ```
 
 ```{r set-plot-options}
