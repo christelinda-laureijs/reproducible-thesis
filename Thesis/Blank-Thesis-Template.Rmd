@@ -1,0 +1,227 @@
+---
+title: Thesis Title
+bibliography:
+  - "../Templates/thesis-citations.bib"
+  - ../Templates/packages.bib
+csl: ../Templates/apa.csl
+output:
+  pdf_document:
+    toc: false
+    latex_engine: xelatex
+    fig_caption: true
+    includes:
+      in_header: "../Templates/MtA-Thesis-Preamble.tex"
+fontsize: 12pt
+geometry:
+- margin = 1in
+linestretch: 1.5
+classoption: oneside
+indent: true
+editor_options:
+  chunk_output_type: inline
+always_allow_html: true
+
+# Use nocite to include any citations that aren't included in-text (i.e. R packages)
+---
+
+```{r set-global-options, echo=FALSE}
+# ------------ Set chunk options --------------------------------------------------------------
+# cairo_pdf encodes high-quality plots with searchable text
+# Hide chunk warnings to reduce distractions
+# comment = NA removes the double hash tags next to chunk output
+
+knitr::opts_chunk$set(
+  dev = c("cairo_pdf"),
+  dpi = 600,
+  fig.align = "center",
+  comment = NA,
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+```{r load-libraries, include = FALSE}
+# ------------- Load packages ----------------------------------------------------------------------------
+# Here are some potentially useful packages to start off with - free feel to delete them if you don't need them
+library(here)
+library(dplyr) # Data manipulation
+library(ggplot2) # Make plots
+library(viridis) # Accessible and beautiful colour palettes
+library(extrafont) # Required for custom fonts in plots
+loadfonts()
+library(ggtext) # Required for formatting plot text (e.g. coloured text in title)
+library(patchwork) # Required for multi-plot layouts
+library(ggsignif) # Required for significance stars and brackets on plots
+library(ggh4x) # Required to create nested x-axis labels
+library(ggpubr) # Required for significance brackets
+
+# Generate a bibliography of all packages used in this file
+# I will use this later to cite all packages that I used in my bibliography
+
+knitr::write_bib(file = here("Templates","packages.bib"))
+```
+
+```{r set-plot-options}
+# ---------- Set plot theme, colours & sizes --------------------------------------------------------------------------------
+# Set save_choice to "yes" if you want to save plots (! this will increase the run time; generally only run this after adding new data)
+# To use this, set up an if/else statement with ggsave nested within it
+
+save_choice <- "no"
+
+# Set colours here only for consistency. Here is an example
+# Refer to these colours in your ggplot code, for example geom_point(color = my_colours[2]) for blue points.
+
+my_colours <- c("#6600cc", "#0093fb", "#55b323","#ffe70f","#e86c00","#333333", "#411900","#e11584")
+
+# Custom fonts may cause issues depending on what fonts you have in your system
+# Troubleshooting steps: 
+  # Try changing the font to one that you have on your computer
+  # If it does not work, you could always delete 'family = plot_font_family' in the ggplot theme set below
+plot_font_family <- "Segoe UI"
+
+# A consistent y-axis enables comparison across multiple experiments, treatments, etc.
+# To use this, define variables like y_axis_limit and then use these as limits in coord_cartesian() in your ggplots.
+
+y_axis_limit <- 175
+```
+
+```{r set-ggplot2-theme}
+# ----------- Set ggplot theme ----------------------------------------------------------------------------------
+# You should experiment to find a ggplot theme that works for your project
+# Here is an example of defining a ggplot theme.
+
+# This theme increases the axis font sizes and removes the default gray background.
+# Requires the extrafont() package (loaded in the load-libraries chunk) for custom font
+
+theme_set(
+  theme_classic() %+replace%
+    theme(
+      text = element_text(
+        family = plot_font_family
+      ),
+      plot.title = element_text(
+        color = "black",
+        size = 20,
+        family = plot_font_family,
+        margin = margin(b = 25),
+        hjust = 0.5
+      ),
+      plot.margin = margin(25, 25, 25, 25),
+      plot.caption = element_text(
+        hjust = 0,
+        family = plot_font_family,
+        size = 12
+      ),
+      plot.caption.position = "plot",
+      axis.text = element_text(
+        size = 12,
+        color = "black"
+      ),
+      axis.title = element_text(
+        size = 16,
+        face = "bold"
+      ),
+      axis.title.y = element_text(
+        margin = margin(r = 25),
+        angle = 90,
+        vjust = 0.5
+      ),
+      axis.title.x = element_text(margin = margin(b = 25, t = 20)),
+      axis.ticks = element_blank(),
+      strip.background = element_rect(color = NA, fill = NA),
+      strip.text = element_text(size = 20)
+    )
+)
+```
+
+
+\begin{centering}
+\begin{spacing}{1}
+\Large
+
+by
+
+\LARGE
+
+Author
+
+\end{spacing}
+\end{centering}
+
+\large
+\vspace*{\fill}
+
+<!-- Although it is not ideal, I am manually setting the linebreaks here. This is to conform to MtA's title page standards -->
+
+
+\begin{centering}
+\begin{spacing}{1}
+A thesis submitted to the\\
+Department of Biology\\
+Mount Allison University\\
+in partial fulfillment of the requirements for the\\
+Bachelor of Science degree with Honours\\
+in Biology
+
+Date
+
+\end{spacing}
+\end{centering}
+
+
+\newpage
+\vspace*{\fill}
+\large
+
+
+<!-- The preamble includes \usepackage{adforn}. Adforn enables you to add fancy decorative embellishments. Look up adforn on CTAN to see a list of available symbols. -->
+
+\adforn{20} *COLOPHON* \adforn{48}
+
+\normalsize
+
+This thesis was typeset in R Markdown and the text was set in EB Garamond. The data and code used to produce this document are available at [*https://github.com/christelinda-laureijs/reproducible-thesis*](https://github.com/christelinda-laureijs/reproducible-thesis).
+
+\newpage
+\pagenumbering{roman}
+
+
+# Abstract
+
+Text
+
+
+\setcounter{tocdepth}{2}
+\tableofcontents
+\listoffigures
+
+
+# List of Abbreviations
+
+<!--Tab depth is defined in the preamble through the tabto package-->
+
+DMH \tab{Dorsomedial hypothalamus}\
+GABA \tab{Gamma-aminobutyric acid}\
+eEPSC \tab{Evoked excitatory post-synaptic current}\
+PPR \tab{Paired pulse ratio}\
+HNMPA \tab{Hydroxy-2-naphthalenylmethylphosphonic acid}\
+PPP \tab{Picropodophyllotoxin}
+
+
+\cleardoublepage
+\normalsize
+\pagenumbering{arabic}
+
+
+# Introduction
+
+# Methods
+
+# Results
+
+# Discussion
+
+# Acknowledgements
+
+# References

@@ -376,7 +376,7 @@ You can insert images through knitr. fig.cap can be quite long, and you can also
   # As you can see in Figure \ref{label}...
 
 # fig.scap = short caption that LaTeX will use in the List of Figures
-# out.width = 100% of line width
+# out.width = 100% of line width. Must define out.width OR use out.extra = '' to allow LaTeX to recognize this as LaTeX code.
 # Excluded from Scripts-from-Thesis-Rmd.R (purl = FALSE) because this is for the thesis only
 
 knitr::include_graphics(here("Figures/Insulin-schematic.png"))
