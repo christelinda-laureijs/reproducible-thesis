@@ -152,14 +152,11 @@ Christelinda Laureijs
 \large
 \vspace*{\fill}
 
-<!-- Although it is not ideal, I am manually setting the linebreaks here. This is to conform to MtA's title page standards -->
-
-
 \begin{centering}
 \begin{spacing}{1}
 A short guide for curious and motivated researchers
 
-June 17, 2024
+`r format(Sys.Date(), "%B %d, %Y")`
 
 \end{spacing}
 \end{centering}
@@ -205,7 +202,7 @@ Your analyses and text are all in one place, so you will always know what you di
 
 ### Efficiency
 
-Rather than typing the same things over and over again, you can set up functions to complete tasks like completing a statistical test or creating a plot. Once your code is set up, it is easy to run your paper again with new data. This is especially helpful when you're frequently adding new data.
+Rather than typing the same things over and over again, you can set up functions to complete tasks like completing a statistical test or creating a plot. By using in-text R code, you won't need to manually type p-values and statistics and change them each time you re-do your analysis (hurray!!). Once your code is set up, it is easy to run your paper again with new data, and generate new plots, p-values, and statistical output tables.
 
 Since you can define your colours, fonts, and ggplot theme at the beginning of your document, you don't need to fiddle with formatting each plot. All plots will have the same formatting, and it is easy to change colours/styling for all plots at once.
 
@@ -227,7 +224,7 @@ R, Rmarkdown, \LaTeX and the packages you'll use are all free and open-source.
 
 ### Longevity
 
-Your documents are plaintext files, which  means that they don't take up much space on your computer, and you can open them up years later in any plain text editor (even Notepad!). It also means that your files will always be available, and you won't get locked into proprietary software.
+Your documents are plain text files, which  means that they don't take up much space on your computer, and you can open them up years later in any plain text editor (even Notepad!). It also means that your files will always be available, and you won't get locked into proprietary software.
 
 ### Version Control
 
@@ -252,6 +249,7 @@ To minimize errors, I would suggest these things:
   - Turn off the "Save workspace image" option in your R Global Options to prevent old loaded packages and hidden variables from 'hovering' in the background and creating strange rrors.
   - Frequently use Run -> Restart R and clear output to prevent objects from cluttering your workspace and causing dependencies. For example, if you define a variable in the console, but not your document you won't realize the problem until you have a fresh R session. 
   - Use knitr::knit_exit() to stop knitting early. It can be a useful way to identify the specific line of code that is causing knitting issues.
+  - ! Make sure that your PDF is closed when you knit. If you're knitting the file and the PDF is still open, it will break the code.
 
 ### Separate content and layout
 
@@ -261,7 +259,7 @@ At the beginning, you may worry about floats (things like pictures, plots, and t
 
 ## Collaboration issues
 
-You can't use track changes, comments, or shared files. The best way to simulate this is to set up a GitHub repository and add your supervisor as a collaborator. This may cause issues if you have a supervisor who doesn't know how to use GitHub and they don't want to comment a PDF.
+Unlike Word, you can't use track changes, comments, or shared files. The best way to simulate this is to set up a GitHub repository and add your supervisor as a collaborator. They could then use pull requests to suggest changes. This may cause issues if you have a supervisor who doesn't know how to use GitHub. You also may not be able to make this work if your supervisor doesn't want to or know how to comment a PDF.
 
 
 # How-Tos
@@ -305,10 +303,60 @@ You can insert images through knitr. fig.cap can be quite long, and you can also
 knitr::include_graphics(here("Figures/Insulin-schematic.png"))
 ```
 
+## In-text R code
+
+You can embed R code within normal text to create dynamic reports. For example, if you write \` r nrow(cars) \`, this will be printed out as `r nrow(cars)`.
+
+E.g. There were `r nrow(cars)` cars in the dataset.
+
+You can take this even further to embed p-values, t-test statistics, and other values within the body text. This will save you lots of time in the results section. It also reduces the likelihood of mistakes.
+
+It will take some time to find out how to extract p-values from different data types. In RStudio, always check what class your model is. Then, you can google things like "Extract p-value from an object of class anova in r".
+
+Other helpful functions will include str() to see the structure of the model. This can provide a list of the parts of the model and give you an idea of which variables you need to select the specific p-value that you want.
+
+## Tables
+
+There are many packages that will allow you to create publication-quality tables. I've found that the packages kable and broom are particularly useful.
+
+## \LaTeX Basics
+
+You can learn a lot about \LaTeX as you customize your paper. This is a very valuable skill, and it will be particularly useful if you're planning to stay in academia.
+
+Most \LaTeX commands start with a forward slash and include arguments in curly brackets. Many of them are intuitive:
+
+\\setcounter{tocdepth}{2} to set the table of content depth to header 2
+\\tableofcontents to insert a table of contents
+
+If you want to make any cross references, you can define them using labels. You may have seen this in the *Inserting Images* section. For example, you can write Figure '\\\\label{insulin-pathway}' to automatically include the correct figure number.
+
+
+
+
+
+
+
+It's not recommended to do too much formatting within your document. Ideally, all of your formatting styles should be defined in the preamble.
+
+
+
 
 ## Changing the formatting
 
 If you want to change how any part of this document looks, go to Templates/MtA-Thesis-Preamble.tex.
+
+You can learn a lot about \LaTeX just by customizing the preamble. Most \LaTeX commands start with a forward slash and include arguments in curly brackets. Many of them are intuitive:
+
+\\listoffigures
+
+
+
+
+
+### Other Tools
+
+To create high-quality schematics, I would highly recommend [Inkscape](https://inkscape.org/), which is a free and open source vector editor. You're probably familiar with using the shapes tools in PowerPoint. Inkscape is like this, but you have much more control over the alignment, and many helpful tools that allow you to do more advanced techniques.
+
 
 # References
 

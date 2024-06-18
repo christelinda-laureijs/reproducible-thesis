@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.6.14)  17 JUN 2024 00:12
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.6.14)  17 JUN 2024 13:27
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -878,6 +878,8 @@ LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 (Font)              scaled to size 7.98984pt on input line 3.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 (Font)              scaled to size 5.70703pt on input line 3.
+LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/n' will be
+(Font)              scaled to size 8.4pt on input line 22.
 )
 \tf@toc=\write3
 \openout3 = `Getting-Started.toc'.
@@ -898,9 +900,6 @@ LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/it' will be
 [1
 
 ]
-LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/n' will be
-(Font)              scaled to size 8.4pt on input line 302.
-
 
 [2]
 
@@ -918,15 +917,24 @@ File: ../Figures/Insulin-schematic.png Graphic file (type bmp)
 [6]
 
 [7]
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
+(Font)              scaled to size 19.72952pt on input line 487.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
+(Font)              scaled to size 19.73141pt on input line 487.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
+(Font)              scaled to size 19.7273pt on input line 487.
+
 
 [8]
+
+[9]
 
 Package caption Warning: Unused \captionsetup[table] on input line 150.
 See the caption package documentation for explanation.
 
 
 
-[9] (./Getting-Started.aux)
+[10] (./Getting-Started.aux)
  ***********
 LaTeX2e <2024-06-01> patch level 1
 L3 programming layer <2024-05-27>
@@ -936,12 +944,12 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 19101 strings out of 476212
- 356588 string characters out of 5784671
+ 19117 strings out of 476212
+ 356963 string characters out of 5784671
  1929560 words of memory out of 5000000
- 41384 multiletter control sequences out of 15000+600000
- 565604 words of font info for 97 fonts, out of 8000000 for 9000
+ 41397 multiletter control sequences out of 15000+600000
+ 566565 words of font info for 103 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  90i,6n,126p,607b,448s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on Getting-Started.pdf (13 pages).
+Output written on Getting-Started.pdf (14 pages).
