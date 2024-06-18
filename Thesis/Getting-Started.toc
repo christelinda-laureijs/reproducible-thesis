@@ -5,21 +5,24 @@
 \contentsline {subsubsection}{Efficiency}{1}{section*.6}%
 \contentsline {subsubsection}{No manual formatting}{2}{section*.7}%
 \contentsline {subsubsection}{Beautiful typography}{2}{section*.8}%
-\contentsline {subsubsection}{Free}{2}{section*.9}%
-\contentsline {subsubsection}{Longevity}{2}{section*.10}%
+\contentsline {subsubsection}{Free}{3}{section*.9}%
+\contentsline {subsubsection}{Longevity}{3}{section*.10}%
 \contentsline {subsubsection}{Version Control}{3}{section*.11}%
 \contentsline {subsection}{What are the disadvantages of writing in R?}{3}{section*.12}%
 \contentsline {subsubsection}{Learning curve}{3}{section*.13}%
 \contentsline {subsubsection}{Troubleshooting}{3}{section*.14}%
 \contentsline {subsubsection}{Separate content and layout}{4}{section*.15}%
-\contentsline {subsection}{Collaboration issues}{4}{section*.16}%
-\contentsline {section}{How-Tos}{5}{section*.17}%
-\contentsline {subsection}{Inserting citations}{5}{section*.18}%
-\contentsline {subsection}{Inserting Plots}{5}{section*.19}%
-\contentsline {subsection}{Inserting Images}{5}{section*.21}%
-\contentsline {subsection}{In-text R code}{8}{section*.23}%
-\contentsline {subsection}{Tables}{8}{section*.24}%
-\contentsline {subsection}{\LaTeX Basics}{8}{section*.25}%
-\contentsline {subsection}{Changing the formatting}{9}{section*.26}%
-\contentsline {subsubsection}{Other Tools}{9}{section*.27}%
-\contentsline {section}{References}{10}{section*.28}%
+\contentsline {subsubsection}{Collaboration issues}{4}{section*.16}%
+\contentsline {section}{How-Tos}{6}{section*.17}%
+\contentsline {subsection}{Inserting citations}{6}{section*.18}%
+\contentsline {subsection}{Inserting plots}{6}{section*.19}%
+\contentsline {subsection}{Inserting images}{6}{section*.21}%
+\contentsline {subsection}{Analysis}{9}{section*.23}%
+\contentsline {subsection}{In-text R code}{9}{section*.24}%
+\contentsline {subsubsection}{Extracting P-values}{9}{section*.25}%
+\contentsline {subsubsection}{Rounding}{11}{section*.27}%
+\contentsline {subsection}{Tables}{11}{section*.28}%
+\contentsline {subsection}{\LaTeX ~Basics}{11}{section*.29}%
+\contentsline {subsection}{Changing the formatting}{12}{section*.30}%
+\contentsline {subsubsection}{Other Tools}{12}{section*.31}%
+\contentsline {section}{References}{13}{section*.32}%

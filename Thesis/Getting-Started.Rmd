@@ -46,16 +46,20 @@ knitr::opts_chunk$set(
 # Here are some potentially useful packages to start off with - free feel to delete them if you don't need them
 library(here)
 library(dplyr) # Data manipulation
+library(tidyr) # Reformat data frames from wide to long and vice versa 
+library(stringr) # Manipulating text objects
 library(ggplot2) # Make plots
 library(viridis) # Accessible and beautiful colour palettes
-library(extrafont) # Required for custom fonts in plots
-loadfonts()
+library(extrafont) # Required for custom fonts in plots. Don't forget to run font_import() the first time you load this package. This is only required once per R version.
 library(ggtext) # Required for formatting plot text (e.g. coloured text in title)
 library(patchwork) # Required for multi-plot layouts
 library(ggsignif) # Required for significance stars and brackets on plots
 library(ggh4x) # Required to create nested x-axis labels
 library(ggpubr) # Required for significance brackets
-
+library(broom) # Required to format statistical test output into tidy dataframes
+library(knitr) # Required to access better table formatting through kable
+library(kableExtra) # Required for full width tables
+library(lazyWeave) # Provides the pvalString() function to format publication-ready p-values in a table 
 # Generate a bibliography of all packages used in this file
 # I will use this later to cite all packages that I used in my bibliography
 
@@ -192,6 +196,7 @@ This document was typeset in R Markdown and the text was set in EB Garamond. The
 
 Writing a paper in R can be challenging at first, but it is a rewarding process that will save you lots of time, effort and stress over the long term. This document provides examples and sample code for you to get started. It is also a sample RMarkdown document to see if you can knit PDFs from R and RStudio. Ideally, you should be able to click on Knit -> Knit to PDF and generate a PDF without issues. 
 
+
 *A note for Mac Users:* When you knit the document the first time, you might see error messages with something about Cairo and your graphics device. Every device is different, but you might be able to fix it by installing XQuartz and then Cairo. 
 
 ## What are the advantages of writing in R?
@@ -214,13 +219,21 @@ Since RMarkdown is a plain-text document, your computer will be able to handle l
 
 ### Beautiful typography
 
-When you knit a document using a PDF, R uses \LaTeX. \LaTeX is a typesetting engine that uses mathematical algorithms to arrange text into the most ideal way according to typesetting rules. The resulting documents look very elegant in a way that is hard to quantify. \LaTeX-produced documents look very distinctive and after a while, you'll be able to easily tell the differences between a document produced using \LaTeX vs. Word.
+When you knit a document using a PDF, R uses \LaTeX. \LaTeX\ is a typesetting engine that uses mathematical algorithms to arrange text into the most ideal way according to typesetting rules. The resulting documents look very elegant in a way that is hard to quantify. \LaTeX-produced documents look very distinctive and after a while, you'll be able to easily tell the differences between a document produced using \LaTeX\ vs. Word.
 
-Even if you stick to just the defaults, your documents will look great. If you need to use equations, \LaTeX is one of the best ways to create clean, well-aligned equations.
+Even if you stick to just the defaults, your documents will look great. If you need to use equations, \LaTeX\ is one of the best ways to create clean, well-aligned equations. Look in the \LaTeX\ documentation to learn how to align by equal signs or other characters!
+
+\begin{equation}
+\int_{a}^{b} x^2 \,dx
+\end{equation}
+
+\begin{equation}
+x = \frac {-b \pm \sqrt{b^2 -4ac}} {2a}
+\end{equation}
 
 ### Free
 
-R, Rmarkdown, \LaTeX and the packages you'll use are all free and open-source.
+R, Rmarkdown, \LaTeX\ and the packages you'll use are all free and open-source.
 
 ### Longevity
 
@@ -255,9 +268,9 @@ To minimize errors, I would suggest these things:
 
 You don't get to see what your document looks like until you knit it. This can be disconcerting for some people but great for others because you aren't distracted by formatting. Although you should knit your document often, don't fuss around with formatting until your paper is almost done. Things like paragraph spacing will change, and it is better to wait until the end.
 
-At the beginning, you may worry about floats (things like pictures, plots, and tables). \LaTeX will 'float' these over the text and then plop them down in a way that minimizes the number of paragraph breaks and blank spots. This means that your floats will often be further from where you want them. It is very, very difficult to 'force' floats to go into a specific spot, and the place that \LaTeX chooses is often the best layout-wise. Always use references like Figure 1, rather than "the figure below".
+At the beginning, you may worry about floats (things like pictures, plots, and tables). \LaTeX\ will 'float' these over the text and then plop them down in a way that minimizes the number of paragraph breaks and blank spots. This means that your floats will often be further from where you want them. It is very, very difficult to 'force' floats to go into a specific spot, and the place that \LaTeX\ chooses is often the best layout-wise. Always use references like Figure 1, rather than "the figure below".
 
-## Collaboration issues
+### Collaboration issues
 
 Unlike Word, you can't use track changes, comments, or shared files. The best way to simulate this is to set up a GitHub repository and add your supervisor as a collaborator. They could then use pull requests to suggest changes. This may cause issues if you have a supervisor who doesn't know how to use GitHub. You also may not be able to make this work if your supervisor doesn't want to or know how to comment a PDF.
 
@@ -266,17 +279,16 @@ Unlike Word, you can't use track changes, comments, or shared files. The best wa
 
 ## Inserting citations
 
-Here is an example of an in-text citation: Insulin is a hormone that regulates blood glucose levels, digestive processes, and body weight [@demeyts2000]. When you write [\@demeyts2000], the citation will be rendered as an in-text citation. This document uses APA formatting because of the 'apa.csl' file. If you want a different format, you can download the appropriate CSL file online.
+Here is an example of an in-text citation: Insulin is a hormone that regulates blood glucose levels, digestive processes, and body weight [@demeyts2000]. When you write [\@demeyts2000], the citation will be rendered as an in-text citation. This document uses APA formatting because of the 'apa.csl' file. If you want a different format, you can download the appropriate CSL file online and replace the file name in the YAML header.
 
-## Inserting Plots
+## Inserting plots
 
 You can plot figures in R. This is one of the best parts - R will generate the plots each time the document knits so you don't have to repeatedly copy and paste pictures into your paper!
 
-```{r}
-#| fig.cap = "Here is an example of a figure caption",
-#| fig.scap = "Sample plot in R",
+```{r sample-cars-plot}
+#| fig.cap = "Braking distance is positively correlated with driving speed.",
+#| fig.scap = "Faster cars take longer to stop.",
 #| out.width = "100%"
-
 
 cars %>% 
   ggplot(aes(x = speed, y = dist)) +
@@ -284,11 +296,11 @@ cars %>%
   labs(x = "Speed", y = "Distance")
 ```
 
-## Inserting Images
+## Inserting images
 
-You can insert images through knitr. fig.cap can be quite long, and you can also add a label in the form of '\\\\label{text}' When you write a reference to Figure '\\\\label{insulin-pathway}', \LaTeX will print out Figure \ref{insulin-pathway}.
+You can insert images through knitr. fig.cap can be quite long, and you can also add a label in the form of '\\\\label{text}' When you write a reference to Figure '\\\\label{insulin-pathway}', \LaTeX\ will print out Figure \ref{insulin-pathway}.
 
-*Important:* To use `fig.cap` and `fig.scap`, you must define an `out.width` in the chunk options. If not, R will not recognize these as \LaTeX commands.
+*Important:* To use `fig.cap` and `fig.scap`, you must define an `out.width` in the chunk options. If not, R will not recognize these as \LaTeX\ commands.
 
 ```{r insulin-schematic}
 #| fig.cap = "When insulin binds to a cell, it activates a series of molecular pathways involved in energy metabolism and gene expression...[if your figure caption is too long, you should define a short figure caption (fig.scap) which will go into the list of figures]...although it looks like there are two distinct pathways, the downstream components of the P13K and MAPK pathways frequently interact with one another (De Meyts, 2000). \\label{insulin-pathway}",
@@ -303,27 +315,123 @@ You can insert images through knitr. fig.cap can be quite long, and you can also
 knitr::include_graphics(here("Figures/Insulin-schematic.png"))
 ```
 
+
+
+## Analysis
+
+I'm using one of R's built-in datasets (*PlantGrowth*) to show examples of inserting model summary tables, results, plots, and p-values in a paper. This sample dataset explores plant mass after applying one of three treatment conditions (control, treatment 1 and treatment 2). I've hidden the code in the output document (chunk options echo=F) because you will probably not be displaying your code in your paper.
+
+```{r plant-dataset-analysis}
+# Import data
+plant_data <- PlantGrowth
+
+# ANOVA
+plant_data_aov <- aov(weight ~ group, data = plant_data)
+
+# Obtain summary ANOVA table
+plant_aov_summary <- summary(plant_data_aov)
+
+# Obtain model residuals
+plant_data_aov_res <- resid(plant_data_aov)
+
+# Normality testing: Shapiro Test
+plant_shapiro_results <- shapiro.test(plant_data_aov_res)
+
+# QQ-Plot
+plant_qq_plot <- ggplot(plant_data_aov, aes(sample = plant_data_aov_res)) +
+    stat_qq() +
+    stat_qq_line() +
+    labs(title = "QQ-Plot of Plant Anova Residuals")
+
+```
+
 ## In-text R code
 
-You can embed R code within normal text to create dynamic reports. For example, if you write \` r nrow(cars) \`, this will be printed out as `r nrow(cars)`.
+You can embed R code within normal text to create dynamic reports. For example, if you write \` r nrow(plant_data) \`, this will be printed out as `r nrow(plant_data)`, as in "We weighed `r nrow(plant_data)` plants".
 
-E.g. There were `r nrow(cars)` cars in the dataset.
+### Extracting P-values
 
 You can take this even further to embed p-values, t-test statistics, and other values within the body text. This will save you lots of time in the results section. It also reduces the likelihood of mistakes.
 
 It will take some time to find out how to extract p-values from different data types. In RStudio, always check what class your model is. Then, you can google things like "Extract p-value from an object of class anova in r".
 
-Other helpful functions will include str() to see the structure of the model. This can provide a list of the parts of the model and give you an idea of which variables you need to select the specific p-value that you want.
+If you click on the model summary object in RStudio, it will open the model in a new window. You can click on any one of the green arrow icons on the right-hand side. The code required to select it will then appear in the console, where you can copy and paste it.
+
+```{r select-value-schematic}
+#| fig.cap = "RStudio provides a handy selection tool to help you find the code needed to extract a specific value from an object. Click on the green arrow icon to see the appropriate selection code appear in your console. \\label{select-value-schematic}",
+#| fig.scap = "RStudio allows you to easily extract values from objects.",
+#| out.width = "100%",
+#| purl = FALSE
+
+knitr::include_graphics(here("Figures/Getting-Started-Figures/Extract-values-annotated.png"))
+```
+
+If you're stuck, you could also use the `str()` function to see the structure of the model. This can provide a list of the parts of the model and give you an idea of which variables you need to select the specific p-value that you want.
+
+```{r aov-structure, echo=T}
+str(plant_aov_summary)
+```
+
+Look at the results. If I want to extract the p-value row, it looks like I will need to write plant_aov_summary[[1]][["Pr(>F)"]]. The [[1]] is because this is a list of one, and the values we need are in the first element of the list. Notice how this returns another list:
+
+```{r extract-p-values, echo=T}
+plant_aov_summary[[1]][["Pr(>F)"]]
+```
+The first p-value is the p-value associated with the treatment groups. The second is NA because it is for the model residuals. To extract the first p-value, add another [[1]] to select the first element of this list. The final code is:
+
+```{r}
+plant_aov_summary[[1]][["Pr(>F)"]][[1]]
+```
+### Rounding
+
+To make "prettier" p-values you could round them to 3 digits using the `round()` function. However, I would suggest using the `pvalString()` function from the `LazyWeave` package. This rounds p-values to three digits, and automatically formats them to publication style p-values if they are smaller or larger than typical endpoints. As an example, pvalString(0.00000005) will become `r pvalString(0.0000005)`.
+
+```{r}
+pvalString(plant_aov_summary[[1]][["Pr(>F)"]][[1]])
+```
+
+Now, putting it into an in-text R code block, we can write something like this with automatically inserted p-values.
+
+Plant mass varied significantly according to treatment type (p = `r pvalString(plant_aov_summary[[1]][["Pr(>F)"]][[1]])`).
 
 ## Tables
 
-There are many packages that will allow you to create publication-quality tables. I've found that the packages kable and broom are particularly useful.
+There are many packages that will allow you to create publication-quality tables. I've found that the packages kable and broom are particularly useful. Let's say that I want to make the summary table look better
 
-## \LaTeX Basics
+```{r eval=F}
+plant_data_aov %>%
+  tidy() %>% 
+  mutate(
+    statistic = round(statistic, 2),
+    p.value = pvalString(p.value),
+    term = str_to_title(term)) %>% 
+  rename(
+    Term = term,
+    'Sum of Squares' = sumsq,
+    'Mean Square' = meansq,
+    F = statistic,
+    'p-value' = p.value
+  ) %>% 
+  kable(booktabs = T,
+        linesep = '',
+        escape = F,
+        caption = "A multivariate repeated measures ANOVA using Pillai's Trace shows that current amplitude varies significantly with time, and there are no significant interactions between factors like sex and treatment. \\label{MANOVAR-Table}",
+        caption.short = "MANOVAR summary table of evoked excitatory currents before and during insulin exposure") %>% 
+  kable_styling(full_width = T) %>%
+  column_spec(1,
+              width = "1.7in")
+  
 
-You can learn a lot about \LaTeX as you customize your paper. This is a very valuable skill, and it will be particularly useful if you're planning to stay in academia.
+```
 
-Most \LaTeX commands start with a forward slash and include arguments in curly brackets. Many of them are intuitive:
+
+
+
+## \LaTeX\ Basics
+
+You can learn a lot about \LaTeX\ as you customize your paper. This is a very valuable skill, and it will be particularly useful if you're planning to stay in academia.
+
+Most \LaTeX\ commands start with a forward slash and include arguments in curly brackets. Many of them are intuitive:
 
 \\setcounter{tocdepth}{2} to set the table of content depth to header 2
 \\tableofcontents to insert a table of contents
@@ -345,7 +453,7 @@ It's not recommended to do too much formatting within your document. Ideally, al
 
 If you want to change how any part of this document looks, go to Templates/MtA-Thesis-Preamble.tex.
 
-You can learn a lot about \LaTeX just by customizing the preamble. Most \LaTeX commands start with a forward slash and include arguments in curly brackets. Many of them are intuitive:
+You can learn a lot about \LaTeX\ just by customizing the preamble. Most \LaTeX\ commands start with a forward slash and include arguments in curly brackets. Many of them are intuitive:
 
 \\listoffigures
 
