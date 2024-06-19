@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.6.14)  18 JUN 2024 00:31
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.6.14)  19 JUN 2024 00:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1053,7 +1053,7 @@ LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/n' will be
 
 [2]
 LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/it' will be
-(Font)              scaled to size 20.74pt on input line 318.
+(Font)              scaled to size 20.74pt on input line 326.
 
 
 [1
@@ -1080,36 +1080,40 @@ File: ../Figures/Insulin-schematic.png Graphic file (type bmp)
 [8]
 File: ../Figures/Getting-Started-Figures/Extract-values-annotated.png Graphic file (type bmp)
 <../Figures/Getting-Started-Figures/Extract-values-annotated.png>
-LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 571.
 
 
 [9]
-Underfull \hbox (badness 2772) in paragraph at lines 586--592
+LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <12> not available
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 587.
+
+Underfull \hbox (badness 2772) in paragraph at lines 602--608
 []\TU/EBGaramond(0)/b/n/12 Look at the results. If I want to extract the p-value row, it looks like I will need to write
  []
 
 
 
 [10]
-LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 19.72952pt on input line 638.
-LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 19.73141pt on input line 638.
-LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 19.7273pt on input line 638.
-
 
 [11]
+Underfull \vbox (badness 10000) detected at line 712
+ []
+
+
 
 [12]
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
+(Font)              scaled to size 19.72952pt on input line 748.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
+(Font)              scaled to size 19.73141pt on input line 748.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
+(Font)              scaled to size 19.7273pt on input line 748.
 
-Package caption Warning: Unused \captionsetup[table] on input line 190.
-See the caption package documentation for explanation.
 
+[13]
 
+[14]
 
-[13] (./Getting-Started.aux)
+[15] (./Getting-Started.aux)
  ***********
 LaTeX2e <2024-06-01> patch level 1
 L3 programming layer <2024-05-27>
@@ -1119,12 +1123,12 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 21380 strings out of 476212
- 395392 string characters out of 5784671
- 1931560 words of memory out of 5000000
- 43579 multiletter control sequences out of 15000+600000
+ 21388 strings out of 476212
+ 395572 string characters out of 5784671
+ 1930560 words of memory out of 5000000
+ 43587 multiletter control sequences out of 15000+600000
  566679 words of font info for 105 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 90i,6n,126p,607b,496s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,10n,126p,607b,492s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on Getting-Started.pdf (17 pages).
+Output written on Getting-Started.pdf (19 pages).

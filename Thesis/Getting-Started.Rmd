@@ -194,10 +194,12 @@ This document was typeset in R Markdown and the text was set in EB Garamond. The
 
 # Introduction
 
-Writing a paper in R can be challenging at first, but it is a rewarding process that will save you lots of time, effort and stress over the long term. This document provides examples and sample code for you to get started. It is also a sample RMarkdown document to see if you can knit PDFs from R and RStudio. Ideally, you should be able to click on Knit -> Knit to PDF and generate a PDF without issues. 
+Writing a paper in R can be challenging at first, but it is a rewarding process that will save you lots of time, effort and stress over the long term. This document provides examples and code for you to get started. It is also a sample RMarkdown document to see if you can knit PDFs from R and RStudio. Ideally, you should be able to click on Knit -> Knit to PDF and generate this file as a PDF without issues. 
 
 
-*A note for Mac Users:* When you knit the document the first time, you might see error messages with something about Cairo and your graphics device. Every device is different, but you might be able to fix it by installing XQuartz and then Cairo. 
+*A note for Mac Users:* When you knit the document the first time, you might see error messages with something about Cairo and your graphics device. Every device is different, but you might be able to fix it by installing XQuartz and then Cairo.
+
+*A note for all users:* If you're getting error messages about images not being found, don't forget to check your knit settings (dropdown arrow by the *Knit* icon). Click on the Project Directory setting. You may need to switch the Knit Directory from *Document Directory* to *Project Directory* or the other way around. If one directory isn't working, try the other!
 
 ## What are the advantages of writing in R?
 
@@ -260,9 +262,9 @@ To minimize errors, I would suggest these things:
   - Knit your document frequently as you go to help spot errors. 
   - R will knit documents using a blank R session, so everything that needs to be in the document must be defined in your script.
   - Turn off the "Save workspace image" option in your R Global Options to prevent old loaded packages and hidden variables from 'hovering' in the background and creating strange rrors.
-  - Frequently use Run -> Restart R and clear output to prevent objects from cluttering your workspace and causing dependencies. For example, if you define a variable in the console, but not your document you won't realize the problem until you have a fresh R session. 
+  - Frequently use `Run` -> `Restart R and clear output` to prevent objects from cluttering your workspace and causing dependencies. For example, if you define a variable in the console, but not your document you won't realize the problem until you have a fresh R session. 
   - Use knitr::knit_exit() to stop knitting early. It can be a useful way to identify the specific line of code that is causing knitting issues.
-  - ! Make sure that your PDF is closed when you knit. If you're knitting the file and the PDF is still open, it will break the code.
+  - Make sure that your PDF is closed when you knit. If you're knitting the file and the PDF is still open somewhere on your computer, it will break the code.
 
 ### Separate content and layout
 
@@ -279,7 +281,7 @@ Unlike Word, you can't use track changes, comments, or shared files. The best wa
 
 ## Inserting citations
 
-Here is an example of an in-text citation: Insulin is a hormone that regulates blood glucose levels, digestive processes, and body weight [@demeyts2000]. When you write [\@demeyts2000], the citation will be rendered as an in-text citation. This document uses APA formatting because of the 'apa.csl' file. If you want a different format, you can download the appropriate CSL file online and replace the file name in the YAML header.
+Here is an example of an in-text citation: Insulin is a hormone that regulates blood glucose levels, digestive processes, and body weight [@demeyts2000]. When you write [\@demeyts2000], the citation will be rendered as an in-text citation. This document uses APA formatting because of the 'apa.csl' file. If you want a different format, you can download the appropriate CSL file online and replace `apa.csl` with your new csl file name in the YAML header.
 
 ## Inserting plots
 
@@ -298,7 +300,7 @@ cars %>%
 
 ## Inserting images
 
-You can insert images through knitr. fig.cap can be quite long, and you can also add a label in the form of '\\\\label{text}' When you write a reference to Figure '\\\\label{insulin-pathway}', \LaTeX\ will print out Figure \ref{insulin-pathway}.
+You can insert images that were generated elsewhere (.PNG, .JPG, etc.) through knitr. fig.cap can be quite long, and you can also add a label in the form of '\\\\label{text}' When you write a reference to Figure '\\\\label{insulin-pathway}', \LaTeX\ will print out the text "Figure \ref{insulin-pathway}". If you reorder your figures, \LaTeX\ will automatically change the figure numbers.
 
 *Important:* To use `fig.cap` and `fig.scap`, you must define an `out.width` in the chunk options. If not, R will not recognize these as \LaTeX\ commands.
 
@@ -319,7 +321,7 @@ knitr::include_graphics(here("Figures/Insulin-schematic.png"))
 
 ## Analysis
 
-I'm using one of R's built-in datasets (*PlantGrowth*) to show examples of inserting model summary tables, results, plots, and p-values in a paper. This sample dataset explores plant mass after applying one of three treatment conditions (control, treatment 1 and treatment 2). I've hidden the code in the output document (chunk options echo=F) because you will probably not be displaying your code in your paper.
+I'm using one of R's built-in datasets (*PlantGrowth*) to show examples of inserting model summary tables, results, plots, and p-values in a paper. This sample dataset explores plant mass after applying one of three treatment conditions (control, treatment 1 and treatment 2). I've hidden the code in the output document (chunk options `echo=F`) because you will probably not be displaying your code in your paper.
 
 ```{r plant-dataset-analysis}
 # Import data
@@ -347,7 +349,11 @@ plant_qq_plot <- ggplot(plant_data_aov, aes(sample = plant_data_aov_res)) +
 
 ## In-text R code
 
-You can embed R code within normal text to create dynamic reports. For example, if you write \` r nrow(plant_data) \`, this will be printed out as `r nrow(plant_data)`, as in "We weighed `r nrow(plant_data)` plants".
+You can embed R code within normal text to create dynamic reports. For example, if you write \` r nrow(plant_data) \`, this will be printed out as `r nrow(plant_data)`, as in:
+
+\begin{quote}
+We weighed `r nrow(plant_data)` plants.
+\end{quote}
 
 ### Extracting P-values
 
@@ -392,13 +398,58 @@ pvalString(plant_aov_summary[[1]][["Pr(>F)"]][[1]])
 
 Now, putting it into an in-text R code block, we can write something like this with automatically inserted p-values.
 
+\begin{quote}
 Plant mass varied significantly according to treatment type (p = `r pvalString(plant_aov_summary[[1]][["Pr(>F)"]][[1]])`).
+\end{quote}
 
 ## Tables
 
-There are many packages that will allow you to create publication-quality tables. I've found that the packages kable and broom are particularly useful. Let's say that I want to make the summary table look better
+There are many packages that will allow you to create publication-quality tables out of summary tables in R. This is good, because the default summary tables are not visually appealing:
 
-```{r eval=F}
+```{r default-anova-table, echo=T}
+summary(plant_data_aov)
+```
+
+The first step is to use the `tidy()` function from the `broom` library. This reformats the summary object to a dataframe and does some automatic cleaning (for example, it removes the significance codes and converts the column names to code-friendly names with no spaces).
+
+```{r echo=T}
+plant_data_aov %>%
+  tidy()
+```
+
+The next step is to round the values and re-format the p-values. We can also change the term names to title case using `str_to_title(term)`. Lastly, we can use the `rename()` function to give the columns better names.
+
+```{r echo=T}
+plant_data_aov %>%
+  tidy() %>%
+  mutate(
+    statistic = round(statistic, 2),
+    p.value = pvalString(p.value),
+    term = str_to_title(term)
+  ) %>%
+  rename(
+    Term = term,
+    'Sum of Squares' = sumsq,
+    'Mean Square' = meansq,
+    F = statistic,
+    'p-value' = p.value
+  )
+```
+
+The last step is to use the `kable()` package to format the table to modify the table style and presentation. The new code section looks like this:
+
+```{r eval=F, echo=T}
+kable(booktabs = T,
+        linesep = '',
+        escape = F) %>%
+  column_spec(1,
+              width = "1.5in")
+
+```
+
+The final table looks publication-ready!
+
+```{r eval=T}
 plant_data_aov %>%
   tidy() %>% 
   mutate(
@@ -415,16 +466,12 @@ plant_data_aov %>%
   kable(booktabs = T,
         linesep = '',
         escape = F,
-        caption = "A multivariate repeated measures ANOVA using Pillai's Trace shows that current amplitude varies significantly with time, and there are no significant interactions between factors like sex and treatment. \\label{MANOVAR-Table}",
-        caption.short = "MANOVAR summary table of evoked excitatory currents before and during insulin exposure") %>% 
-  kable_styling(full_width = T) %>%
+        caption = "Plant growth varies significantly with treatments. ANOVA summary table for a model examining the effect of treatment on plant mass.") %>%
   column_spec(1,
-              width = "1.7in")
+              width = "1.5in")
   
 
 ```
-
-
 
 
 ## \LaTeX\ Basics
@@ -433,32 +480,19 @@ You can learn a lot about \LaTeX\ as you customize your paper. This is a very va
 
 Most \LaTeX\ commands start with a forward slash and include arguments in curly brackets. Many of them are intuitive:
 
-\\setcounter{tocdepth}{2} to set the table of content depth to header 2
-\\tableofcontents to insert a table of contents
+Use `\\setcounter{tocdepth}{2}` to set the table of content depth to header 2  
+
+Use `\\tableofcontents` to insert a table of contents
 
 If you want to make any cross references, you can define them using labels. You may have seen this in the *Inserting Images* section. For example, you can write Figure '\\\\label{insulin-pathway}' to automatically include the correct figure number.
-
-
-
-
-
 
 
 It's not recommended to do too much formatting within your document. Ideally, all of your formatting styles should be defined in the preamble.
 
 
-
-
 ## Changing the formatting
 
 If you want to change how any part of this document looks, go to Templates/MtA-Thesis-Preamble.tex.
-
-You can learn a lot about \LaTeX\ just by customizing the preamble. Most \LaTeX\ commands start with a forward slash and include arguments in curly brackets. Many of them are intuitive:
-
-\\listoffigures
-
-
-
 
 
 ### Other Tools
