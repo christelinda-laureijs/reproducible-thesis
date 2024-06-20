@@ -22,7 +22,7 @@
 \contentsline {subsubsection}{Extracting P-values}{9}{section*.25}%
 \contentsline {subsubsection}{Rounding}{11}{section*.27}%
 \contentsline {subsection}{Tables}{11}{section*.28}%
-\contentsline {subsection}{\LaTeX ~Basics}{13}{section*.29}%
+\contentsline {subsection}{\LaTeX ~Basics}{14}{section*.29}%
 \contentsline {subsection}{Changing the formatting}{14}{section*.30}%
 \contentsline {subsubsection}{Other Tools}{14}{section*.31}%
 \contentsline {section}{References}{15}{section*.32}%

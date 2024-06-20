@@ -292,7 +292,580 @@ Scripts for analyzing evoked currents and action potentials in R
 \pagenumbering{arabic}
 ```
 
-# Action Potential (AP) Analysis
+# Evoked Currents
+
+```{r eEPSC-data-import-data, include = FALSE}
+# --------------- eEPSC Analysis --------------------------------------------------------------------------------------
+
+raw_df <- read.csv(here("Data/Raw-eEPSC-Data.csv"), header = T)
+
+# Evoked current amplitudes were negative in Clampex
+# Negative transform P1 and P2 for easier interpretation
+# Add paired pulse ratio (PPR column)
+
+# Must define experimental categories as factors to reduce errors (R thinks these are numeric)
+# Time filtering (Time <= 25) is required for consistency in plots
+# Must define experimental categories as factors to reduce errors (R thinks these are numeric)
+
+
+raw_df <- raw_df %>%
+  mutate(P1 = P1 * -1,
+         P2 = P2 * -1,
+         PPR = P2 / P1,
+         Category = factor(Category)) %>%
+  filter(Time <= 25)
+
+
+# --------------- eEPSC Analysis: Normalize currents relative to baseline ---------------------------------------------------------
+
+# The first part of the code below creates time intervals of 0-5, 6-10, 11-15, etc.
+  # I included -1 in the list of breaks so that t = 0 would be included
+  # Add a new column with the names for each interval.
+  # I tried naming the intervals '0-5', but R thought I was trying to subtract and it did not recognize the names as characters. Instead, I used 't0to5'.
+
+# The second part of this code normalizes each current as a percentage relative to its own baseline
+  # Group by letter
+
+  # The baseline is the mean P1 of the first 5 minutes
+  # Used time <= 5 to include only the first 5 minutes in the baseline period
+  # Get the mean current amplitude for the baseline (0-5 min) for each cell
+
+  # Create a new variable called P1_transformed
+  # Express each P1 relative as a percentage relative to its own baseline, which is ~100%
+  # This normalizes the P1 to the baseline
+  # Repeat this process for P2
+
+raw_df <- raw_df %>%
+  mutate(Interval = cut(
+    Time,
+    breaks = c(-1, 5, 10, 15, 20, 25),
+    labels = c("t0to5", "t5to10", "t10to15", "t15to20", "t20to25")
+  )) %>%
+  group_by(Letter) %>%
+  mutate(
+    baseline_range = (Time <= 5),
+    baseline_mean = sum(P1 * baseline_range) / sum(baseline_range),
+    P1_transformed = (P1 / baseline_mean) * 100,
+    P2_transformed = (P2 / baseline_mean) * 100,
+    Animal_factor = as.factor(unique(Animal))
+  )
+
+# Write the raw data to a RDS file for use in other documents/analyses
+saveRDS(raw_df, file = here("Data/Output-Data-from-R/raw_df.RDS"))
+
+# -------------- eEPSC Analysis: Make dataset for statistical testing -------------------------------------------------------
+# Group by letter, sex, treatment and interval
+# Get mean P1_transformed amplitude and standard error for each 5-min time interval
+# Unfortunately, reframe() removes columns that do not have a function applied to them.
+# Use unique() to retain the columns for age, animal, location for each cell and experimental category
+
+summary_df <-
+  raw_df %>%
+  group_by(Letter, Sex, Treatment, Interval) %>%
+  reframe(
+    Mean = mean(P1_transformed),
+    SE = sd(P1_transformed) / sqrt(n()),
+    Age = unique(Age),
+    Animal = unique(Animal),
+    Animal_factor = as.factor(unique(Animal)),
+    n = n(),
+    X = unique(X),
+    Y = unique(Y),
+    Category = unique(Category)
+  )
+```
+
+## Raw plots
+
+```{r eEPSC-data-make-raw-plots, include = FALSE}
+# ----------------- eEPSC Analysis: Plot P1 vs. Time --------------------------------------------------------------
+# Use custom function make_raw_plots().
+# 1st argument: Raw dataframe
+# 2nd argument: The experimental category
+# Recall from above if you set "save_choice" to yes or no
+
+# This can take a long time to run, and I don't need to run it each time I run the thesis
+# Uncomment the line below if you want to produce the raw plots
+
+# make_raw_plots(dataframe = raw_df,
+#                treatment = "Control",
+#                category = 2,
+#                color_choice = 1)
+
+
+# ----------------- eEPSC Analysis: View raw plots -----------------------------------------------------------------------------
+# Not for publication; just for quick viewing in R
+# Written in the form of Individual_raw_plots_[category number]
+# This number should match argument 2 of make_raw_plots(), or you will see an "object not found" error
+
+# These plots are super useful for seeing individual recordings, but I do not want them in the thesis
+# It also can take a while to run this line
+# Uncomment the line below if you want to see the raw plots
+
+#Individual_raw_plots_Fasting_category_2
+```
+
+## Pruned individual plots
+
+```{r eEPSC-data-individual-pruned-df, include=FALSE}
+# ----------------- eEPSC Analysis: Prune dataset per minute ------------------------------------------------------------------
+# GraphPad Prism has a "prune rows" command that outputs the mean and standard error of every n rows.
+# I performed an equivalent pruning function in R.
+# I used by = 1 because it will generate one summary point per minute.
+
+# Group raw data by category
+# Within each category, define intervals of 1-min each
+# Used include.lowest = T so that t = 0 would not be deleted
+# 1st group_by(): Get the mean amplitude for each minute within each cell
+# 2nd group_by(): Get the mean amplitude for each minute across ALL cells
+# Keep baseline_mean because this is required to create horizontal annotation of the baseline
+
+pruned_df_individual_cells <- raw_df %>%
+  group_by(Category) %>%
+  mutate(Interval_pruned = cut(
+    Time,
+    breaks = seq(0, 25, by = 1.5),
+    include.lowest = T
+  )) %>%
+  group_by(Category, Letter, Sex, Treatment, Interval_pruned) %>%
+  reframe(
+    mean_P1 = mean(P1),
+    sd_P1 = sd(P1),
+    n = n(),
+    se = sd_P1 / sqrt(n),
+    Letter = unique(Letter),
+    Category = unique(Category),
+    Time = last(Time),
+    baseline_mean = unique(baseline_mean)
+  )
+
+
+# Write the pruned data to a RDS file for use in other documents/analyses
+saveRDS(pruned_df_individual_cells, file = here("Data/Output-Data-from-R/pruned_df_individual_cells.RDS"))
+```
+
+```{r eEPSC-data-make-individual-pruned-plots}
+# ----------------- eEPSC Analysis: Plot pruned P1 vs. Time --------------------------------------------------------------
+# If save_choice = "yes", the plots will be saved in the form of '[Letter]-pruned.png'
+# Use custom function make_individual_pruned_plots().
+# 1st argument: Pruned individual cells dataframe
+# 2nd argument: The experimental category
+
+# make_individual_pruned_plots(data = pruned_df_individual_cells,
+#                              treatment = "Control",
+#                              category = 2,
+#                              color_choice = 1)
+
+
+# -------------- eEPSC Analysis: View pruned plots ---------------------------------------------------------
+# These plots are not part of the thesis, but they are helpful to monitor cells
+
+#Individual_pruned_plots_Control_category_1
+
+```
+
+## Pruned summary plots
+
+```{r eEPSC-data-make-pruned-df-full}
+# ---------------- eEPSC Analysis: Make pruned dataframe for multiple cells ------------------------------------------------------
+# Within each category, define intervals of 1-min
+# First group_by: Get the mean amplitude for each minute within each cell
+# Second group_by: Get the mean amplitude for each minute across ALL cells 
+pruned_df <- raw_df %>%
+  group_by(Category) %>%
+  mutate(Interval_pruned = cut(
+    Time,
+    breaks = seq(0, 25, by = 1),
+    include.lowest = T
+  )) %>%
+  group_by(Category, Letter, Sex, Treatment, Interval_pruned) %>%
+  reframe(
+    mean_P1 = mean(P1_transformed),
+    sd_P1 = sd(P1_transformed),
+    n = n(),
+    se = sd_P1 / sqrt(n),
+    Letter = unique(Letter),
+    Category = unique(Category),
+    Time = last(Time)
+  ) %>%
+  group_by(Category, Interval_pruned, Sex, Treatment) %>%
+  reframe(
+    Mean_all = mean(mean_P1),
+    sd_all = sd(mean_P1),
+    n = n(),
+    se = sd_all / sqrt(n),
+    Time = last(Time),
+    Category = unique(Category)
+  )
+
+# Write the pruned data to a RDS file for use in other documents/analyses
+saveRDS(pruned_df, file = here("Data/Output-Data-from-R/pruned_df.RDS"))
+```
+
+## Statistical analysis
+
+```{r eEPSC-data-create-wide-format, purl = FALSE}
+# ----------------- eEPSC analysis: Begin statistical analysis ---------------------------------
+
+# The wide version of the dataframe is required for the MANOVA model
+summary_df_wide <- summary_df %>%
+  select(!c(SE, n)) %>%
+  pivot_wider(
+    names_from = Interval,
+    values_from = Mean
+  )
+```
+
+```{r eEPSC-data-create-insulin-only-df, purl = FALSE}
+# ---------------- eEPSC Analysis: Filter only complete datasets ----------------------------------------------------------
+# Complete datasets are where I added insulin (Category == 2) for no treatment, HNMPA, PPP, or Fasting.
+# The other treatments are incomplete, so they are not ready for statistical analysis
+
+summary_df_insulin <- summary_df %>%
+  filter(Category == 2) %>%
+  filter(Treatment %in% list_of_treatments)
+
+# Do the same filtering as above, but on the wide dataset
+summary_df_wide_addinsulin <- summary_df_wide %>%
+  filter(Category == 2) %>%
+  filter(Treatment %in% list_of_treatments)
+```
+
+```{r eEPSC-data-MANOVAR-adding-insulin, include=FALSE, purl = FALSE}
+# This dataframe of times is required to generate the linear model
+Times <-
+  factor(rep(
+    c("t0to5", "t5to10", "t10to15", "t15to20", "t20to25"),
+    c(1, 1, 1, 1, 1)
+  ))
+
+
+# Force desired level order instead of alphabetical orders
+Times <-
+  factor(Times,
+    levels = c("t0to5", "t5to10", "t10to15", "t15to20", "t20to25")
+  )
+
+idata <- data.frame(Times)
+
+
+# -------------- eEPSC Analysis: Create a linear model --------------------------------------------------------------------------
+# Models time as a function of treatment and sex
+# Used treatment*sex to account for treatment, sex, and the interaction between treatment and sex
+
+model.fit <- lm(cbind(t0to5, t5to10, t10to15, t15to20, t20to25) ~ Treatment*Sex, data = summary_df_wide_addinsulin)
+
+
+# Generate a repeated measures model using the times created above
+rep_measures_insulin <- Anova(model.fit, idata = idata, idesign = ~Times)
+
+# Look at this to get Pillai's trace values
+# See MANOVAR summary table below for reader-friendly view of this
+#rep_measures_insulin
+
+# View the model output; hidden because it is too long to display
+# See MANOVAR summary table code below for a reader-friendly view
+summary_manovar <- summary(rep_measures_insulin)
+#summary_manovar
+```
+
+```{r eEPSC-data-get-manovar-dataframe, warning=F, message=F}
+# -------------------------- eEPSC Analysis: Get MANOVAR summary table as object -------------------
+# print.Anova.mlm prints the dataframe but uses an invisible object
+# This meant that I could see the dataframe, but it was not available as an object
+# I could not extract the p-values from a class Anova.mlm object, and manually typing them was not ideal for reproducibility
+
+# This answer shows how to extract the summary table as a dataframe from an Anova.mlm object
+# https://stackoverflow.com/questions/65161615/extracting-p-value-column-from-output-anova-car-package
+# The following function will remove the last two lines of the print.Anova.mlm function in the car package that would normally use an invisible function to delete the dataframe
+# Using this modified function will return a dataframe, where you can extract the p-values directly
+
+get_summary_for_print <-
+  car:::print.Anova.mlm # copy the original print function (inclusive environment)
+body(get_summary_for_print) <- # replace the code of our copy
+  local({
+    # to avoid pollution of environment by tmp
+    tmp <-
+      body(get_summary_for_print) # to avoid code duplication
+    tmp[-(length(tmp) - (0:1))] # remove the last two code lines of the function
+  })
+
+# Use get_summary_for_print() to extract the dataframe
+# Use tidy() to clean up the column names and dataframe structure
+# Create reader-friendly DF column, rounded test statistics and F-values, and clearer column names
+# Use pvalString to express small p-values as <0.0001 instead of exact values.
+
+tidy_manovar <- get_summary_for_print(rep_measures_insulin) %>%
+  tidy() %>%
+  mutate(df = paste(num.Df, den.Df, sep = ", ")) %>%
+  select(!c(num.Df, den.Df)) %>%
+  mutate(across(c("test.stat", "approx.F"), \(x) round(x, 2)),
+         p.value = pvalString(p.value)) %>%
+  rename(
+    Term = term,
+    'Pillai\'s Trace' = test.stat,
+    F = approx.F,
+    'p-value' = p.value
+  )
+```
+
+```{r eEPSC-get-publication-ready-manovar-table}
+# -------------------------- eEPSC Analysis: Make publication-ready MANOVAR summary table -------------------
+# Use booktabs package to get publication-quality table in LaTeX PDF output
+kable_manovar_table_eEPSC <- tidy_manovar %>%
+  kable(booktabs = T,
+        linesep = '',
+        col.names = c("Parameters","df","Pillai's Trace","F","\\textit{p}-value"),
+        escape = F,
+        caption = "A multivariate repeated measures ANOVA using Pillai's Trace shows that current amplitude varies significantly with time, and there are no significant interactions between factors like sex and treatment. \\label{MANOVAR-Table}",
+        caption.short = "MANOVAR summary table of evoked excitatory currents before and during insulin exposure",
+        align = c('l','r','r','r','r')) %>%
+  kable_styling(full_width = T) %>%
+  column_spec(1,
+              width = "1.7in")
+```
+
+```{r eEPSC-data-show-sphericity-output, include = FALSE, purl = FALSE}
+# ----------------- eEPSC Analysis: Assumption Test - sphericity ----------------------------------------------------------
+summary_manovar$sphericity.tests
+
+
+# Sun Mar 24 17:29:52 2024
+# The p-values for Mauchly's sphericity tests were all much lower than 0.05.
+# This means that my data failed Mauchly's test of sphericity.
+# I switched to a multivariate repeated measures model, which does not require the assumption of sphericity.
+```
+
+## Levene's test
+
+```{r eEPSC-data-univariate-levene-s-test, include = FALSE, purl = FALSE}
+# ---------------- eEPSC Analysis: Assumption test - univariate homogeneity of variances --------------------------------
+summary_df_insulin %>%
+  group_by(Interval) %>%
+  mutate(Treatment = factor(Treatment)) %>%
+  levene_test(Mean ~ Treatment) %>%
+  mutate(statistic = round(statistic, 3),
+         p = round(p, 3))
+
+# Sun Mar 24 17:30:36 2024
+# The data all passed Levene's Test, indicating that all of the data passed the univariate tests for the homogeneity of variances.
+```
+
+```{r eEPSC-data-univariate-model, include = FALSE, purl = FALSE}
+# ---------------- eEPSC Analysis: Create univariate model for assumption testing -------------------
+# Filter to remove baseline data, since all values are 100 and there is no variance.
+# Otherwise, this will generate error messages
+summary_df_insulin_no_baseline <- summary_df_insulin %>%
+  filter(Interval != "t0to5")
+
+univariate_model <-
+  lme(
+    Mean ~ Treatment * Interval * Sex,
+    data = summary_df_insulin_no_baseline,
+    random = ~ 1 |
+      Sex / Interval,
+    correlation = corCompSymm(form = ~ 1 | Sex / Interval)
+  )
+anova(univariate_model)
+```
+
+## Univariate Shapiro
+
+```{r eEPSC-data-univariate-normality, include = FALSE, purl = FALSE}
+# ---------------- eEPSC Analysis: Assumption test - Univariate normality ------------------------------------------------------
+univariate_model_resid <- resid(univariate_model)
+shapiro.test(univariate_model_resid)
+
+qqnorm(univariate_model_resid)
+qqline(univariate_model_resid)
+
+
+# Sun Mar 24 17:35:09 2024
+# The p-values for the Shapiro-Wilk test are 0.02, indicating that the data did not pass the univariate assumptions of normality.
+# The QQ-plot looks better than in previous versions, however, since the points are more linear
+```
+
+## Box's M
+
+```{r eEPSC-data-multivariate-box-s-M, include = FALSE, purl = FALSE}
+# ---------------- eEPSC Analysis: Assumption test - Multivariate homogeneity of variances -------------------------------------
+# I excluded the baseline (t0to5) because all values were 100% - otherwise this will generate errors
+boxM(cbind(t5to10, t10to15, t15to20, t20to25) ~ Treatment,
+  data = summary_df_wide_addinsulin
+)
+
+
+# Sun Mar 24 17:34:03 2024
+# The p-value for Box's M is 0.2933, indicating that the covariance matrices are homogeneous.
+```
+
+## Multivariate normality
+
+```{r eEPSC-data-multi-shapiro, include = FALSE, purl = FALSE}
+# ---------------- eEPSC Analysis: Assumption test - Multivariate normality ----------------------------------------------------
+# Note: I used a test range of 5 to 25 minutes
+# This is because the values in the 0-5 minute range (column 10) were all 100%.
+norm_test_range <- summary_df_wide_addinsulin %>%
+  select('t5to10':'t20to25')
+
+# ! Data are from 0 to 25 min
+mshapiro_result <- mshapiro.test(norm_test_range)
+
+
+# ! Data are from 0 to 25 min
+qqnorm<-mqqnorm(norm_test_range)
+
+
+# Sun Mar 24 17:36:37 2024
+# The p-value for the multivariate Shapiro-Wilk normality test was 0.004066, indicating that the data failed the assumption of normality.
+  
+# However, the points are within the 95% confidence interval on the Multi-QQ plot.
+
+# Sun Mar 24 17:37:31 2024
+# Although the data failed both the univariate and multivariate Shapiro-Wilk tests, I felt confident in assuming normality after visually assessing the QQ plots.
+
+# Reasons:
+# 1: The points in the univariate QQ-plot were roughly linear
+
+# 2: The points within the multivariate QQ-plot were contained within the 95% confidence interval
+```
+
+## T-tests
+
+```{r eEPSC-data-t-tests, include=F, purl = F}
+# ---------------- eEPSC Analysis: T-tests over time ---------------------------------------------------------------------------------------
+# I used paired = T because the data were taken within the same cells (25 min later)
+# Paired=T requires vectors of equal length
+# I could not use paired t-tests on the full dataset because there were missing values in the 25-30 min interval.
+# This is why I filtered all data to contain Time values of 25 or less.
+
+
+# I rounded the p-values and t-statistic for better readability.
+# I added a column called asterisk_time, which codes for the x-position of the significance asterisks in my plots.
+# asterisk_time uses the upper time limit of each interval
+# For example, it will place the significance asterisk for interval t0to5 at time = 5
+
+# I used case_when() to change "ns" to a blank space ""
+# This is because having "ns" on the plots was visually distracting
+
+t_test_eEPSCs <- summary_df_insulin %>%
+  group_by(Treatment) %>%
+  pairwise_t_test(
+    Mean ~ Interval,
+    ref.group = "t0to5",
+    paired = T,
+    p.adjust.method = "holm"
+  ) %>%
+  mutate(statistic = round(statistic, 2),
+         p_string = pvalString(p.adj),
+         asterisk_time = as.numeric(case_when(
+           group2 == "t5to10" ~ "7.5",
+           group2 == "t10to15" ~ "12.5",
+           group2 == "t15to20" ~ "17.5",
+           group2 == "t20to25" ~ "22.5",
+           T ~ "Text"
+         )),
+         significance_stars = case_when(
+           p.adj.signif == "ns" ~ "",
+           T ~ p.adj.signif
+         ))
+
+saveRDS(t_test_eEPSCs, file = here("Data/Output-Data-from-R/t_test_eEPSCs.RDS"))
+```
+
+# Paired Pulse Ratio
+
+```{r PPR-data-create-dataframe-for-t-test, warning=F, message=F}
+# -------------------- PPR Analysis: Create dataframe for t-tests ----------------
+PPR_df <- raw_df %>%
+  filter(Category == 2) %>%
+  filter(Treatment %in% list_of_treatments) %>%
+  filter(PPR < 5 & PPR > 0) %>%
+  filter(Interval == "t0to5" | Interval == "t20to25") %>%
+  mutate(
+    Treatment = factor(Treatment, levels = list_of_treatments),
+    State = case_when(
+      Interval == "t0to5" ~ "Baseline",
+      Interval == "t20to25" ~ "Insulin",
+      T ~ Interval
+    )
+  )
+```
+
+```{r PPR-data-t-test, warning=F, message=F}
+t_test_PPR <- PPR_df %>%
+  group_by(Treatment, Letter, State) %>%
+  summarise(mean_PPR_cell = mean(PPR),
+            n = n()) %>%
+  ungroup() %>%
+  group_by(Treatment) %>%
+  t_test(mean_PPR_cell ~ State,
+         ref.group = "Baseline",
+         paired = T) %>%
+  mutate(
+    statistic = round(statistic, 2),
+    p_original = p,
+    p_string = pvalString(p),
+    significance_stars = symnum(
+      p,
+      symbols   = c("***", "**", "*", "ns"),
+      cutpoints = c(0,  .001, .01, .05, 1),
+      corr      = FALSE
+    )
+  ) %>%
+  arrange(match(Treatment, list_of_treatments))
+
+
+kable_t_test_table_PPR <- t_test_PPR %>%
+  select(c(Treatment, statistic, df, p_string)) %>%
+  kable(
+    booktabs = T,
+    linesep = '',
+    col.names = c("Parameter", "Statistic", "DF", "\\textit{p}-value"),
+    caption = "A paired t-test comparing the mean paired pulse ratio (PPR) per cell during the baseline period (0-5 min) to the mean PPR after insulin exposure (20-25 min) shows that insulin does not significantly affect the PPR during experiments with no additional treatments, fasting, or PPP. Insulin significantly increases the PPR when the insulin receptor blocker HNMPA is applied. \\label{PPR-paired-t-test}",
+    caption.short = "Paired T-test summary table examining paired pulse ratios before and after insulin exposure",
+    escape = F
+  ) %>%
+  kable_styling(full_width = T) %>%
+  column_spec(1, width = "2.5in")
+```
+
+```{r PPR-data-create-differences-df, message=F}
+# -------------- PPR Analysis: Get differences between control and insulin ------------------------
+# Create a dataframe containing the differences in PPR from insulin to baseline
+# arrange() sorts the data in the form of baseline -> insulin within each letter
+# This enables me to use lag() to get:
+# PPR_diff = PPR_insulin - PPR_baseline
+
+PPR_differences_df <- PPR_df %>%
+  group_by(Treatment, Letter, State) %>%
+  summarise(mean_PPR_cell = mean(PPR),
+            n = n()) %>%
+  ungroup() %>% 
+  arrange(Letter, State) %>%
+  group_by(Letter) %>%
+  mutate(
+    PPR_diff = mean_PPR_cell - lag(mean_PPR_cell)
+    ) %>%
+  ungroup() %>%
+  drop_na(PPR_diff)
+
+```
+
+## Shapiro
+
+```{r PPR-data-shapiro, message=F, warning=F, include = F}
+# ----------------PPR Analysis: Assumption test - Normality
+shapiro.test(PPR_differences_df$PPR_diff)
+
+# Sat Mar 30 17:45:29 2024
+# The data are normal, indicating that I can use the results from the t-test
+```
+
+
+
+
+# Action Potentials
 
 ```{r AP-data-import-and-merge, include=F}
 # --------------- AP Analysis --------------------------------------------------------------------------------------
@@ -904,575 +1477,6 @@ full_ap_multiplot
 knitr::knit_exit()
 ```
 
-# Evoked Currents (eEPSCs) Analysis
-
-```{r eEPSC-data-import-data, include = FALSE}
-# --------------- eEPSC Analysis --------------------------------------------------------------------------------------
-
-raw_df <- read.csv(here("Data/Raw-eEPSC-Data.csv"), header = T)
-
-# Evoked current amplitudes were negative in Clampex
-# Negative transform P1 and P2 for easier interpretation
-# Add paired pulse ratio (PPR column)
-
-# Must define experimental categories as factors to reduce errors (R thinks these are numeric)
-# Time filtering (Time <= 25) is required for consistency in plots
-# Must define experimental categories as factors to reduce errors (R thinks these are numeric)
-
-
-raw_df <- raw_df %>%
-  mutate(P1 = P1 * -1,
-         P2 = P2 * -1,
-         PPR = P2 / P1,
-         Category = factor(Category)) %>%
-  filter(Time <= 25)
-
-
-# --------------- eEPSC Analysis: Normalize currents relative to baseline ---------------------------------------------------------
-
-# The first part of the code below creates time intervals of 0-5, 6-10, 11-15, etc.
-  # I included -1 in the list of breaks so that t = 0 would be included
-  # Add a new column with the names for each interval.
-  # I tried naming the intervals '0-5', but R thought I was trying to subtract and it did not recognize the names as characters. Instead, I used 't0to5'.
-
-# The second part of this code normalizes each current as a percentage relative to its own baseline
-  # Group by letter
-
-  # The baseline is the mean P1 of the first 5 minutes
-  # Used time <= 5 to include only the first 5 minutes in the baseline period
-  # Get the mean current amplitude for the baseline (0-5 min) for each cell
-
-  # Create a new variable called P1_transformed
-  # Express each P1 relative as a percentage relative to its own baseline, which is ~100%
-  # This normalizes the P1 to the baseline
-  # Repeat this process for P2
-
-raw_df <- raw_df %>%
-  mutate(Interval = cut(
-    Time,
-    breaks = c(-1, 5, 10, 15, 20, 25),
-    labels = c("t0to5", "t5to10", "t10to15", "t15to20", "t20to25")
-  )) %>%
-  group_by(Letter) %>%
-  mutate(
-    baseline_range = (Time <= 5),
-    baseline_mean = sum(P1 * baseline_range) / sum(baseline_range),
-    P1_transformed = (P1 / baseline_mean) * 100,
-    P2_transformed = (P2 / baseline_mean) * 100,
-    Animal_factor = as.factor(unique(Animal))
-  )
-
-# Write the raw data to a RDS file for use in other documents/analyses
-saveRDS(raw_df, file = here("Data/Output-Data-from-R/raw_df.RDS"))
-
-# -------------- eEPSC Analysis: Make dataset for statistical testing -------------------------------------------------------
-# Group by letter, sex, treatment and interval
-# Get mean P1_transformed amplitude and standard error for each 5-min time interval
-# Unfortunately, reframe() removes columns that do not have a function applied to them.
-# Use unique() to retain the columns for age, animal, location for each cell and experimental category
-
-summary_df <-
-  raw_df %>%
-  group_by(Letter, Sex, Treatment, Interval) %>%
-  reframe(
-    Mean = mean(P1_transformed),
-    SE = sd(P1_transformed) / sqrt(n()),
-    Age = unique(Age),
-    Animal = unique(Animal),
-    Animal_factor = as.factor(unique(Animal)),
-    n = n(),
-    X = unique(X),
-    Y = unique(Y),
-    Category = unique(Category)
-  )
-```
-
-## Raw plots
-
-```{r eEPSC-data-make-raw-plots, include = FALSE}
-# ----------------- eEPSC Analysis: Plot P1 vs. Time --------------------------------------------------------------
-# Use custom function make_raw_plots().
-# 1st argument: Raw dataframe
-# 2nd argument: The experimental category
-# Recall from above if you set "save_choice" to yes or no
-
-# This can take a long time to run, and I don't need to run it each time I run the thesis
-# Uncomment the line below if you want to produce the raw plots
-
-# make_raw_plots(dataframe = raw_df,
-#                treatment = "Control",
-#                category = 2,
-#                color_choice = 1)
-
-
-# ----------------- eEPSC Analysis: View raw plots -----------------------------------------------------------------------------
-# Not for publication; just for quick viewing in R
-# Written in the form of Individual_raw_plots_[category number]
-# This number should match argument 2 of make_raw_plots(), or you will see an "object not found" error
-
-# These plots are super useful for seeing individual recordings, but I do not want them in the thesis
-# It also can take a while to run this line
-# Uncomment the line below if you want to see the raw plots
-
-#Individual_raw_plots_Fasting_category_2
-```
-
-## Pruned individual plots
-
-```{r eEPSC-data-individual-pruned-df, include=FALSE}
-# ----------------- eEPSC Analysis: Prune dataset per minute ------------------------------------------------------------------
-# GraphPad Prism has a "prune rows" command that outputs the mean and standard error of every n rows.
-# I performed an equivalent pruning function in R.
-# I used by = 1 because it will generate one summary point per minute.
-
-# Group raw data by category
-# Within each category, define intervals of 1-min each
-# Used include.lowest = T so that t = 0 would not be deleted
-# 1st group_by(): Get the mean amplitude for each minute within each cell
-# 2nd group_by(): Get the mean amplitude for each minute across ALL cells
-# Keep baseline_mean because this is required to create horizontal annotation of the baseline
-
-pruned_df_individual_cells <- raw_df %>%
-  group_by(Category) %>%
-  mutate(Interval_pruned = cut(
-    Time,
-    breaks = seq(0, 25, by = 1.5),
-    include.lowest = T
-  )) %>%
-  group_by(Category, Letter, Sex, Treatment, Interval_pruned) %>%
-  reframe(
-    mean_P1 = mean(P1),
-    sd_P1 = sd(P1),
-    n = n(),
-    se = sd_P1 / sqrt(n),
-    Letter = unique(Letter),
-    Category = unique(Category),
-    Time = last(Time),
-    baseline_mean = unique(baseline_mean)
-  )
-
-
-# Write the pruned data to a RDS file for use in other documents/analyses
-saveRDS(pruned_df_individual_cells, file = here("Data/Output-Data-from-R/pruned_df_individual_cells.RDS"))
-```
-
-```{r eEPSC-data-make-individual-pruned-plots}
-# ----------------- eEPSC Analysis: Plot pruned P1 vs. Time --------------------------------------------------------------
-# If save_choice = "yes", the plots will be saved in the form of '[Letter]-pruned.png'
-# Use custom function make_individual_pruned_plots().
-# 1st argument: Pruned individual cells dataframe
-# 2nd argument: The experimental category
-
-# make_individual_pruned_plots(data = pruned_df_individual_cells,
-#                              treatment = "Control",
-#                              category = 2,
-#                              color_choice = 1)
-
-
-# -------------- eEPSC Analysis: View pruned plots ---------------------------------------------------------
-# These plots are not part of the thesis, but they are helpful to monitor cells
-
-#Individual_pruned_plots_Control_category_1
-
-```
-
-## Pruned summary plots
-
-```{r eEPSC-data-make-pruned-df-full}
-# ---------------- eEPSC Analysis: Make pruned dataframe for multiple cells ------------------------------------------------------
-# Within each category, define intervals of 1-min
-# First group_by: Get the mean amplitude for each minute within each cell
-# Second group_by: Get the mean amplitude for each minute across ALL cells 
-pruned_df <- raw_df %>%
-  group_by(Category) %>%
-  mutate(Interval_pruned = cut(
-    Time,
-    breaks = seq(0, 25, by = 1),
-    include.lowest = T
-  )) %>%
-  group_by(Category, Letter, Sex, Treatment, Interval_pruned) %>%
-  reframe(
-    mean_P1 = mean(P1_transformed),
-    sd_P1 = sd(P1_transformed),
-    n = n(),
-    se = sd_P1 / sqrt(n),
-    Letter = unique(Letter),
-    Category = unique(Category),
-    Time = last(Time)
-  ) %>%
-  group_by(Category, Interval_pruned, Sex, Treatment) %>%
-  reframe(
-    Mean_all = mean(mean_P1),
-    sd_all = sd(mean_P1),
-    n = n(),
-    se = sd_all / sqrt(n),
-    Time = last(Time),
-    Category = unique(Category)
-  )
-
-# Write the pruned data to a RDS file for use in other documents/analyses
-saveRDS(pruned_df, file = here("Data/Output-Data-from-R/pruned_df.RDS"))
-```
-
-## Statistical analysis
-
-```{r eEPSC-data-create-wide-format, purl = FALSE}
-# ----------------- eEPSC analysis: Begin statistical analysis ---------------------------------
-
-# The wide version of the dataframe is required for the MANOVA model
-summary_df_wide <- summary_df %>%
-  select(!c(SE, n)) %>%
-  pivot_wider(
-    names_from = Interval,
-    values_from = Mean
-  )
-```
-
-```{r eEPSC-data-create-insulin-only-df, purl = FALSE}
-# ---------------- eEPSC Analysis: Filter only complete datasets ----------------------------------------------------------
-# Complete datasets are where I added insulin (Category == 2) for no treatment, HNMPA, PPP, or Fasting.
-# The other treatments are incomplete, so they are not ready for statistical analysis
-
-summary_df_insulin <- summary_df %>%
-  filter(Category == 2) %>%
-  filter(Treatment %in% list_of_treatments)
-
-# Do the same filtering as above, but on the wide dataset
-summary_df_wide_addinsulin <- summary_df_wide %>%
-  filter(Category == 2) %>%
-  filter(Treatment %in% list_of_treatments)
-```
-
-```{r eEPSC-data-MANOVAR-adding-insulin, include=FALSE, purl = FALSE}
-# This dataframe of times is required to generate the linear model
-Times <-
-  factor(rep(
-    c("t0to5", "t5to10", "t10to15", "t15to20", "t20to25"),
-    c(1, 1, 1, 1, 1)
-  ))
-
-
-# Force desired level order instead of alphabetical orders
-Times <-
-  factor(Times,
-    levels = c("t0to5", "t5to10", "t10to15", "t15to20", "t20to25")
-  )
-
-idata <- data.frame(Times)
-
-
-# -------------- eEPSC Analysis: Create a linear model --------------------------------------------------------------------------
-# Models time as a function of treatment and sex
-# Used treatment*sex to account for treatment, sex, and the interaction between treatment and sex
-
-model.fit <- lm(cbind(t0to5, t5to10, t10to15, t15to20, t20to25) ~ Treatment*Sex, data = summary_df_wide_addinsulin)
-
-
-# Generate a repeated measures model using the times created above
-rep_measures_insulin <- Anova(model.fit, idata = idata, idesign = ~Times)
-
-# Look at this to get Pillai's trace values
-# See MANOVAR summary table below for reader-friendly view of this
-#rep_measures_insulin
-
-# View the model output; hidden because it is too long to display
-# See MANOVAR summary table code below for a reader-friendly view
-summary_manovar <- summary(rep_measures_insulin)
-#summary_manovar
-```
-
-```{r eEPSC-data-get-manovar-dataframe, warning=F, message=F}
-# -------------------------- eEPSC Analysis: Get MANOVAR summary table as object -------------------
-# print.Anova.mlm prints the dataframe but uses an invisible object
-# This meant that I could see the dataframe, but it was not available as an object
-# I could not extract the p-values from a class Anova.mlm object, and manually typing them was not ideal for reproducibility
-
-# This answer shows how to extract the summary table as a dataframe from an Anova.mlm object
-# https://stackoverflow.com/questions/65161615/extracting-p-value-column-from-output-anova-car-package
-# The following function will remove the last two lines of the print.Anova.mlm function in the car package that would normally use an invisible function to delete the dataframe
-# Using this modified function will return a dataframe, where you can extract the p-values directly
-
-get_summary_for_print <-
-  car:::print.Anova.mlm # copy the original print function (inclusive environment)
-body(get_summary_for_print) <- # replace the code of our copy
-  local({
-    # to avoid pollution of environment by tmp
-    tmp <-
-      body(get_summary_for_print) # to avoid code duplication
-    tmp[-(length(tmp) - (0:1))] # remove the last two code lines of the function
-  })
-
-# Use get_summary_for_print() to extract the dataframe
-# Use tidy() to clean up the column names and dataframe structure
-# Create reader-friendly DF column, rounded test statistics and F-values, and clearer column names
-# Use pvalString to express small p-values as <0.0001 instead of exact values.
-
-tidy_manovar <- get_summary_for_print(rep_measures_insulin) %>%
-  tidy() %>%
-  mutate(df = paste(num.Df, den.Df, sep = ", ")) %>%
-  select(!c(num.Df, den.Df)) %>%
-  mutate(across(c("test.stat", "approx.F"), \(x) round(x, 2)),
-         p.value = pvalString(p.value)) %>%
-  rename(
-    Term = term,
-    'Pillai\'s Trace' = test.stat,
-    F = approx.F,
-    'p-value' = p.value
-  )
-```
-
-```{r eEPSC-get-publication-ready-manovar-table}
-# -------------------------- eEPSC Analysis: Make publication-ready MANOVAR summary table -------------------
-# Use booktabs package to get publication-quality table in LaTeX PDF output
-kable_manovar_table_eEPSC <- tidy_manovar %>%
-  kable(booktabs = T,
-        linesep = '',
-        col.names = c("Parameters","df","Pillai's Trace","F","\\textit{p}-value"),
-        escape = F,
-        caption = "A multivariate repeated measures ANOVA using Pillai's Trace shows that current amplitude varies significantly with time, and there are no significant interactions between factors like sex and treatment. \\label{MANOVAR-Table}",
-        caption.short = "MANOVAR summary table of evoked excitatory currents before and during insulin exposure",
-        align = c('l','r','r','r','r')) %>%
-  kable_styling(full_width = T) %>%
-  column_spec(1,
-              width = "1.7in")
-```
-
-```{r eEPSC-data-show-sphericity-output, include = FALSE, purl = FALSE}
-# ----------------- eEPSC Analysis: Assumption Test - sphericity ----------------------------------------------------------
-summary_manovar$sphericity.tests
-
-
-# Sun Mar 24 17:29:52 2024
-# The p-values for Mauchly's sphericity tests were all much lower than 0.05.
-# This means that my data failed Mauchly's test of sphericity.
-# I switched to a multivariate repeated measures model, which does not require the assumption of sphericity.
-```
-
-## Levene's test
-
-```{r eEPSC-data-univariate-levene-s-test, include = FALSE, purl = FALSE}
-# ---------------- eEPSC Analysis: Assumption test - univariate homogeneity of variances --------------------------------
-summary_df_insulin %>%
-  group_by(Interval) %>%
-  mutate(Treatment = factor(Treatment)) %>%
-  levene_test(Mean ~ Treatment) %>%
-  mutate(statistic = round(statistic, 3),
-         p = round(p, 3))
-
-# Sun Mar 24 17:30:36 2024
-# The data all passed Levene's Test, indicating that all of the data passed the univariate tests for the homogeneity of variances.
-```
-
-```{r eEPSC-data-univariate-model, include = FALSE, purl = FALSE}
-# ---------------- eEPSC Analysis: Create univariate model for assumption testing -------------------
-# Filter to remove baseline data, since all values are 100 and there is no variance.
-# Otherwise, this will generate error messages
-summary_df_insulin_no_baseline <- summary_df_insulin %>%
-  filter(Interval != "t0to5")
-
-univariate_model <-
-  lme(
-    Mean ~ Treatment * Interval * Sex,
-    data = summary_df_insulin_no_baseline,
-    random = ~ 1 |
-      Sex / Interval,
-    correlation = corCompSymm(form = ~ 1 | Sex / Interval)
-  )
-anova(univariate_model)
-```
-
-## Univariate Shapiro
-
-```{r eEPSC-data-univariate-normality, include = FALSE, purl = FALSE}
-# ---------------- eEPSC Analysis: Assumption test - Univariate normality ------------------------------------------------------
-univariate_model_resid <- resid(univariate_model)
-shapiro.test(univariate_model_resid)
-
-qqnorm(univariate_model_resid)
-qqline(univariate_model_resid)
-
-
-# Sun Mar 24 17:35:09 2024
-# The p-values for the Shapiro-Wilk test are 0.02, indicating that the data did not pass the univariate assumptions of normality.
-# The QQ-plot looks better than in previous versions, however, since the points are more linear
-```
-
-## Box's M
-
-```{r eEPSC-data-multivariate-box-s-M, include = FALSE, purl = FALSE}
-# ---------------- eEPSC Analysis: Assumption test - Multivariate homogeneity of variances -------------------------------------
-# I excluded the baseline (t0to5) because all values were 100% - otherwise this will generate errors
-boxM(cbind(t5to10, t10to15, t15to20, t20to25) ~ Treatment,
-  data = summary_df_wide_addinsulin
-)
-
-
-# Sun Mar 24 17:34:03 2024
-# The p-value for Box's M is 0.2933, indicating that the covariance matrices are homogeneous.
-```
-
-## Multivariate normality
-
-```{r eEPSC-data-multi-shapiro, include = FALSE, purl = FALSE}
-# ---------------- eEPSC Analysis: Assumption test - Multivariate normality ----------------------------------------------------
-# Note: I used a test range of 5 to 25 minutes
-# This is because the values in the 0-5 minute range (column 10) were all 100%.
-norm_test_range <- summary_df_wide_addinsulin %>%
-  select('t5to10':'t20to25')
-
-# ! Data are from 0 to 25 min
-mshapiro_result <- mshapiro.test(norm_test_range)
-
-
-# ! Data are from 0 to 25 min
-qqnorm<-mqqnorm(norm_test_range)
-
-
-# Sun Mar 24 17:36:37 2024
-# The p-value for the multivariate Shapiro-Wilk normality test was 0.004066, indicating that the data failed the assumption of normality.
-  
-# However, the points are within the 95% confidence interval on the Multi-QQ plot.
-
-# Sun Mar 24 17:37:31 2024
-# Although the data failed both the univariate and multivariate Shapiro-Wilk tests, I felt confident in assuming normality after visually assessing the QQ plots.
-
-# Reasons:
-# 1: The points in the univariate QQ-plot were roughly linear
-
-# 2: The points within the multivariate QQ-plot were contained within the 95% confidence interval
-```
-
-## T-tests
-
-```{r eEPSC-data-t-tests, include=F, purl = F}
-# ---------------- eEPSC Analysis: T-tests over time ---------------------------------------------------------------------------------------
-# I used paired = T because the data were taken within the same cells (25 min later)
-# Paired=T requires vectors of equal length
-# I could not use paired t-tests on the full dataset because there were missing values in the 25-30 min interval.
-# This is why I filtered all data to contain Time values of 25 or less.
-
-
-# I rounded the p-values and t-statistic for better readability.
-# I added a column called asterisk_time, which codes for the x-position of the significance asterisks in my plots.
-# asterisk_time uses the upper time limit of each interval
-# For example, it will place the significance asterisk for interval t0to5 at time = 5
-
-# I used case_when() to change "ns" to a blank space ""
-# This is because having "ns" on the plots was visually distracting
-
-t_test_eEPSCs <- summary_df_insulin %>%
-  group_by(Treatment) %>%
-  pairwise_t_test(
-    Mean ~ Interval,
-    ref.group = "t0to5",
-    paired = T,
-    p.adjust.method = "holm"
-  ) %>%
-  mutate(statistic = round(statistic, 2),
-         p_string = pvalString(p.adj),
-         asterisk_time = as.numeric(case_when(
-           group2 == "t5to10" ~ "7.5",
-           group2 == "t10to15" ~ "12.5",
-           group2 == "t15to20" ~ "17.5",
-           group2 == "t20to25" ~ "22.5",
-           T ~ "Text"
-         )),
-         significance_stars = case_when(
-           p.adj.signif == "ns" ~ "",
-           T ~ p.adj.signif
-         ))
-
-saveRDS(t_test_eEPSCs, file = here("Data/Output-Data-from-R/t_test_eEPSCs.RDS"))
-```
-
-# Paired Pulse Ratio analysis
-
-```{r PPR-data-create-dataframe-for-t-test, warning=F, message=F}
-# -------------------- PPR Analysis: Create dataframe for t-tests ----------------
-PPR_df <- raw_df %>%
-  filter(Category == 2) %>%
-  filter(Treatment %in% list_of_treatments) %>%
-  filter(PPR < 5 & PPR > 0) %>%
-  filter(Interval == "t0to5" | Interval == "t20to25") %>%
-  mutate(
-    Treatment = factor(Treatment, levels = list_of_treatments),
-    State = case_when(
-      Interval == "t0to5" ~ "Baseline",
-      Interval == "t20to25" ~ "Insulin",
-      T ~ Interval
-    )
-  )
-```
-
-```{r PPR-data-t-test, warning=F, message=F}
-t_test_PPR <- PPR_df %>%
-  group_by(Treatment, Letter, State) %>%
-  summarise(mean_PPR_cell = mean(PPR),
-            n = n()) %>%
-  ungroup() %>%
-  group_by(Treatment) %>%
-  t_test(mean_PPR_cell ~ State,
-         ref.group = "Baseline",
-         paired = T) %>%
-  mutate(
-    statistic = round(statistic, 2),
-    p_original = p,
-    p_string = pvalString(p),
-    significance_stars = symnum(
-      p,
-      symbols   = c("***", "**", "*", "ns"),
-      cutpoints = c(0,  .001, .01, .05, 1),
-      corr      = FALSE
-    )
-  ) %>%
-  arrange(match(Treatment, list_of_treatments))
-
-
-kable_t_test_table_PPR <- t_test_PPR %>%
-  select(c(Treatment, statistic, df, p_string)) %>%
-  kable(
-    booktabs = T,
-    linesep = '',
-    col.names = c("Parameter", "Statistic", "DF", "\\textit{p}-value"),
-    caption = "A paired t-test comparing the mean paired pulse ratio (PPR) per cell during the baseline period (0-5 min) to the mean PPR after insulin exposure (20-25 min) shows that insulin does not significantly affect the PPR during experiments with no additional treatments, fasting, or PPP. Insulin significantly increases the PPR when the insulin receptor blocker HNMPA is applied. \\label{PPR-paired-t-test}",
-    caption.short = "Paired T-test summary table examining paired pulse ratios before and after insulin exposure",
-    escape = F
-  ) %>%
-  kable_styling(full_width = T) %>%
-  column_spec(1, width = "2.5in")
-```
-
-```{r PPR-data-create-differences-df, message=F}
-# -------------- PPR Analysis: Get differences between control and insulin ------------------------
-# Create a dataframe containing the differences in PPR from insulin to baseline
-# arrange() sorts the data in the form of baseline -> insulin within each letter
-# This enables me to use lag() to get:
-# PPR_diff = PPR_insulin - PPR_baseline
-
-PPR_differences_df <- PPR_df %>%
-  group_by(Treatment, Letter, State) %>%
-  summarise(mean_PPR_cell = mean(PPR),
-            n = n()) %>%
-  ungroup() %>% 
-  arrange(Letter, State) %>%
-  group_by(Letter) %>%
-  mutate(
-    PPR_diff = mean_PPR_cell - lag(mean_PPR_cell)
-    ) %>%
-  ungroup() %>%
-  drop_na(PPR_diff)
-
-```
-
-## Shapiro
-
-```{r PPR-data-shapiro, message=F, warning=F, include = F}
-# ----------------PPR Analysis: Assumption test - Normality
-shapiro.test(PPR_differences_df$PPR_diff)
-
-# Sat Mar 30 17:45:29 2024
-# The data are normal, indicating that I can use the results from the t-test
-```
 
 # Cell Coordinates Plot
 

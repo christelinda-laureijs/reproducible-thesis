@@ -1,5 +1,5 @@
 ---
-title: Getting Started with Thesis Writing in R
+title: Getting Started with Thesis Writing in RMarkdown and \LaTeX
 bibliography:
   - "../Templates/thesis-citations.bib"
   - ../Templates/packages.bib
@@ -142,10 +142,6 @@ theme_set(
 
 \begin{centering}
 \begin{spacing}{1}
-\Large
-
-by
-
 \LARGE
 
 Christelinda Laureijs
@@ -213,7 +209,7 @@ Rather than typing the same things over and over again, you can set up functions
 
 Since you can define your colours, fonts, and ggplot theme at the beginning of your document, you don't need to fiddle with formatting each plot. All plots will have the same formatting, and it is easy to change colours/styling for all plots at once.
 
-### No manual formatting
+### No more manual formatting!
 
 You don't need to worry about the layout of your document at all. You do not need to manually number your figures or subheadings, format your Table of Contents, or readjust paragraphs each time you insert or remove a picture. You can easily cross-reference figures, equations and chapters. To insert a list of figures, just type \\listoffigures - see, it's very doable!
 
@@ -221,7 +217,7 @@ Since RMarkdown is a plain-text document, your computer will be able to handle l
 
 ### Beautiful typography
 
-When you knit a document using a PDF, R uses \LaTeX. \LaTeX\ is a typesetting engine that uses mathematical algorithms to arrange text into the most ideal way according to typesetting rules. The resulting documents look very elegant in a way that is hard to quantify. \LaTeX-produced documents look very distinctive and after a while, you'll be able to easily tell the differences between a document produced using \LaTeX\ vs. Word.
+When you knit a document using a PDF, R uses \LaTeX. \LaTeX\ is a typesetting engine that uses mathematical algorithms to arrange text into the most ideal way according to typesetting rules. The resulting documents look very elegant. \LaTeX-produced documents look very distinctive and after a while, you'll be able to easily tell the differences between a document produced using \LaTeX\ vs. Word.
 
 Even if you stick to just the defaults, your documents will look great. If you need to use equations, \LaTeX\ is one of the best ways to create clean, well-aligned equations. Look in the \LaTeX\ documentation to learn how to align by equal signs or other characters!
 
@@ -239,11 +235,11 @@ R, Rmarkdown, \LaTeX\ and the packages you'll use are all free and open-source.
 
 ### Longevity
 
-Your documents are plain text files, which  means that they don't take up much space on your computer, and you can open them up years later in any plain text editor (even Notepad!). It also means that your files will always be available, and you won't get locked into proprietary software.
+Your documents are plain text files, which  means that they don't take up much space on your computer, and you can open them up years later in any plain text editor (even Notepad!). It also means that your files will always be available, and you won't get locked into a specific version of proprietary software.
 
 ### Version Control
 
-It is easy to set up version control with tools like Git and GitHub (which is also free). I would highly recommend learning how to set up a project on GitHub. Each time you make a change to the document on your computer, Git will also save the changes to the online version of your file, hosted on GitHub. It means that you'll always have a backup copy, and if something wrong happens, you can revert back to an older version and see what changes you made.
+It is easy to set up version control with R, Git and GitHub (which is also free). I would highly recommend learning how to set up a project on GitHub. Each time you make a change to the document on your computer, Git will also save the changes to the online version of your file, hosted on GitHub. It means that you'll always have a backup copy, and if something wrong happens, you can revert back to an older version and see what changes you made.
 
 
 ## What are the disadvantages of writing in R?
@@ -281,7 +277,17 @@ Unlike Word, you can't use track changes, comments, or shared files. The best wa
 
 ## Inserting citations
 
-Here is an example of an in-text citation: Insulin is a hormone that regulates blood glucose levels, digestive processes, and body weight [@demeyts2000]. When you write [\@demeyts2000], the citation will be rendered as an in-text citation. This document uses APA formatting because of the 'apa.csl' file. If you want a different format, you can download the appropriate CSL file online and replace `apa.csl` with your new csl file name in the YAML header.
+Citation managers like Zotero (free; highly recommended) make it easy to link your citations in R. [Insert info here about the BetterBibTeX package]
+
+[Insert info about setting up citation keys]
+
+Now, you can type something like [\@demeyts2000], and the citation will be rendered as an in-text citation.
+
+\begin{quote}
+Insulin is a hormone that regulates blood glucose levels, digestive processes, and body weight [@demeyts2000].
+\end{quote}
+
+This document uses APA formatting because of the 'apa.csl' file in the `Templates/` folder. If you want a different format, you can download the appropriate CSL file online and replace `apa.csl` with your new csl file name in the YAML header.
 
 ## Inserting plots
 
@@ -357,7 +363,7 @@ We weighed `r nrow(plant_data)` plants.
 
 ### Extracting P-values
 
-You can take this even further to embed p-values, t-test statistics, and other values within the body text. This will save you lots of time in the results section. It also reduces the likelihood of mistakes.
+You can take this even further to embed p-values, t-test statistics, and other values within the body text - no more copying and pasting! This will save you lots of time in the results section. It also reduces the likelihood of mistakes.
 
 It will take some time to find out how to extract p-values from different data types. In RStudio, always check what class your model is. Then, you can google things like "Extract p-value from an object of class anova in r".
 
@@ -385,14 +391,14 @@ plant_aov_summary[[1]][["Pr(>F)"]]
 ```
 The first p-value is the p-value associated with the treatment groups. The second is NA because it is for the model residuals. To extract the first p-value, add another [[1]] to select the first element of this list. The final code is:
 
-```{r extract-p-values-first-element}
+```{r extract-p-values-first-element, echo=T}
 plant_aov_summary[[1]][["Pr(>F)"]][[1]]
 ```
 ### Rounding
 
-To make "prettier" p-values you could round them to 3 digits using the `round()` function. However, I would suggest using the `pvalString()` function from the `LazyWeave` package. This rounds p-values to three digits, and automatically formats them to publication style p-values if they are smaller or larger than typical endpoints. As an example, pvalString(0.00000005) will become `r pvalString(0.0000005)`.
+To make "prettier" p-values you could round them to 3 digits using the `round()` function. However, I would suggest using the `pvalString()` function from the `LazyWeave` package. This rounds p-values to three digits, and automatically formats them to publication style p-values if they are smaller or larger than typical endpoints. As an example, pvalString(0.00000005) will become p `r pvalString(0.0000005)`.
 
-```{r extract-p-values-pval-string}
+```{r extract-p-values-pval-string, echo=T}
 pvalString(plant_aov_summary[[1]][["Pr(>F)"]][[1]])
 ```
 
@@ -410,14 +416,14 @@ There are many packages that will allow you to create publication-quality tables
 summary(plant_data_aov)
 ```
 
-The first step is to use the `tidy()` function from the `broom` library. This reformats the summary object to a dataframe and does some automatic cleaning (for example, it removes the significance codes and converts the column names to code-friendly names with no spaces).
+The first step is to use the `tidy()` function from the `broom` library. This reformats the summary object to a tibble (a special type of dataframe) and does some automatic cleaning. For example, it removes the significance codes and converts the column names to code-friendly names with no spaces.
 
 ```{r tidy-anova-table, echo=T}
 plant_data_aov %>%
   tidy()
 ```
 
-The next step is to round the values and re-format the p-values. We can also change the term names to title case using `str_to_title(term)`. Lastly, we can use the `rename()` function to give the columns better names.
+The next step is to round the values and re-format the p-values. The `across()` function from `dplyr` allows us to apply the same rounding function to multiple columns simultaneously. We can also change the term names to title case using `str_to_title(term)`. Lastly, we can use the `rename()` function to give the columns more useful names for a publication.
 
 ```{r tidy-mutate-anova-table, echo=T}
 plant_data_aov %>%
@@ -430,24 +436,25 @@ plant_data_aov %>%
   rename(
     Term = term,
     'Sum of Squares' = sumsq,
-    'Mean Square' = meansq,
+    'Mean Squares' = meansq,
     'F-statistic' = statistic,
     'p-value' = p.value
   )
 ```
 
-The last step is to use the `kable()` package to modify the table style and presentation. The documentation for the `kable` and `kableExtra` packages has lots of useful information on the available arguments. Some useful ones include `align`, which allows you to specify how the text is aligned in the columns. For example, `align = c('l', 'c', 'l')` will generate columns that are left-, centre- and left-aligned.
+The last step is to use the `kable()` package to modify the table style and presentation. The documentation for the `kable` and `kableExtra` packages has lots of useful information on the available arguments. A particularly useful argument is `align`, which allows you to specify how the text is aligned in the columns. For example, `align = c('l', 'c', 'l')` will generate columns that are left-, centre- and left-aligned.
 
 
 The new code section looks like this:
 
 ```{r kable-snippet, eval=F, echo=T}
-kable(booktabs = T,
-        linesep = '',
-        escape = F) %>%
-  column_spec(1,
-              width = "1.5in")
-
+kable(
+  booktabs = T,
+  linesep = '',
+  escape = F,
+  caption = "Plant growth varies significantly with treatments. ANOVA summary table for a model examining the effect of treatment on plant mass."
+) %>%
+  column_spec(1, width = "1.5in")
 ```
 
 The final table looks publication-ready!

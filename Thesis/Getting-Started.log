@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.6.14)  19 JUN 2024 00:13
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.6.14)  20 JUN 2024 11:27
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -964,6 +964,38 @@ Package caption Info: End \AtBeginDocument code.
 Package hyperref Info: Link coloring OFF on input line 250.
 LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/n' will be
 (Font)              scaled to size 24.88pt on input line 252.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
+(Font)              scaled to size 23.66782pt on input line 252.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
+(Font)              scaled to size 19.72952pt on input line 252.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
+(Font)              scaled to size 16.43808pt on input line 252.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 252.
+(c:/Users/cslau/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
+File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
+(Font)              scaled to size 23.67009pt on input line 252.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
+(Font)              scaled to size 19.73141pt on input line 252.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
+(Font)              scaled to size 16.43967pt on input line 252.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
+(Font)              scaled to size 23.66515pt on input line 252.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
+(Font)              scaled to size 19.7273pt on input line 252.
+LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
+(Font)              scaled to size 16.43625pt on input line 252.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 252.
+(c:/Users/cslau/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 252.
+(c:/Users/cslau/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/n' will be
+(Font)              scaled to size 20.74pt on input line 252.
 LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/n' will be
 (Font)              scaled to size 14.4pt on input line 252.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
@@ -972,10 +1004,6 @@ LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
 (Font)              scaled to size 9.51279pt on input line 252.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
 (Font)              scaled to size 6.65895pt on input line 252.
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 252.
-(c:/Users/cslau/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
-File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
 (Font)              scaled to size 13.69972pt on input line 252.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
@@ -988,32 +1016,20 @@ LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 (Font)              scaled to size 9.51172pt on input line 252.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 (Font)              scaled to size 6.6582pt on input line 252.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 252.
-(c:/Users/cslau/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Trying to load font information for U+msb on input line 252.
-(c:/Users/cslau/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/n' will be
-(Font)              scaled to size 17.28pt on input line 256.
-LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/n' will be
-(Font)              scaled to size 20.74pt on input line 260.
 
 
 [1
 
 ]
 LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/it' will be
-(Font)              scaled to size 14.4pt on input line 283.
+(Font)              scaled to size 14.4pt on input line 279.
 LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/it' will be
-(Font)              scaled to size 12.0pt on input line 290.
+(Font)              scaled to size 12.0pt on input line 286.
 
 
 [2]
 LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/n' will be
-(Font)              scaled to size 36.0pt on input line 296.
+(Font)              scaled to size 36.0pt on input line 292.
 (./Getting-Started.toc
 
 LaTeX Font Warning: Font shape `TU/EBGaramond(0)/b/n' undefined
@@ -1053,7 +1069,7 @@ LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/n' will be
 
 [2]
 LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/it' will be
-(Font)              scaled to size 20.74pt on input line 326.
+(Font)              scaled to size 20.74pt on input line 322.
 
 
 [1
@@ -1084,9 +1100,9 @@ File: ../Figures/Getting-Started-Figures/Extract-values-annotated.png Graphic fi
 
 [9]
 LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 587.
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 583.
 
-Underfull \hbox (badness 2772) in paragraph at lines 602--608
+Underfull \hbox (badness 2772) in paragraph at lines 598--604
 []\TU/EBGaramond(0)/b/n/12 Look at the results. If I want to extract the p-value row, it looks like I will need to write
  []
 
@@ -1095,19 +1111,12 @@ Underfull \hbox (badness 2772) in paragraph at lines 602--608
 [10]
 
 [11]
-Underfull \vbox (badness 10000) detected at line 712
+Underfull \vbox (badness 10000) detected at line 708
  []
 
 
 
 [12]
-LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 19.72952pt on input line 748.
-LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 19.73141pt on input line 748.
-LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 19.7273pt on input line 748.
-
 
 [13]
 
@@ -1123,11 +1132,11 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 21388 strings out of 476212
- 395572 string characters out of 5784671
- 1930560 words of memory out of 5000000
- 43587 multiletter control sequences out of 15000+600000
- 566679 words of font info for 105 fonts, out of 8000000 for 9000
+ 21404 strings out of 476212
+ 396059 string characters out of 5784671
+ 1931560 words of memory out of 5000000
+ 43598 multiletter control sequences out of 15000+600000
+ 568593 words of font info for 116 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  90i,10n,126p,607b,492s stack positions out of 10000i,1000n,20000p,200000b,200000s
 

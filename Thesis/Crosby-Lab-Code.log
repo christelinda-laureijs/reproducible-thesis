@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.6.14)  20 JUN 2024 00:22
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.6.14)  20 JUN 2024 12:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -982,6 +982,8 @@ LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/n' will be
 LaTeX Font Warning: Font shape `TU/EBGaramond(0)/b/n' undefined
 (Font)              using `TU/EBGaramond(0)/m/n' instead on input line 1.
 
+LaTeX Font Info:    Font shape `TU/EBGaramond(0)/b/n' will be
+(Font)              scaled to size 14.4pt on input line 11.
 )
 \tf@toc=\write3
 \openout3 = `Crosby-Lab-Code.toc'.
@@ -991,12 +993,24 @@ LaTeX Font Warning: Font shape `TU/EBGaramond(0)/b/n' undefined
 [1]
 LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/it' will be
 (Font)              scaled to size 20.74pt on input line 220.
+
+
+[1
+
+]
+Overfull \vbox (3.03609pt too high) has occurred while \output is active []
+
+
+
+[2]
+
+[3]
 File: Crosby-Lab-Code_files/figure-latex/AP-data-multiplot-figure-first-1.pdf Graphic file (type pdf)
 <use Crosby-Lab-Code_files/figure-latex/AP-data-multiplot-figure-first-1.pdf>
 LaTeX Font Info:    Font shape `TU/EBGaramond(0)/m/it' will be
-(Font)              scaled to size 12.0pt on input line 236.
+(Font)              scaled to size 12.0pt on input line 261.
 
-LaTeX Warning: Float too large for page by 22.37076pt on input line 237.
+LaTeX Warning: Float too large for page by 22.37076pt on input line 262.
 
 
 Package caption Warning: Unused \captionsetup[table] on input line 117.
@@ -1004,11 +1018,9 @@ See the caption package documentation for explanation.
 
 
 
-[1
+[4]
 
-]
-
-[2] (./Crosby-Lab-Code.aux)
+[5] (./Crosby-Lab-Code.aux)
  ***********
 LaTeX2e <2024-06-01> patch level 1
 L3 programming layer <2024-05-27>
@@ -1018,12 +1030,12 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 20656 strings out of 476212
- 381686 string characters out of 5784671
- 1923560 words of memory out of 5000000
- 42893 multiletter control sequences out of 15000+600000
+ 20680 strings out of 476212
+ 381981 string characters out of 5784671
+ 1925560 words of memory out of 5000000
+ 42917 multiletter control sequences out of 15000+600000
  562677 words of font info for 77 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  90i,6n,126p,1097b,386s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on Crosby-Lab-Code.pdf (4 pages).
+Output written on Crosby-Lab-Code.pdf (7 pages).
