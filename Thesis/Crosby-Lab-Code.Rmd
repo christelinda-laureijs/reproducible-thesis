@@ -619,10 +619,10 @@ kable_manovar_table_eEPSC <- tidy_manovar %>%
         escape = F,
         caption = "A multivariate repeated measures ANOVA using Pillai's Trace shows that current amplitude varies significantly with time, and there are no significant interactions between factors like sex and treatment. \\label{MANOVAR-Table}",
         caption.short = "MANOVAR summary table of evoked excitatory currents before and during insulin exposure",
-        align = c('l','r','r','r','r')) %>%
-  kable_styling(full_width = T) %>%
-  column_spec(1,
-              width = "1.7in")
+        align = c('l','r','r','r','r'))
+
+
+kable_manovar_table_eEPSC
 ```
 
 ```{r eEPSC-data-show-sphericity-output, include = FALSE, purl = FALSE}
@@ -773,6 +773,258 @@ t_test_eEPSCs <- summary_df_insulin %>%
 saveRDS(t_test_eEPSCs, file = here("Data/Output-Data-from-R/t_test_eEPSCs.RDS"))
 ```
 
+
+## Plot eEPSCs
+
+```{r import-representative-traces}
+# Import representative traces
+male_control_trace <- png::readPNG(here("Figures/Representative-Traces/Male-Control-Trace-H.png")) %>% rasterGrob()
+female_control_trace <- png::readPNG(here("Figures/Representative-Traces/Female-Control-Trace-AV.png")) %>% rasterGrob()
+male_HNMPA_trace <- png::readPNG(here("Figures/Representative-Traces/Male-HNMPA-Trace-BO.png")) %>% rasterGrob()
+
+male_fasting_trace <- png::readPNG(here("Figures/Representative-Traces/Male-Fasting-Trace-FG.png")) %>% rasterGrob()
+
+female_PPP_trace <- png::readPNG(here("Figures/Representative-Traces/Female-PPP-Trace-GF.png")) %>% rasterGrob()
+
+
+```
+
+```{r plot-control}
+#| fig.dim = c(8,5),
+#| fig.cap = "Each point represents the mean eEPSC amplitude (± the standard error) across all cells and \\emph{n} represents the number of unique cells. The asterisks indicate a statistically significant decrease in current amplitude relative to the baseline (t-test; * = p < 0.05, ** = p < 0.01, *** = p < 0.001). The representative traces consist of eEPSCs from one cell averaged over the baseline period (0 to 5 min) and last interval (20 to 25 min) of the recording, and the scale bar represents 50 pA/20 ms. \\label{summary-plot-control}",
+#| fig.scap = "Control Summary Plot",
+#| out.width = "100%"
+
+
+# ---------------- Get summary plots for all cells --------------------------------------------------------------
+# Uses custom function make_pruned_summary_plots()
+# 1st argument: Experiment category
+# 2nd argument: Treatment
+# 3rd argument: pruned dataframe
+# 4th argument: Choose colour from colour palette lists defined at the top of the script
+# e.g. 1 corresponds to the 1st item in the list, which is purple
+# 5th argument: Include representative trace ("yes" or "no")
+# 6th argument: If include_representative_trace == "yes", state the name of the trace imported in the Import-representative-traces chunk
+# 7th argument: Set to "no" 
+make_pruned_summary_plots(category = 2,
+                         treatment = "Control",
+                         data = pruned_df,
+                         color_choice = 1,
+                         include_representative_trace = "no",
+                         representative_trace = female_control_trace,
+                         signif_stars = "no")
+
+```
+
+```{r plot-HNMPA}
+#| fig.dim = c(8,5),
+#| fig.cap = "Each point represents the mean ± SE eEPSC amplitude and \\emph{n} represents the number of unique cells. The asterisks indicate a statistically significant decrease in current amplitude relative to the baseline (t-test; * = p < 0.05, ** = p < 0.01, *** = p < 0.001). The representative traces consist of eEPSCs from one cell averaged over the baseline period (0 to 5 min) and last interval (20 to 25 min) of the recording, and the scale bar represents 50 pA/20 ms. \\label{summary-plot-HNMPA}",
+#| fig.scap = "HNMPA Summary Plot",
+#| out.width = "100%"
+
+make_pruned_summary_plots(category = 2,
+                          treatment = "HNMPA",
+                          data = pruned_df,
+                          color_choice = 5,
+                          include_representative_trace = "no",
+                          representative_trace = male_HNMPA_trace,
+                          signif_stars = "no")
+```
+
+```{r plot-PPP}
+#| fig.dim = c(8,5),
+#| fig.cap = "Each point represents the mean ± SE eEPSC amplitude and \\emph{n} represents the number of unique cells. There are no asterisks because the decrease in eEPSC amplitude was not statistically significant relative to the baseline. The representative traces consist of eEPSCs from one cell averaged over the baseline period (0 to 5 min) and last interval (20 to 25 min) of the recording, and the scale bar represents 50 pA/20 ms. \\label{summary-plot-PPP}",
+#| fig.scap = "PPP Summary Plot",
+#| out.width = "100%"
+make_pruned_summary_plots(category = 2,
+                         treatment = "PPP",
+                         data = pruned_df,
+                         color_choice = 2,
+                         include_representative_trace = "no",
+                         representative_trace = female_PPP_trace,
+                         signif_stars = "no")
+```
+
+```{r plot-Fasting}
+#| fig.dim = c(8,5),
+#| fig.cap = "Each point represents the mean ± SE eEPSC amplitude and \\emph{n} represents the number of unique cells. The asterisks indicate a statistically significant decrease in current amplitude relative to the baseline (t-test; * = p < 0.05, ** = p < 0.01, *** = p < 0.001). The representative traces consist of eEPSCs from one cell averaged over the baseline period (0 to 5 min) and last interval (20 to 25 min) of the recording, and the scale bar represents 50 pA/20 ms. \\label{summary-plot-fasting}",
+#| fig.scap = "Fasting Summary Plot",
+#| out.width = "100%"
+make_pruned_summary_plots(category = 2,
+                         treatment = "Fasting",
+                         data = pruned_df,
+                         color_choice = 3,
+                         include_representative_trace = "no",
+                         representative_trace = male_fasting_trace,
+                         signif_stars = "no")
+```
+
+# Cell Coordinates Plot
+
+```{r cell-coordinates-df}
+# ---------------- Cell Locations: Modify dataset for cell locations plot ------------------------------------------------------------------
+# Filter out cells with missing coordinates
+# Add a new column called percent change that looks at the percent change 20 minutes after adding insulin
+# Filter (for now) to only include full datasets for the experiments where I added insulin (Category == 2)
+
+cell_coordinates <-
+  summary_df %>%
+  group_by(Treatment, Interval, Letter) %>%
+  select(!c(SE,n)) %>%
+  pivot_wider(
+    names_from = Interval,
+    values_from = Mean
+  ) %>%
+  mutate(
+    percent_change = t20to25/t0to5*100
+  ) %>%
+  filter_at(vars(X, Y), all_vars(!is.na(.))) %>% 
+  filter(Category == 2) %>%
+  filter(Treatment %in% list_of_treatments)
+
+saveRDS(cell_coordinates, file = here("Data/Output-Data-from-R/cell_coordinates_with_percent_change.RDS"))
+
+background_slice_image <- jpeg::readJPEG(here("Figures/DMH-Image.jpg"))
+```
+
+```{r eEPSC-get-maximum-percent-change}
+# --------------------- eEPSC Analysis: Get max percent change after 20 min -----------------------
+
+# Get the value of the maximum percent change after 20 minutes
+# I filtered this to only include the treatments of interest
+# This is required to set the scale in the cell locations plot.
+# plyr::round_any rounds this value up to the nearest multiple of 10
+# Required to create 'nice' scale limits
+max_percent_change <- cell_coordinates %>%
+  ungroup() %>%
+  summarise(
+    max(percent_change)) %>%
+  pull() %>%
+  plyr::round_any(10, ceiling)
+```
+
+```{r plot-cell-coordinates}
+#| fig.cap = "Each neuron is coloured according to the relative decrease in eEPSC amplitude after 20 minutes of insulin exposure. Neurons with similar responses to insulin did not cluster together, and there were no regions within the DMH that had a greater proportion of highly responsive neurons. In this figure (magnified 5X), the top of the third ventricle is located at (0,0). \\label{cell-locations}",
+#| fig.scap = "DMH neurons with similar insulin sensitivity are not clustered together",
+#| out.width = "100%"
+
+# ---------------- Plot cell locations ------------------------------------------------------------------------
+# Using rasterGrob to insert the DMH slice image as a background picture
+# The scale_colour_viridis_c() is only relevant if there are multiple categories
+# If you want to show multiple categories, go to geom_point() and remove 'color = my_colours[4]'
+
+cell_coordinates_plot <-
+  ggplot(cell_coordinates %>% filter(!is.na(percent_change)), aes(x = X, y = Y, color = percent_change)) +
+  annotation_custom(
+    rasterGrob(background_slice_image,
+      width = unit(1, "npc"),
+      height = unit(1, "npc")
+    ),
+    -Inf, 
+    Inf,
+    -Inf,
+    Inf
+  ) +
+  labs(y = "y (µM)", x = "x (µM)", color = "% Change in\ncurrent amplitude\nafter 20 min\nof insulin exposure") +
+  geom_point(size = 2.7,
+             alpha = .99,
+             shape = 16) +
+  scale_color_viridis_c(
+    limits = c(0, max_percent_change),
+    begin = 0.27,
+    end = 1,
+    option = "plasma"
+  ) +
+  coord_fixed(ratio = 1) +
+  xlim(0, 800) +
+  scale_y_reverse(limits = c(800, 0)) +
+  theme(
+    plot.margin = margin(25, 0.5, 0.5, 15),
+    axis.title.y = element_text(angle = 90, margin = margin(r = 17)),
+    legend.title = element_text(size = 14, margin = margin(b = 15))
+  ) +
+  guides(color = guide_colorbar(draw.ulim = T, draw.llim = F, theme = theme(
+    legend.key.width = unit(0.7, "lines"),
+    legend.key.height = unit(10, "lines")
+  )))
+
+
+cell_coordinates_plot
+
+# Save plot
+if (save_choice == "yes") {
+  ggsave(
+    plot = cell_coordinates_plot,
+    filename = "Cell_coordinates_plot_add_insulin.png",
+    path = here("Figures/Cell_coordinates_plot"),
+    width = 14,
+    height = 10,
+    units = "in",
+    dpi = 300,
+    scaling = 1.8
+  )
+}
+```
+
+# Final Treatment Comparisons Plot
+
+```{r treatment-comparisons-plot}
+#| fig.cap = "In this summary figure, each dot represents the mean eEPSC amplitude of a cell relative to the baseline (%) during the last 20-25 minutes of the evoked currents protocol. Black solid shapes indicate the mean ± SE for each sex. \\label{eEPSC-treatment-comparisons-plot}",
+#| fig.scap = "Treatment Comparisons Plot",
+#| out.width = "100%"
+
+# ----------------------- Final treatment comparisons summary plot ----------------------------
+treatment_comparisons_plot <- cell_coordinates %>%
+  group_by(Treatment) %>%
+  mutate(
+    Treatment = factor(Treatment, levels = list_of_treatments),
+    mean_change = mean(percent_change),
+    sd_change = sd(percent_change)
+  ) %>%
+  ggplot(aes(
+    x = Treatment,
+    y = percent_change,
+    color = Treatment,
+    shape = Sex
+  )) +
+  geom_sina(
+    bw = 12,
+    alpha = 0.8,
+    maxwidth = 0.5,
+    size = 2
+  ) +
+  scale_color_manual(values = c(my_colours[1], my_colours[3], my_colours[5], my_colours[2])) +
+  scale_shape_manual(values = c(17, 16)) +
+  stat_summary(
+    fun.data = mean_se,
+    geom = "pointrange",
+    color = mean_point_colour,
+    size = mean_point_size + 0.2,
+    alpha = 0.8
+  ) +
+  geom_hline(yintercept = 100, linetype = "dashed") +
+  labs(y = "Change in eEPSC amplitude\n25 min after insulin (%)") +
+  theme(legend.position = "right",
+        axis.title.y = element_text(angle = 90, hjust = 0.5)) +
+  guides(color = "none", shape = guide_legend(reverse = T))
+
+treatment_comparisons_plot
+
+if (save_choice == "yes") {
+  ggsave(
+    treatment_comparisons_plot,
+    path = here("Figures", "Output-summary-plots"),
+    file = "Treatment-comparison-plot-percent-change-sex.png",
+    width = 7,
+    height = 5,
+    units = "in",
+    dpi = 300
+  )
+}
+
+```
+
+
 # Paired Pulse Ratio
 
 ```{r PPR-data-create-dataframe-for-t-test, warning=F, message=F}
@@ -825,9 +1077,7 @@ kable_t_test_table_PPR <- t_test_PPR %>%
     caption = "A paired t-test comparing the mean paired pulse ratio (PPR) per cell during the baseline period (0-5 min) to the mean PPR after insulin exposure (20-25 min) shows that insulin does not significantly affect the PPR during experiments with no additional treatments, fasting, or PPP. Insulin significantly increases the PPR when the insulin receptor blocker HNMPA is applied. \\label{PPR-paired-t-test}",
     caption.short = "Paired T-test summary table examining paired pulse ratios before and after insulin exposure",
     escape = F
-  ) %>%
-  kable_styling(full_width = T) %>%
-  column_spec(1, width = "2.5in")
+  )
 ```
 
 ```{r PPR-data-create-differences-df, message=F}
@@ -862,7 +1112,84 @@ shapiro.test(PPR_differences_df$PPR_diff)
 # The data are normal, indicating that I can use the results from the t-test
 ```
 
+## PPR Plots
 
+```{r PPR-data-final-summary-plot, warning=F, message=F}
+#| fig.cap = "The paired pulse ratio (PPR) did not change significantly after insulin exposure for most of the treatment groups. The change in the PPR relative to the baseline was non-significant for the control, fasting, and PPP treatment groups, but it was statistically significant for the HNMPA-treated cells. Each dot represents the mean PPR of a single cell averaged over the baseline period (0 to 5 minutes) or the last 20 to 25 minutes of the evoked currents protocol. The asterisks indicate a statistically significant difference in the PPR between the two intervals (t-test; * = p < 0.05, ** = p < 0.01, *** = p < 0.001). The solid black circle and triangle overlay represents the mean PPR (± SE) per sex. \\label{ppr-comparisons-plot}",
+#| fig.scap = "The paired pulse ratio did not change significantly after insulin exposure for most treatment groups",
+#| out.width = "100%"
+
+ppr_summary_plot <- PPR_df %>% 
+  mutate(
+    Treatment_and_state = paste(Treatment, State, sep = "_"),
+    Treatment_and_state = factor(
+      Treatment_and_state,
+      levels = c(
+        "Control_Baseline",
+        "Control_Insulin",
+        "Fasting_Baseline",
+        "Fasting_Insulin",
+        "HNMPA_Baseline",
+        "HNMPA_Insulin",
+        "PPP_Baseline",
+        "PPP_Insulin"
+      )
+    )
+  ) %>%
+  group_by(Treatment_and_state, Treatment, State, Letter, Sex) %>%
+  summarise(mean_PPR_cell = mean(PPR)) %>%
+  ungroup() %>%
+  ggplot(aes(x = interaction(State,Treatment, sep = "!"), y = mean_PPR_cell, color = Treatment, shape = Sex)) +
+  geom_point(size = 2, position = position_jitter(0.04), alpha = 0.9) +
+  geom_line(aes(group = Letter), linewidth = connecting_line_width_PPR, alpha = 0.3) +
+  stat_summary(
+    fun.data = "mean_se",
+    geom = "pointrange",
+    color = mean_point_colour,
+    size = mean_point_size + 0.2,
+    alpha = 0.7
+  ) +
+  scale_color_manual(values = c(my_colours[1],
+                                my_colours[3],
+                                my_colours[5],
+                                my_colours[2])) +
+  theme(legend.position = "bottom") +
+  scale_x_discrete(guide = guide_axis_nested(delim = "!")) +
+  coord_cartesian(ylim = c(0,3)) +
+  theme(
+    ggh4x.axis.nestline = element_line(color = my_colours_pale[6]),
+    axis.text.x = element_text(margin = margin(b = 5, t = 5))
+  ) +
+  add_bracket(treatment = "Control", y_position = 2.5) +
+  add_bracket(treatment = "Fasting", y_position = 2.5) +
+  add_bracket(treatment = "HNMPA", y_position = 2.5) +
+  add_bracket(treatment = "PPP", y_position = 2.5) +
+  labs(
+    x = NULL,
+    y = "Paired pulse ratio",
+    shape = NULL
+  ) +
+  scale_shape_manual(values = c(17, 16)) +
+  guides(color = "none", shape = guide_legend(reverse = T))
+
+if (save_choice == "yes") {
+  ggsave(
+    plot = ppr_summary_plot,
+    filename = "PPR-Summary-Plot-paired.png",
+    path = here("Figures/Output-summary-plots"),
+    width = 7,
+    height = 5,
+    units = "in",
+    dpi = 300
+  )
+}
+
+ppr_summary_plot
+```
+
+```{r}
+kable_t_test_table_PPR
+```
 
 
 # Action Potentials
@@ -1294,10 +1621,7 @@ kable_tidy_wilcoxon <- wilcoxon_table_ap %>%
         escape = F,
         caption = "A Wilcoxon signed-rank test shows that insulin significantly affects action potential amplitudes, thresholds, and half-widths. Insulin does not significantly affect the latency to fire, after-hyperpolarization amplitude, or the time of afterhyperpolarization. \\label{AP-parameters-Wilcoxon-Table}",
         caption.short = "Wilcoxon signed-rank summary table of action potential parameters before and after insulin exposure",
-        align = c('l','c','l','l')) %>% 
-  kable_styling(full_width = T) %>% 
-  column_spec(1,
-              width = "2.5in")
+        align = c('l','c','l','l'))
 ```
 
 ## Summary plot
@@ -1389,7 +1713,7 @@ raw_ap_frequency_plot <- full_ap_df %>%
   scale_y_continuous(expand = expansion(mult = c(0.1, .1)))
 ```
 
-## Individual plots
+## Individual AP plots
 
 ```{r AP-data-make-AP-characteristics-plots}
 # ------------------ AP Analysis: Make AP Characteristics Plots ---------------------
@@ -1474,478 +1798,8 @@ full_ap_multiplot <- full_ap_multiplot +
 
 full_ap_multiplot
 
-knitr::knit_exit()
-```
-
-
-# Cell Coordinates Plot
-
-```{r cell-coordinates-df}
-# ---------------- Cell Locations: Modify dataset for cell locations plot ------------------------------------------------------------------
-# Filter out cells with missing coordinates
-# Add a new column called percent change that looks at the percent change 20 minutes after adding insulin
-# Filter (for now) to only include full datasets for the experiments where I added insulin (Category == 2)
-
-cell_coordinates <-
-  summary_df %>%
-  group_by(Treatment, Interval, Letter) %>%
-  select(!c(SE,n)) %>%
-  pivot_wider(
-    names_from = Interval,
-    values_from = Mean
-  ) %>%
-  mutate(
-    percent_change = t20to25/t0to5*100
-  ) %>%
-  filter_at(vars(X, Y), all_vars(!is.na(.))) %>% 
-  filter(Category == 2) %>%
-  filter(Treatment %in% list_of_treatments)
-
-saveRDS(cell_coordinates, file = here("Data/Output-Data-from-R/cell_coordinates_with_percent_change.RDS"))
-
-background_slice_image <- jpeg::readJPEG(here("Figures/DMH-Image.jpg"))
-```
-
-```{r eEPSC-get-maximum-percent-change}
-# --------------------- eEPSC Analysis: Get max percent change after 20 min -----------------------
-
-# Get the value of the maximum percent change after 20 minutes
-# I filtered this to only include the treatments of interest
-# This is required to set the scale in the cell locations plot.
-# plyr::round_any rounds this value up to the nearest multiple of 10
-# Required to create 'nice' scale limits
-max_percent_change <- cell_coordinates %>%
-  ungroup() %>%
-  summarise(
-    max(percent_change)) %>%
-  pull() %>%
-  plyr::round_any(10, ceiling)
-```
-
-
-```{r AP-data-multiplot-figure, fig.width = 10, fig.height = 12, warning=F}
-#| fig.cap = "Insulin decreases the excitability of DMH neurons. Data were recorded before and then after 25 minutes of insulin exposure. \\emph{A)} Insulin significantly decreases action potential frequency (mean ± SE; \\emph{n} is the number of cells). \\emph{B)} Representative traces from a current injection of 40 pA (top: baseline, bottom: insulin). \\emph{C)} Insulin significantly decreases action potential amplitudes \\emph{C)} and thresholds \\emph{D)}, while significantly increasing half-widths \\emph{E)}. Insulin does not significantly affect latency to fire \\emph{F)}, after-hyperpolarization amplitude \\emph{G)} or after-hyperpolarization time \\emph{H)}. Overlay on Figures C-H: mean ± SE. \\emph{n} = 15 for baseline and \\emph{n} = 11 for insulin because 4 cells did not fire any action potentials after insulin exposure. Wilcoxon signed-rank test, * = p < 0.05, ** = p < 0.01, *** = p < 0.001. \\label{ap-multiplot-figure}",
-#| fig.scap = "Insulin changes action potential characteristics in DMH neurons",
-#| out.width = "97%"
-
-# ----------------------- AP Analysis: Full Multiplot Figure -----------------------------------
-full_ap_multiplot <-
-  (full_ap_frequency_plot |
-     (ap_trace_baseline / ap_trace_insulin)) / (peak_amplitude_plot + threshold_plot + half_width_plot) /
-  (latency_plot + antipeak_amplitude_plot + time_of_antipeak_plot) +
-  plot_layout(heights = c(0.8, 0.5, 0.5)) &
-  theme(
-    axis.title = element_text(size = 12, face = "plain"),
-    axis.title.y = element_text(margin = margin(r = 10)),
-    axis.text = element_text(size = 8),
-    plot.margin = margin(10, 20, 10, 5)
-  )
-
-
-# Apply theme_void to just the representative traces plots since one already has a scale bar and both of them have been set to the same y-axes
-
-full_ap_multiplot[[1]][[2]][[1]] <- full_ap_multiplot[[1]][[2]][[1]] + theme_void()
-full_ap_multiplot[[1]][[2]][[2]] <- full_ap_multiplot[[1]][[2]][[2]] + theme_void()
-
-
-# Manually applied a list of labels because I wanted the second trace to be blank
-# baseline and insulin sweeps both count as figure "B"
-# Styled tags separately since theme_void on plots "B" and "[c]" changed the style
-
-full_ap_multiplot <- full_ap_multiplot +
-  plot_annotation(tag_levels = list(c('A','B','','C','D','E','F','G','H'))) &
-  theme(
-    plot.tag = element_text(
-      size = 18,
-      margin = margin(r = 10, b = 10),
-      face = "bold"
-    )
-  )
-
-full_ap_multiplot
-```
-
-Insulin significantly decreases action potential amplitude relative to baseline amplitudes ($W$(`r wilcoxon_table_ap %>%   filter(AP_parameter_name == "Peak amplitude") %>%   pull(df)`) = `r wilcoxon_table_ap %>%   filter(AP_parameter_name == "Peak amplitude") %>%   pull(statistic)`, \emph{p} = `r wilcoxon_table_ap %>%   filter(AP_parameter_name == "Peak amplitude") %>%   pull(p_string)`; Figure \ref{ap-multiplot-figure}C). In four recordings, there were no amplitudes after insulin exposure, so additional action potential parameters could not be measured. Of the action potentials that did fire after insulin exposure, the threshold decreased significantly ($W$(`r wilcoxon_table_ap %>%   filter(AP_parameter_name == "Threshold") %>%   pull(df)`) = `r wilcoxon_table_ap %>%   filter(AP_parameter_name == "Threshold") %>%   pull(statistic)`, \emph{p} = `r wilcoxon_table_ap %>%   filter(AP_parameter_name == "Threshold") %>%   pull(p_string)`; Figure \ref{ap-multiplot-figure}D). Action potential half-widths increased significantly with insulin ($W$(`r wilcoxon_table_ap %>%   filter(AP_parameter_name == "Half-width") %>%   pull(df)`) = `r wilcoxon_table_ap %>%   filter(AP_parameter_name == "Half-width") %>%   pull(statistic)`, \emph{p} = `r wilcoxon_table_ap %>%   filter(AP_parameter_name == "Half-width") %>%   pull(p_string)`; Figure \ref{ap-multiplot-figure}E). The latency to fire did not change significantly after insulin exposure ($W$(`r wilcoxon_table_ap %>%   filter(AP_parameter_name == "Latency to fire") %>%   pull(df)`) = `r wilcoxon_table_ap %>%   filter(AP_parameter_name == "Latency to fire") %>%   pull(statistic)`, \emph{p} = `r wilcoxon_table_ap %>%   filter(AP_parameter_name == "Latency to fire") %>%   pull(p_string)`; Figure \ref{ap-multiplot-figure}F). The amplitude ($W$(`r wilcoxon_table_ap %>%   filter(AP_parameter_name == "After-hyperpolarization amplitude") %>%   pull(df)`) = `r wilcoxon_table_ap %>%   filter(AP_parameter_name == "After-hyperpolarization amplitude") %>%   pull(statistic)`, \emph{p} = `r wilcoxon_table_ap %>%   filter(AP_parameter_name == "After-hyperpolarization amplitude") %>%   pull(p_string)`; Figure \ref{ap-multiplot-figure}G) and time of the after-hyperpolarization ($W$(`r wilcoxon_table_ap %>%   filter(AP_parameter_name == "After-hyperpolarization time") %>%   pull(df)`) = `r wilcoxon_table_ap %>%   filter(AP_parameter_name == "After-hyperpolarization time") %>%   pull(statistic)`, \emph{p} = `r wilcoxon_table_ap %>%   filter(AP_parameter_name == "After-hyperpolarization time") %>%   pull(p_string)`; Figure \ref{ap-multiplot-figure}H) also did not significantly change after insulin exposure.
-
-```{r}
 kable_tidy_wilcoxon
 ```
-
-## Excitatory synaptic transmission decreases after insulin exposure
-
-To assess the effect of insulin on excitatory synaptic transmission in DMH neurons, I compared eEPSC amplitudes with insulin relative to a baseline period under control conditions. Insulin significantly decreased current amplitude over time in cells with no additional treatments applied (\emph{p} `r tidy_manovar$'p-value'[5]`; Figure \ref{summary-plot-control}). The decrease in evoked current amplitudes was statistically significant within the first five minutes of adding insulin (\emph{t}(`r t_test_eEPSCs %>%   filter(Treatment == "Control" & group2 == "t5to10") %>%   pull(df)`) = `r t_test_eEPSCs %>%   filter(Treatment == "Control" & group2 == "t5to10") %>%   pull(statistic)`, \emph{p} = `r t_test_eEPSCs %>%   filter(Treatment == "Control" & group2 == "t5to10") %>%   pull(p_string)`). This indicates that insulin binding quickly activates intracellular processes that decrease excitatory synaptic transmission in the DMH.
-
-The changes in evoked current amplitudes were not significantly different across sexes (Sex\*Times, \emph{p} = `r tidy_manovar$'p-value'[7]`), suggesting that insulin acts independently of sex in the DMH. I also found no cross-factor interactions between sex and treatment (Treatment\*Sex\*Times, \emph{p} = `r tidy_manovar$'p-value'[8]`).
-
-```{r import-representative-traces}
-# Import representative traces
-male_control_trace <- png::readPNG(here("Figures/Representative-Traces/Male-Control-Trace-H.png")) %>% rasterGrob()
-female_control_trace <- png::readPNG(here("Figures/Representative-Traces/Female-Control-Trace-AV.png")) %>% rasterGrob()
-male_HNMPA_trace <- png::readPNG(here("Figures/Representative-Traces/Male-HNMPA-Trace-BO.png")) %>% rasterGrob()
-
-male_fasting_trace <- png::readPNG(here("Figures/Representative-Traces/Male-Fasting-Trace-FG.png")) %>% rasterGrob()
-
-female_PPP_trace <- png::readPNG(here("Figures/Representative-Traces/Female-PPP-Trace-GF.png")) %>% rasterGrob()
-
-
-```
-
-```{r plot-control}
-#| fig.dim = c(8,5),
-#| fig.cap = "Insulin significantly decreases excitatory evoked post-synaptic current (eEPSC) amplitude over time in both sexes, with no significant differences between the sexes. I exposed DMH neurons to 500 nM of insulin from 5 minutes and onward. Each point represents the mean eEPSC amplitude (± the standard error) across all cells and \\emph{n} represents the number of unique cells. The asterisks indicate a statistically significant decrease in current amplitude relative to the baseline (t-test; * = p < 0.05, ** = p < 0.01, *** = p < 0.001). The representative traces consist of eEPSCs from one cell averaged over the baseline period (0 to 5 min) and last interval (20 to 25 min) of the recording, and the scale bar represents 50 pA/20 ms. \\label{summary-plot-control}",
-#| fig.scap = "Insulin significantly decreases evoked excitatory current amplitudes in DMH neurons",
-#| out.width = "100%"
-
-
-# ---------------- Get summary plots for all cells --------------------------------------------------------------
-# Uses custom function make_pruned_summary_plots()
-# 1st argument: Experiment category
-# 2nd argument: Treatment
-# 3rd argument: pruned dataframe
-# 4th argument: Choose colour from colour palette lists defined at the top of the script
-# e.g. 1 corresponds to the 1st item in the list, which is purple
-make_pruned_summary_plots(category = 2,
-                         treatment = "Control",
-                         data = pruned_df,
-                         color_choice = 1,
-                         representative_trace = female_control_trace)
-
-```
-
-```{r}
-kable_manovar_table_eEPSC
-```
-
-## Insulin may bind to insulin-like growth factor 1 receptors on DMH neurons
-
-After verifying that insulin acts on DMH neurons, the next step was to determine which receptors insulin can bind to. I performed the same evoked currents protocol, but with HNMPA in the intracellular solution. HNMPA is an insulin receptor antagonist that inhibits tyrosine kinase activity [@sapersteinetal1989]. Since insulin receptors belong to the tyrosine kinase superfamily [@demeyts2000], HNMPA would have blocked insulin from binding to insulin receptors. However, insulin also significantly decreased evoked current amplitudes within the first 5 minutes of exposure (\emph{t}(`r t_test_eEPSCs %>%   filter(Treatment == "HNMPA" & group2 == "t5to10") %>%   pull(df)`) = `r t_test_eEPSCs %>%   filter(Treatment == "HNMPA" & group2 == "t5to10") %>%   pull(statistic)`, \emph{p} = `r t_test_eEPSCs %>%   filter(Treatment == "HNMPA" & group2 == "t5to10") %>%   pull(p_string)`; Figure \ref{summary-plot-HNMPA}) even with HNMPA present. Since DMH neurons show the same response to insulin with HNMPA relative to control conditions, this suggested that insulin acts on DMH neurons through a different receptor.
-
-```{r plot-HNMPA}
-#| fig.dim = c(8,5),
-#| fig.cap = "Insulin significantly decreases current amplitude over time in both sexes, even when the insulin receptor blocker HNMPA is applied. This suggests that insulin may not require insulin receptors to bind to DMH neurons and influence excitatory synaptic transmission. Each point represents the mean ± SE eEPSC amplitude and \\emph{n} represents the number of unique cells. The asterisks indicate a statistically significant decrease in current amplitude relative to the baseline (t-test; * = p < 0.05, ** = p < 0.01, *** = p < 0.001). The representative traces consist of eEPSCs from one cell averaged over the baseline period (0 to 5 min) and last interval (20 to 25 min) of the recording, and the scale bar represents 50 pA/20 ms. \\label{summary-plot-HNMPA}",
-#| fig.scap = "Insulin signalling at DMH neurons is not dependent on insulin receptors",
-#| out.width = "100%"
-
-make_pruned_summary_plots(category = 2,
-                          treatment = "HNMPA",
-                          data = pruned_df,
-                          color_choice = 5,
-                          representative_trace = male_HNMPA_trace)
-```
-
-Insulin-like growth factor receptors have many structural similarities to insulin receptors and they are also responsive to insulin [@nagaoetal2021]. I performed the evoked currents protocol in the presence of an insulin-like growth factor 1 receptor antagonist (PPP). With PPP present, insulin did not significantly decrease evoked current amplitudes over time, even 20 minutes after adding insulin (\emph{t}(`r t_test_eEPSCs %>%   filter(Treatment == "PPP" & group2 == "t5to10") %>%   pull(df)`) = `r t_test_eEPSCs %>%   filter(Treatment == "PPP" & group2 == "t5to10") %>%   pull(statistic)`, \emph{p} = `r t_test_eEPSCs %>%   filter(Treatment == "PPP" & group2 == "t5to10") %>%   pull(p_string)`). However, since the changes in evoked current amplitudes over time with PPP was still not significantly different than the other treatments (Treatment\*Times, \emph{p} = `r tidy_manovar$'p-value'[6]`; Figure \ref{eEPSC-treatment-comparisons-plot}), this suggests that insulin is not fully dependent on insulin-like growth factor 1 receptors to bind to DMH neurons.
-
-```{r plot-PPP}
-#| fig.dim = c(8,5),
-#| fig.cap = "Insulin does not significantly decrease current amplitude over time with PPP present. PPP is an insulin-like growth factor 1 receptor antagonist. Since blocking these receptors reduced the changes in excitatory synaptic transmission seen in control recordings, insulin may require insulin-like growth factor 1 receptors to act on DMH neurons. Each point represents the mean ± SE eEPSC amplitude and \\emph{n} represents the number of unique cells. There are no asterisks because the decrease in eEPSC amplitude was not statistically significant relative to the baseline. The representative traces consist of eEPSCs from one cell averaged over the baseline period (0 to 5 min) and last interval (20 to 25 min) of the recording, and the scale bar represents 50 pA/20 ms. \\label{summary-plot-PPP}",
-#| fig.scap = "Insulin may bind to insulin-like growth factor 1 receptors to influence excitatory synaptic transmission at DMH neurons",
-#| out.width = "100%"
-make_pruned_summary_plots(category = 2,
-                         treatment = "PPP",
-                         data = pruned_df,
-                         color_choice = 2,
-                         representative_trace = female_PPP_trace)
-```
-
-## Feeding state does not affect insulin signalling in DMH neurons
-
-Since insulin and DMH neurons are both involved with appetite and digestion [@demeyts2000; @daltonetal1981], I measured evoked excitatory currents over time in rats who had fasted 24 hours before brain removal. Hunger increases the activity of DMH neurons [@angeles-castellanosetal2004], and it is also associated with lowered insulin levels in the bloodstream, which may alter insulin signalling in DMH neurons. Within the first 5 minutes of insulin exposure, evoked current amplitudes in the DMH neurons of fasted rats decreased significantly (\emph{t}(`r t_test_eEPSCs %>%   filter(Treatment == "Fasting" & group2 == "t5to10") %>%   pull(df)`) = `r t_test_eEPSCs %>%   filter(Treatment == "Fasting" & group2 == "t5to10") %>%   pull(statistic)`, \emph{p} = `r t_test_eEPSCs %>%   filter(Treatment == "Fasting" & group2 == "t5to10") %>%   pull(p_string)`; Figure \ref{summary-plot-fasting}).
-
-```{r plot-Fasting}
-#| fig.dim = c(8,5),
-#| fig.cap = "Insulin significantly decreases current amplitude over time in both sexes after a 24-hour fasting protocol. This suggests that insulin signalling in the DMH is associated with processes beyond appetite regulation. Each point represents the mean ± SE eEPSC amplitude and \\emph{n} represents the number of unique cells. The asterisks indicate a statistically significant decrease in current amplitude relative to the baseline (t-test; * = p < 0.05, ** = p < 0.01, *** = p < 0.001). The representative traces consist of eEPSCs from one cell averaged over the baseline period (0 to 5 min) and last interval (20 to 25 min) of the recording, and the scale bar represents 50 pA/20 ms. \\label{summary-plot-fasting}",
-#| fig.scap = "Insulin signalling at the excitatory synapses of DMH neurons is independent of feeding state",
-#| out.width = "100%"
-make_pruned_summary_plots(category = 2,
-                         treatment = "Fasting",
-                         data = pruned_df,
-                         color_choice = 3,
-                         representative_trace = male_fasting_trace)
-```
-
-## Synaptic transmission is likely affected by a postsynaptic mechanism
-
-To further explore the mechanism of insulin signalling at the DMH, I used a paired t-test to quantify changes in the PPR over time (Figure \ref{ppr-comparisons-plot}). I used PPRs that were averaged per cell over two five-minute intervals: the baseline (0 to 5 minutes) and the last interval of the recording (20 to 25 minutes), which corresponded to 20 minutes of continuous insulin exposure. The PPR did not change significantly relative to baseline values in the control group (\emph{t}(`r t_test_PPR %>%   filter(Treatment == "Control") %>%   pull(df)`) = `r t_test_PPR %>%   filter(Treatment == "Control") %>%   pull(statistic)`, \emph{p} = `r t_test_PPR %>%   filter(Treatment == "Control") %>%   pull(p_string)`), fasted group (\emph{t}(`r t_test_PPR %>%   filter(Treatment == "Fasting") %>%   pull(df)`) = `r t_test_PPR %>%   filter(Treatment == "Fasting") %>%   pull(statistic)`, \emph{p} = `r t_test_PPR %>%   filter(Treatment == "Fasting") %>%   pull(p_string)`), or PPP-treated cells (\emph{t}(`r t_test_PPR %>%   filter(Treatment == "PPP") %>%   pull(df)`) = `r t_test_PPR %>%   filter(Treatment == "PPP") %>%   pull(statistic)`, \emph{p} = `r t_test_PPR %>%   filter(Treatment == "PPP") %>%   pull(p_string)`). Since the PPR indicates the probability of neurotransmitter release from presynaptic cells, and there was no significant change in PPR with insulin, insulin binding to DMH neurons likely activates postsynaptic signalling pathways.
-
-In the HNMPA treatment group, the paired pulse ratio increased significantly relative to the baseline (\emph{t}(`r t_test_PPR %>%   filter(Treatment == "HNMPA") %>%   pull(df)`) = `r t_test_PPR %>%   filter(Treatment == "HNMPA") %>%   pull(statistic)`, \emph{p} = `r t_test_PPR %>%   filter(Treatment == "HNMPA") %>%   pull(p_string)`), suggesting that preventing insulin from binding to insulin receptors may activate an alternative presynaptic mechanism that ultimately results in the same decrease in excitatory synaptic transmission.
-
-```{r PPR-data-final-summary-plot, warning=F, message=F}
-#| fig.cap = "The paired pulse ratio (PPR) did not change significantly after insulin exposure for most of the treatment groups. The change in the PPR relative to the baseline was non-significant for the control, fasting, and PPP treatment groups, but it was statistically significant for the HNMPA-treated cells. Each dot represents the mean PPR of a single cell averaged over the baseline period (0 to 5 minutes) or the last 20 to 25 minutes of the evoked currents protocol. The asterisks indicate a statistically significant difference in the PPR between the two intervals (t-test; * = p < 0.05, ** = p < 0.01, *** = p < 0.001). The solid black circle and triangle overlay represents the mean PPR (± SE) per sex. \\label{ppr-comparisons-plot}",
-#| fig.scap = "The paired pulse ratio did not change significantly after insulin exposure for most treatment groups",
-#| out.width = "100%"
-
-ppr_summary_plot <- PPR_df %>% 
-  mutate(
-    Treatment_and_state = paste(Treatment, State, sep = "_"),
-    Treatment_and_state = factor(
-      Treatment_and_state,
-      levels = c(
-        "Control_Baseline",
-        "Control_Insulin",
-        "Fasting_Baseline",
-        "Fasting_Insulin",
-        "HNMPA_Baseline",
-        "HNMPA_Insulin",
-        "PPP_Baseline",
-        "PPP_Insulin"
-      )
-    )
-  ) %>%
-  group_by(Treatment_and_state, Treatment, State, Letter, Sex) %>%
-  summarise(mean_PPR_cell = mean(PPR)) %>%
-  ungroup() %>%
-  ggplot(aes(x = interaction(State,Treatment, sep = "!"), y = mean_PPR_cell, color = Treatment, shape = Sex)) +
-  geom_point(size = 2, position = position_jitter(0.04), alpha = 0.9) +
-  geom_line(aes(group = Letter), linewidth = connecting_line_width_PPR, alpha = 0.3) +
-  stat_summary(
-    fun.data = "mean_se",
-    geom = "pointrange",
-    color = mean_point_colour,
-    size = mean_point_size + 0.2,
-    alpha = 0.7
-  ) +
-  scale_color_manual(values = c(my_colours[1],
-                                my_colours[3],
-                                my_colours[5],
-                                my_colours[2])) +
-  theme(legend.position = "bottom") +
-  scale_x_discrete(guide = guide_axis_nested(delim = "!")) +
-  coord_cartesian(ylim = c(0,3)) +
-  theme(
-    ggh4x.axis.nestline = element_line(color = my_colours_pale[6]),
-    axis.text.x = element_text(margin = margin(b = 5, t = 5))
-  ) +
-  add_bracket(treatment = "Control", y_position = 2.5) +
-  add_bracket(treatment = "Fasting", y_position = 2.5) +
-  add_bracket(treatment = "HNMPA", y_position = 2.5) +
-  add_bracket(treatment = "PPP", y_position = 2.5) +
-  labs(
-    x = NULL,
-    y = "Paired pulse ratio",
-    shape = NULL
-  ) +
-  scale_shape_manual(values = c(17, 16)) +
-  guides(color = "none", shape = guide_legend(reverse = T))
-
-if (save_choice == "yes") {
-  ggsave(
-    plot = ppr_summary_plot,
-    filename = "PPR-Summary-Plot-paired.png",
-    path = here("Figures/Output-summary-plots"),
-    width = 7,
-    height = 5,
-    units = "in",
-    dpi = 300
-  )
-}
-
-ppr_summary_plot
-```
-
-```{r}
-kable_t_test_table_PPR
-```
-
-```{r treatment-comparisons-plot}
-#| fig.cap = "Insulin significantly decreased eEPSC amplitudes in all treatments, with no significant differences between treatments. In this summary figure, each dot represents the mean eEPSC amplitude of a cell relative to the baseline (%) during the last 20-25 minutes of the evoked currents protocol. Black solid shapes indicate the mean ± SE for each sex. \\label{eEPSC-treatment-comparisons-plot}",
-#| fig.scap = "Insulin decreased eEPSC amplitudes in all treatments",
-#| out.width = "100%"
-
-# ----------------------- Final treatment comparisons summary plot ----------------------------
-treatment_comparisons_plot <- cell_coordinates %>%
-  group_by(Treatment) %>%
-  mutate(
-    Treatment = factor(Treatment, levels = list_of_treatments),
-    mean_change = mean(percent_change),
-    sd_change = sd(percent_change)
-  ) %>%
-  ggplot(aes(
-    x = Treatment,
-    y = percent_change,
-    color = Treatment,
-    shape = Sex
-  )) +
-  geom_sina(
-    bw = 12,
-    alpha = 0.8,
-    maxwidth = 0.5,
-    size = 2
-  ) +
-  scale_color_manual(values = c(my_colours[1], my_colours[3], my_colours[5], my_colours[2])) +
-  scale_shape_manual(values = c(17, 16)) +
-  stat_summary(
-    fun.data = mean_se,
-    geom = "pointrange",
-    color = mean_point_colour,
-    size = mean_point_size + 0.2,
-    alpha = 0.8
-  ) +
-  geom_hline(yintercept = 100, linetype = "dashed") +
-  labs(y = "Change in eEPSC amplitude\n25 min after insulin (%)") +
-  theme(legend.position = "right",
-        axis.title.y = element_text(angle = 90, hjust = 0.5)) +
-  guides(color = "none", shape = guide_legend(reverse = T))
-
-treatment_comparisons_plot
-
-if (save_choice == "yes") {
-  ggsave(
-    treatment_comparisons_plot,
-    path = here("Figures", "Output-summary-plots"),
-    file = "Treatment-comparison-plot-percent-change-sex.png",
-    width = 7,
-    height = 5,
-    units = "in",
-    dpi = 300
-  )
-}
-```
-
-## Neurons with similar insulin sensitivity are not clustered
-
-Neurons within the DMH are not identical. Depending on their location, they can express receptors for different neurotransmitters and receive projections from different brain regions [@baileyetal2003; @horst&luiten1986; @thompson&swanson1998]. To see if any sub-populations within the DMH were more sensitive to insulin, I analyzed the spatial distribution of the cells in the study. I plotted the cells on a coordinate system and coloured them according to the percent decrease in evoked current amplitude 20 minutes of insulin exposure (Figure \ref{cell-locations}). Neurons with similar responses to insulin did not cluster together, indicating that there are no regions within the DMH that have a greater specificity to insulin signalling compared to the rest of the DMH.
-
-```{r plot-cell-coordinates}
-#| fig.cap = "The neurons that I recorded were located in the DMH, and most neurons experienced a decrease in evoked current amplitudes (eEPSC) relative to baseline amplitudes. Each neuron is coloured according to the relative decrease in eEPSC amplitude after 20 minutes of insulin exposure. Neurons with similar responses to insulin did not cluster together, and there were no regions within the DMH that had a greater proportion of highly responsive neurons. In this figure (magnified 5X), the top of the third ventricle is located at (0,0). \\label{cell-locations}",
-#| fig.scap = "DMH neurons with similar insulin sensitivity are not clustered together",
-#| out.width = "100%"
-
-# ---------------- Plot cell locations ------------------------------------------------------------------------
-# Using rasterGrob to insert the DMH slice image as a background picture
-# The scale_colour_viridis_c() is only relevant if there are multiple categories
-# If you want to show multiple categories, go to geom_point() and remove 'color = my_colours[4]'
-
-cell_coordinates_plot <-
-  ggplot(cell_coordinates %>% filter(!is.na(percent_change)), aes(x = X, y = Y, color = percent_change)) +
-  annotation_custom(
-    rasterGrob(background_slice_image,
-      width = unit(1, "npc"),
-      height = unit(1, "npc")
-    ),
-    -Inf, 
-    Inf,
-    -Inf,
-    Inf
-  ) +
-  labs(y = "y (µM)", x = "x (µM)", color = "% Change in\ncurrent amplitude\nafter 20 min\nof insulin exposure") +
-  geom_point(size = 2.7,
-             alpha = .99,
-             shape = 16) +
-  scale_color_viridis_c(
-    limits = c(0, max_percent_change),
-    begin = 0.27,
-    end = 1,
-    option = "plasma"
-  ) +
-  coord_fixed(ratio = 1) +
-  xlim(0, 800) +
-  scale_y_reverse(limits = c(800, 0)) +
-  theme(
-    plot.margin = margin(25, 0.5, 0.5, 15),
-    axis.title.y = element_text(angle = 90, margin = margin(r = 17)),
-    legend.title = element_text(size = 14, margin = margin(b = 15))
-  ) +
-  guides(color = guide_colorbar(draw.ulim = T, draw.llim = F, theme = theme(
-    legend.key.width = unit(0.7, "lines"),
-    legend.key.height = unit(10, "lines")
-  )))
-
-
-cell_coordinates_plot
-
-# Save plot
-if (save_choice == "yes") {
-  ggsave(
-    plot = cell_coordinates_plot,
-    filename = "Cell_coordinates_plot_add_insulin.png",
-    path = here("Figures/Cell_coordinates_plot"),
-    width = 14,
-    height = 10,
-    units = "in",
-    dpi = 300,
-    scaling = 1.8
-  )
-}
-```
-
-\cleardoublepage
-
-# Discussion
-
-Insulin is a hormone that is closely associated with food intake, and the DMH is a critical brain region for appetite regulation. Although DMH neurons have receptors for insulin, we know little about the effect of insulin on neuronal activity in the DMH. I compared action potential properties before and after adding insulin to see if insulin affects the intrinsic excitability of DMH neurons. I also recorded current amplitudes in DMH neurons both before and after adding insulin to examine the effect of insulin on excitatory synaptic transmission. Overall, insulin significantly decreased both action potential frequency and evoked current amplitude in DMH neurons. These findings support the hypothesis and predictions of the study, with many implications for future studies on insulin signalling within the DMH.
-
-## How does insulin affect neuronal excitability?
-
-After 20 minutes of insulin exposure, DMH neurons fired fewer action potentials, and of the action potentials that did fire, the amplitude was lower. Action potential frequency and amplitude are indicators of intrinsic excitability [@bean2007], so these results would suggest that DMH neurons are less excitable with insulin present. However, the action potential threshold decreased after insulin exposure. Since threshold is the depolarization required to induce an action potential, a lower threshold means that a neuron can more easily become depolarized to the threshold required to fire an action potential, suggesting an increase in intrinsic excitability. These findings are unexpected, as they indicate opposing changes in intrinsic excitability after insulin exposure.
-
-One potential explanation for this effect comes from the significant increase in half-width that occurred after insulin exposure. Half-width is a measure of the repolarization rate [@bean2007], so a slower repolarization rate could indicate changes in action potential kinetics that decrease the neuron's ability to fire action potentials. This may include a decrease in the function of A-type potassium ion channels following an action potential [@kimetal2005]. The K~v~4 potassium channel in particular has been shown to play a critical role in regulating action potential repolarization in hippocampal neurons [@kimetal2005]. However, since the after-polarization amplitude and time of the after-hyperpolarization showed no significant changes, insulin is not likely delaying potassium influx. Further research is required to determine the mechanism leading to decreased AP firing despite a lowered action potential threshold.
-
-## How does insulin affect neuronal communication?
-
-After being exposed to insulin, DMH neurons showed a significant decrease in evoked current amplitudes at glutamate synapses. This finding shows that insulin decreased excitatory synaptic transmission between DMH neurons. A decrease in excitatory synaptic transmission between DMH neurons could affect neuronal pathways associated with processes like energy metabolism. Insulin signalling likely does not affect neuronal pathways involved with appetite regulation, since changes in excitatory synaptic transmission were independent of feeding state.
-
-I found that evoked current amplitudes continued to decrease even in the presence of the receptor blocker HNMPA. Since blocking insulin receptors did not change the decrease in evoked current amplitude seen in the control group, insulin likely does not use insulin receptors to bind to DMH neurons. When PPP (an insulin-like growth factor 1 receptor antagonist) was present, the evoked current amplitudes did not decrease significantly after insulin exposure. Since blocking insulin-like growth factor 1 receptors removed the decrease in excitatory synaptic transmission seen in the control group, this suggests that insulin requires insulin-like growth factor 1 receptors to influence synaptic transmission in the DMH.
-
-It is unclear why insulin would preferentially bind to insulin-like growth factor 1 receptors instead of its own receptor on DMH neurons. And since insulin receptors and insulin-like growth factor 1 receptors share many of the same downstream signalling pathways [@demeyts2000], this does not currently suggest that any specific receptor substrate is favoured over another. The age of the animals in the study could provide a possible explanation for this difference. Insulin-like growth factor 1 signalling has been shown to play a critical role in postnatal brain development (\< 2 months) [@becketal1995], which includes the young rats in this study. Insulin-like growth factor 1 receptors may have exhibited a higher affinity to insulin than insulin receptors because of the importance of insulin-like growth factor 1 receptor activation to brain development.
-
-## What is the mechanism of insulin signalling in the DMH?
-
-The paired pulse ratio was unchanged after insulin exposure for the control, fasting and PPP groups, indicating that insulin likely decreases excitatory synaptic transmission through a post-synaptic mechanism. One potential mechanism is the recruitment of mechanistic target of rapamycin (mTOR) through the phosphatidylinositol 3-kinase (P13K) pathway. mTOR is a serine/threonine protein kinase that has been shown to regulate excitatory synaptic transmission [@mccabeetal2020]. mTOR regulates the number of AMPA receptors expressed on the cell surface [@wangetal2006], which then affects the ability of a cell to respond to glutamate. If mTOR were to reduce the number of AMPA receptors, this would decrease excitatory synaptic transmission since there would be fewer receptors available for glutamate to bind to.
-
-A second post-synaptic mechanism of decreased excitatory synaptic transmission could be changes in the number of active ion channels on cell surfaces [@omalleyetal2003]. In the hippocampus, insulin can inhibit neuronal activity through the activation of ATP-sensitive potassium (K~ATP~) channels [@omalleyetal2003], and there is evidence that there may be a body-weight-dependent mechanism of insulin/K~ATP~ signalling in hypothalamic neurons [@spanswicketal2000]. K~ATP~ channels are activated through the P13K pathway, which can be activated through both insulin receptors and insulin-like growth factor 1 receptors [@demeyts2000].
-
-When HNMPA was present, the paired pulse ratio increased significantly after insulin exposure. This suggests that blocking insulin receptors causes insulin to use a pre-synaptic mechanism to decrease evoked current amplitudes. This may have been through the activation of the mTORC2 complex, which has been shown to decrease neurotransmitter release through pre-synaptic mechanisms [@mccabeetal2020].
-
-<!-- Although mTOR is present in either the mTORC1 or mTORC2 complexes, which each have distinctive roles in altering synaptic transmission [@anglikeretal2015], both forms are required for neuronal function.  -->
-
-In all treatments, DMH neurons responded similarly to insulin in males and females. When observing changes in evoked current amplitudes, I found no significant differences between the sexes over time. These findings suggest that there are no sex-based differences in the intracellular pathways affected by insulin. However, this does not mean that insulin signalling is completely independent of sex. All rats were younger than 44 days old, which is less than the average onset of puberty [@mccutcheon&marinelli2009]. At this age, many sex-based differences are not yet present. Experiments with older animals are required before any conclusive sex-based differences can be determined.
-
-## What are the next steps?
-
-We now know that insulin decreases excitatory current amplitudes in DMH neurons, which provides opportunities for research on insulin signalling in the DMH. The goal of future studies is to learn which specific processes insulin initiates when binding to DMH neurons, and how this affects neuronal communication, and ultimately physiology. As the concentration of insulin used in this study is much higher than hypothalamic insulin levels (approximately 0.16 nM) [@baskinetal1983], future research could examine if using physiologically relevant insulin concentrations results in the same changes in neuronal activity. Future studies could also use a wider range of insulin concentrations to determine the optimal insulin concentrations required to modify synaptic transmission and neuronal excitability.
-
-The insulin receptor blocker experiments suggested that insulin-like growth factor 1 receptors are responsible for insulin binding in the DMH. Recordings conducted in the presence of both receptor antagonists could confirm if insulin binds primarily to insulin-like growth factor 1 receptors, insulin receptors, a mixture of both receptors, or a novel receptor not directly associated with insulin. Since each of these receptors is associated with different pathways within cells [@demeyts2000], identifying the binding mechanism of insulin on DMH neurons could provide insight into the specific processes that insulin uses to influence neuronal communication. As mTOR is an important potential source of insulin-signalling in the DMH, applying antagonists of the P13K pathway, mTOR and its downstream effectors could provide information on the specific intracellular processes that influence neuronal activity and synaptic transmission.
-
-There are also opportunities for whole-animal studies, such as injecting insulin into the DMH and monitoring changes in body weight and energy metabolism. This study raises new questions about the effects of health on insulin signalling in the DMH. The rats used in this study were young and healthy. Could conditions like diabetes, which affects insulin levels in the body, affect DMH neurons? Would DMH neurons respond differently in animals with health conditions like obesity? How would insulin signalling in the DMH change in older animals?
-
-## Conclusions
-
-Insulin acts in the DMH to decrease the amount of neuronal communication between neurons and alter intrinsic excitability. It achieves this response by binding to a receptor (likely an insulin-like growth factor 1 receptor), to activate an intracellular pathway that decreases excitatory synaptic transmission and action potential frequency. These findings contribute to research on the neurophysiological mechanisms of energy metabolism, with many implications for health research.
-
-Exploring insulin signalling within the DMH also contributes to our understanding of the actions of insulin in the brain, and its involvement with energy metabolism. These findings have direct applications to understanding the effects of health conditions like diabetes, where the brain experiences reduced insulin levels and/or impaired insulin signalling [@blazquezetal2014]. Learning more about the interactions between insulin and DMH neurons could also provide insight into long-term changes in appetite and energy metabolism associated with obesity, with the possibility of contributing to the development of new obesity therapies.
-
-\cleardoublepage
-
-# Acknowledgements
-
-I would like to thank my honours supervisor, Dr. Karen Crosby, who guided me throughout every step of this research project, listened carefully to my ideas, and taught me how to become an independent researcher.
-
-I would also like to thank my committee member, Dr. Emily Austen, for her thoughtful feedback on this project and for giving me new ideas on statistical modelling.
-
-Thank you to Jackie Jacob-Vogels for her close attention to detail while looking after the rats.
-
-Kate Weldon and Selena Winchester were wonderful lab volunteers who made it possible to complete experiments during the semester.
-
-Jasmine Pannozzo-Oddy, a 2024 Independent Studies student, has had a significant impact on what I learned during this project through her work in exploring the effect of insulin on *inhibitory* synaptic transmission in the DMH.
-
-Thank you especially to my family, who listened (very, very) patiently to many variations of my presentations and remained enthusiastic at all stages of the research project. I'd like to thank my Aunt, Linda Fraser, in particular, who waited for me after long hours in the lab and frequently sat down with me to ask me about my project. And of course, my Mom, for everything she has done.
-
-Thank you to Ruby, and all the rats.
-
-\vspace*{\fill}
-
-```{=tex}
-\begin{centering}
-
-\adforn{17}
-
-\end{centering}
-```
-*This research was partly funded by a grant from the Natural Sciences and Engineering Research Council of Canada (NSERC) held by my supervisor. I also received funding through the Research New Brunswick Summer Studentship (2023).*
-
-\cleardoublepage
-
-# References
 
 ```{r exit-knitting}
 knitr::knit_exit()
@@ -1962,7 +1816,7 @@ knitr::knit_exit()
 # This code is commented out because it causes issues with knitting
 # R thought that there were duplicate chunks
 
-# knitr::purl(input = here::here("Thesis/Thesis.Rmd"), output = here::here("Scripts/Scripts-from-Thesis-Rmd.R"), documentation = 0)
+#knitr::purl(input = here::here("Thesis/Crosby-Lab-Code.Rmd"), output = here::here("Scripts/Scripts-from-Crosby-Lab-Code-Rmd.R"), documentation = 0)
 ```
 
 # Get Presentation Plots
@@ -2346,23 +2200,3 @@ ggsave(
     dpi = 300
   )
 ```
-
-<!-- **Hormone**: A molecule that travels through the bloodstream, or within organs, to change the activity of other cells. Insulin is a hormone that is released by the pancreas to control blood sugar. -->
-
-<!-- **Neurotransmitter**: A small molecule that interacts with a neuron and changes its activity. Neurons communicate by releasing neurotransmitters onto each other. -->
-
-<!-- **Inhibition**: A change within a neuron that decreases its activity and interactions with other neurons. -->
-
-<!-- **GABA**: Short for gamma-aminobutyric acid, this is an inhibitory neurotransmitter. When GABA binds to a neuron, it decreases the likelihood of the neuron communicating with other neurons. -->
-
-<!-- **Excitation**: The opposite of inhibition. When a neuron is excited (for example, by an excitatory neurotransmitter), its activity increases and it interacts with other neurons. -->
-
-<!-- **Glutamate**: An excitatory neurotransmitter that binds to a neuron and increases its activity. -->
-
-<!-- **Ion channel**: A molecule located within a cell membrane that allows specific ions to enter and/or exit the cell. -->
-
-<!-- **Neuronal communication**: The amount of interaction between two or more neurons. -->
-
-<!-- **Artificial cerebrospinal fluid**: Artificial cerebrospinal fluid is a solution containing ions, sugars, and other molecules to mimic the cerebrospinal fluid that surrounds the brain and spinal cord. I used fluid that was continuously bubbled with oxygen to maintain healthy, living brain slices for the recordings. -->
-
-<!-- **ANOVA**: An abbreviation for analysis of variance. This is a statistical test that allows us to quantify the differences between multiple groups. I used a multivariate repeated measures ANOVA to explore changes in current amplitude change over time. Since the variables (in this case, current) are measured repeatedly from the same subject, it is called repeated measures. -->

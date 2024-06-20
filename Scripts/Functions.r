@@ -308,6 +308,7 @@ make_pruned_summary_plots <- function(category,
                                       treatment,
                                       data,
                                       color_choice,
+                                      include_representative_trace,
                                       representative_trace,
                                       signif_stars) {
   df <-
@@ -428,8 +429,18 @@ make_pruned_summary_plots <- function(category,
       inherit.aes = F,
       size = 8,
       family = plot_font_family
-    ) +
-    annotation_custom(representative_trace, xmin = 1, xmax = 8, ymin = 0, ymax = 40)
+    )
+  }
+  
+  if (include_representative_trace == "yes") {
+    treatment_plot <- treatment_plot +
+      annotation_custom(
+        representative_trace,
+        xmin = 1,
+        xmax = 8,
+        ymin = 0,
+        ymax = 40
+      )
   }
   
   # Save plots to a subfolder called 'Output-summary-plots' within Figures/

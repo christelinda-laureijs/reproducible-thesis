@@ -1,0 +1,23 @@
+\contentsline {section}{Evoked Currents}{1}{section*.2}%
+\contentsline {subsection}{Raw plots}{1}{section*.3}%
+\contentsline {subsection}{Pruned individual plots}{1}{section*.4}%
+\contentsline {subsection}{Pruned summary plots}{1}{section*.5}%
+\contentsline {subsection}{Statistical analysis}{1}{section*.6}%
+\contentsline {subsection}{Levene's test}{2}{section*.7}%
+\contentsline {subsection}{Univariate Shapiro}{2}{section*.8}%
+\contentsline {subsection}{Box's M}{2}{section*.9}%
+\contentsline {subsection}{Multivariate normality}{2}{section*.10}%
+\contentsline {subsection}{T-tests}{2}{section*.11}%
+\contentsline {subsection}{Plot eEPSCs}{2}{section*.12}%
+\contentsline {section}{Cell Coordinates Plot}{7}{section*.17}%
+\contentsline {section}{Final Treatment Comparisons Plot}{8}{section*.19}%
+\contentsline {section}{Paired Pulse Ratio}{9}{section*.21}%
+\contentsline {subsection}{Shapiro}{9}{section*.22}%
+\contentsline {subsection}{PPR Plots}{9}{section*.23}%
+\contentsline {section}{Action Potentials}{11}{section*.25}%
+\contentsline {subsection}{AP Frequency t-test}{11}{section*.26}%
+\contentsline {subsection}{Shapiro test}{11}{section*.27}%
+\contentsline {subsection}{Wilcoxon Test}{11}{section*.28}%
+\contentsline {subsection}{Summary plot}{11}{section*.29}%
+\contentsline {subsection}{Individual AP plots}{11}{section*.30}%
+\contentsline {section}{References}{13}{section*.32}%
