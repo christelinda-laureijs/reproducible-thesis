@@ -682,6 +682,7 @@ raw_df %>%
   theme_void() +
   theme(legend.position = "none")
 ```
+
 ## Practice
 
 If you want some extra practice, try changing the code and seeing what happens. You can also try these questions.
