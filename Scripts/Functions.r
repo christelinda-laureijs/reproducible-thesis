@@ -309,7 +309,7 @@ make_pruned_summary_plots <- function(category,
                                       data,
                                       color_choice,
                                       representative_trace,
-                                      ...) {
+                                      signif_stars) {
   df <-
     data %>% filter(Category == category) %>% filter(Treatment == treatment)
   
@@ -418,6 +418,7 @@ make_pruned_summary_plots <- function(category,
       )
   }
   
+  if (signif_stars == "yes") {
   treatment_plot <- treatment_plot +
     geom_text(
       data = t_test_eEPSCs %>% filter(Treatment == treatment),
@@ -429,7 +430,7 @@ make_pruned_summary_plots <- function(category,
       family = plot_font_family
     ) +
     annotation_custom(representative_trace, xmin = 1, xmax = 8, ymin = 0, ymax = 40)
-  
+  }
   
   # Save plots to a subfolder called 'Output-summary-plots' within Figures/
   if (save_choice == "yes") {
