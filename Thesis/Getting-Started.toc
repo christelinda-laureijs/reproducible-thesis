@@ -3,7 +3,7 @@
 \contentsline {subsection}{What are the advantages of writing in R?}{1}{section*.4}%
 \contentsline {subsubsection}{Reproducibility}{1}{section*.5}%
 \contentsline {subsubsection}{Efficiency}{2}{section*.6}%
-\contentsline {subsubsection}{No manual formatting}{2}{section*.7}%
+\contentsline {subsubsection}{No more manual formatting!}{2}{section*.7}%
 \contentsline {subsubsection}{Beautiful typography}{2}{section*.8}%
 \contentsline {subsubsection}{Free}{3}{section*.9}%
 \contentsline {subsubsection}{Longevity}{3}{section*.10}%
@@ -16,13 +16,13 @@
 \contentsline {section}{How-Tos}{6}{section*.17}%
 \contentsline {subsection}{Inserting citations}{6}{section*.18}%
 \contentsline {subsection}{Inserting plots}{6}{section*.19}%
-\contentsline {subsection}{Inserting images}{6}{section*.21}%
-\contentsline {subsection}{Analysis}{9}{section*.23}%
-\contentsline {subsection}{In-text R code}{9}{section*.24}%
-\contentsline {subsubsection}{Extracting P-values}{9}{section*.25}%
+\contentsline {subsection}{Inserting images}{8}{section*.21}%
+\contentsline {subsection}{Analysis}{8}{section*.23}%
+\contentsline {subsection}{In-text R code}{8}{section*.24}%
+\contentsline {subsubsection}{Extracting P-values}{8}{section*.25}%
 \contentsline {subsubsection}{Rounding}{11}{section*.27}%
-\contentsline {subsection}{Tables}{11}{section*.28}%
+\contentsline {subsection}{Tables}{12}{section*.28}%
 \contentsline {subsection}{\LaTeX ~Basics}{14}{section*.29}%
-\contentsline {subsection}{Changing the formatting}{14}{section*.30}%
-\contentsline {subsubsection}{Other Tools}{14}{section*.31}%
-\contentsline {section}{References}{15}{section*.32}%
+\contentsline {subsection}{Changing the formatting}{15}{section*.30}%
+\contentsline {subsubsection}{Other Tools}{15}{section*.31}%
+\contentsline {section}{References}{16}{section*.32}%

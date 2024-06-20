@@ -1,0 +1,69 @@
+title {
+    display: none;
+}
+
+body {
+  font-family:Segoe UI;
+}
+
+h1,h2,h3,h4,h5,p {
+  font-family:Segoe UI;
+  padding-top:10px;
+}
+
+h1.title {
+  font-size:45px;
+}
+
+h1 {
+  font-weight:300;
+  font-size:30px;
+}
+
+h2 {
+  font-weight:650;
+  font-size:20px;
+  color: #565756;
+}
+
+h3 {
+  font-weight:400;
+  font-size:18px;
+  color: #565756;
+  font-style:italic;
+}
+
+h4 class="author" {
+  font-size:12px;
+  font-family:Lato;
+}
+
+p {
+  font-size:16px;
+  
+}
+
+
+pre {
+  border:none;
+}
+
+code.hljs {
+  font-weight:550;
+  font-size:14px;
+}
+
+.tocify {
+    border: 0px;
+    border-radius: 4px;
+}
+
+
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+    z-index: 2;
+    color: #fff;
+    background-color: #f5f5f5;
+    border-color: #f5f5f5;
+    color: #333333;
+    font-weight:bold;
+}
