@@ -385,14 +385,14 @@ plant_aov_summary[[1]][["Pr(>F)"]]
 ```
 The first p-value is the p-value associated with the treatment groups. The second is NA because it is for the model residuals. To extract the first p-value, add another [[1]] to select the first element of this list. The final code is:
 
-```{r}
+```{r extract-p-values-first-element}
 plant_aov_summary[[1]][["Pr(>F)"]][[1]]
 ```
 ### Rounding
 
 To make "prettier" p-values you could round them to 3 digits using the `round()` function. However, I would suggest using the `pvalString()` function from the `LazyWeave` package. This rounds p-values to three digits, and automatically formats them to publication style p-values if they are smaller or larger than typical endpoints. As an example, pvalString(0.00000005) will become `r pvalString(0.0000005)`.
 
-```{r}
+```{r extract-p-values-pval-string}
 pvalString(plant_aov_summary[[1]][["Pr(>F)"]][[1]])
 ```
 
@@ -412,18 +412,18 @@ summary(plant_data_aov)
 
 The first step is to use the `tidy()` function from the `broom` library. This reformats the summary object to a dataframe and does some automatic cleaning (for example, it removes the significance codes and converts the column names to code-friendly names with no spaces).
 
-```{r echo=T}
+```{r tidy-anova-table, echo=T}
 plant_data_aov %>%
   tidy()
 ```
 
 The next step is to round the values and re-format the p-values. We can also change the term names to title case using `str_to_title(term)`. Lastly, we can use the `rename()` function to give the columns better names.
 
-```{r echo=T}
+```{r tidy-mutate-anova-table, echo=T}
 plant_data_aov %>%
   tidy() %>%
   mutate(
-    statistic = round(statistic, 2),
+    across(sumsq:statistic,round, 2),
     p.value = pvalString(p.value),
     term = str_to_title(term)
   ) %>%
@@ -431,14 +431,17 @@ plant_data_aov %>%
     Term = term,
     'Sum of Squares' = sumsq,
     'Mean Square' = meansq,
-    F = statistic,
+    'F-statistic' = statistic,
     'p-value' = p.value
   )
 ```
 
-The last step is to use the `kable()` package to format the table to modify the table style and presentation. The new code section looks like this:
+The last step is to use the `kable()` package to modify the table style and presentation. The documentation for the `kable` and `kableExtra` packages has lots of useful information on the available arguments. Some useful ones include `align`, which allows you to specify how the text is aligned in the columns. For example, `align = c('l', 'c', 'l')` will generate columns that are left-, centre- and left-aligned.
 
-```{r eval=F, echo=T}
+
+The new code section looks like this:
+
+```{r kable-snippet, eval=F, echo=T}
 kable(booktabs = T,
         linesep = '',
         escape = F) %>%
@@ -449,7 +452,7 @@ kable(booktabs = T,
 
 The final table looks publication-ready!
 
-```{r eval=T}
+```{r final-anova-table, eval=T}
 plant_data_aov %>%
   tidy() %>% 
   mutate(
@@ -469,8 +472,6 @@ plant_data_aov %>%
         caption = "Plant growth varies significantly with treatments. ANOVA summary table for a model examining the effect of treatment on plant mass.") %>%
   column_spec(1,
               width = "1.5in")
-  
-
 ```
 
 
@@ -502,7 +503,7 @@ To create high-quality schematics, I would highly recommend [Inkscape](https://i
 
 # References
 
-```{r}
+```{r exit-knitting}
 # Use knit_exit() anytime throughout your document to create a stop point. This is useful for if you only have the first part of your document finished or if you are troubleshooting.
 knitr::knit_exit()
 ```
@@ -511,7 +512,7 @@ knitr::knit_exit()
 
 Here are some chunks if you need a refresher with R.
 
-```{r}
+```{r r-calculator}
 # You can use R as a calculator
 2+3
 
@@ -548,7 +549,7 @@ min(number_list)
 
 The following sample code is for a project where the goal was to analyze changes in a neuron's current amplitude over time.
 
-```{r}
+```{r import-data}
 # Import cell data from "Sample-data.csv"
 # This comes from the folder Data/
 # Header = True because I already have named my columns
@@ -556,12 +557,12 @@ The following sample code is for a project where the goal was to analyze changes
 raw_df <- read.csv(here("Data/Sample-data.csv"), header = T)
 ```
 
-```{r}
+```{r head-data}
 # Get a preview of the first few rows of the data
 head(raw_df)
 ```
 
-```{r}
+```{r mutate-data}
 # Clampex records negative values for currents
 # Negative transform P1 and P2
 
@@ -591,13 +592,13 @@ raw_df %>%
    filter(sex == "Male")
 ```
 
-```{r, eval=F}
+```{r errors-two, eval=F}
 # What is the problem below?
 raw_df %>%
   filter(Sex = "Female")
 ```
 
-```{r, eval=F}
+```{r errors-three, eval=F}
 # What is wrong with the code below?
 raw_df %>%
   filter(Sex == "Female"')
@@ -608,13 +609,13 @@ raw_df %>%
 
 The goal is to make a scatterplot of P1 vs. Time for various cells. First, I am showing an example of plotting filtering just one recording of interest. This has the ID "L".
 
-```{r}
+```{r filter-l}
 # Filter one recording of interest
 cell_L <- raw_df %>%
   filter(Letter == "L")
 ```
 
-```{r}
+```{r plot-l}
 # Plot cell L only
 # P1 is on the y-axis
 # Time is on the x-axis
@@ -625,7 +626,7 @@ ggplot(cell_L, aes(x = Time, y = P1)) +
 ```
 To add customizations to your plot, you can keep adding new layers. The first layer that I'm adding here is the labs() layer to make more informative axis titles.
 
-```{r}
+```{r plot-l-axis-labels}
 # Example: adding better axis labels
 ggplot(cell_L, aes(x = Time, y = P1)) +
   geom_point() +
@@ -637,7 +638,7 @@ ggplot(cell_L, aes(x = Time, y = P1)) +
 
 I recorded cells in 5-minute intervals. I included `color = ID` to colour each recording separately. This is just to show an example of how you can include additional variables in a plot.
 
-```{r}
+```{r plot-l-color-id}
 # Color by ID
 ggplot(cell_L, aes(x = Time, y = P1, color = ID)) +
   geom_point() +
@@ -649,7 +650,7 @@ You can use `ggplot` to make beautiful plots very easily. Here are some examples
 The plot below shows the data for all of my cells on the same plot. I used `color = Letter` to make each cell a different colour.
 
 
-```{r}
+```{r plot-all-cells}
 # Plot all cells
 # Use a different color for each recording
 
@@ -661,7 +662,7 @@ ggplot(raw_df, aes(x = Time, y = P1, color = Letter)) +
 
 In Excel and Prism, it is very difficult to make faceted plots. R makes this very simple. Here is a faceted plot showing all of the cells from male rats with the PPP treatment applied. It is *much* easier to use facet plots instead of creating individual scatterplots for each letter.
 
-```{r}
+```{r facet-plot}
 raw_df %>%
   filter(Sex == "Female" & Treatment == "PPP") %>%
   ggplot(aes(x = Time, y = P1, color = Letter)) +
@@ -673,7 +674,7 @@ raw_df %>%
 
 You can use R to make art!
 
-```{r}
+```{r art-example}
 # Artistic example!
 raw_df %>%
   filter(Time <=30) %>%
