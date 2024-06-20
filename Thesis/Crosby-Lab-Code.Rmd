@@ -904,10 +904,6 @@ full_ap_multiplot
 knitr::knit_exit()
 ```
 
-
-
-
-
 # Evoked Currents (eEPSCs) Analysis
 
 ```{r eEPSC-data-import-data, include = FALSE}
