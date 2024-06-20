@@ -375,7 +375,7 @@ If you click on the model summary object in RStudio, it will open the model in a
 #| out.width = "100%",
 #| purl = FALSE
 
-knitr::include_graphics(here("Figures/Getting-Started-Figures/Extract-values-annotated.png"))
+knitr::include_graphics(here("Figures/Extract-values-annotated.png"))
 ```
 
 If you're stuck, you could also use the `str()` function to see the structure of the model. This can provide a list of the parts of the model and give you an idea of which variables you need to select the specific p-value that you want.

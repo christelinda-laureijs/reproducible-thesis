@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.6.14)  20 JUN 2024 17:58
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.6.14)  20 JUN 2024 18:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1082,8 +1082,8 @@ File: ../Figures/Insulin-schematic.png Graphic file (type bmp)
 [8]
 
 [9]
-File: ../Figures/Getting-Started-Figures/Extract-values-annotated.png Graphic file (type bmp)
-<../Figures/Getting-Started-Figures/Extract-values-annotated.png>
+File: ../Figures/Extract-values-annotated.png Graphic file (type bmp)
+<../Figures/Extract-values-annotated.png>
 LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <12> not available
 (Font)              Font shape `TU/lmtt/b/n' tried instead on input line 562.
 
@@ -1115,8 +1115,8 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 21300 strings out of 476212
- 394398 string characters out of 5784671
+ 21299 strings out of 476212
+ 393931 string characters out of 5784671
  1930560 words of memory out of 5000000
  43497 multiletter control sequences out of 15000+600000
  568593 words of font info for 116 fonts, out of 8000000 for 9000
