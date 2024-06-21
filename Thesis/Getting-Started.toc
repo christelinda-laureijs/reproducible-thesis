@@ -8,10 +8,10 @@
 \contentsline {subsubsection}{Free}{3}{section*.9}%
 \contentsline {subsubsection}{Longevity}{3}{section*.10}%
 \contentsline {subsubsection}{Version Control}{3}{section*.11}%
-\contentsline {subsection}{What are the disadvantages of writing in R?}{3}{section*.12}%
-\contentsline {subsubsection}{Learning curve}{3}{section*.13}%
+\contentsline {subsection}{What are the disadvantages of writing in R?}{4}{section*.12}%
+\contentsline {subsubsection}{Learning curve}{4}{section*.13}%
 \contentsline {subsubsection}{Troubleshooting}{4}{section*.14}%
-\contentsline {subsubsection}{Separate content and layout}{4}{section*.15}%
+\contentsline {subsubsection}{Separate content and layout}{5}{section*.15}%
 \contentsline {subsubsection}{Collaboration issues}{5}{section*.16}%
 \contentsline {section}{How-Tos}{6}{section*.17}%
 \contentsline {subsection}{Inserting citations}{6}{section*.18}%

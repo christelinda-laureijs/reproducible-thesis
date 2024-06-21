@@ -195,13 +195,15 @@ Writing a paper in R can be challenging at first, but it is a rewarding process 
 
 *A note for Mac Users:* When you knit the document the first time, you might see error messages with something about Cairo and your graphics device. Every device is different, but you might be able to fix it by installing XQuartz and then Cairo.
 
+You may also receive error messages about missing fonts. To fix this, replace `plot_font_family = "Segoe UI"` with a font that is on your system.
+
 *A note for all users:* If you're getting error messages about images not being found, don't forget to check your knit settings (dropdown arrow by the *Knit* icon). Click on the Project Directory setting. You may need to switch the Knit Directory from *Document Directory* to *Project Directory* or the other way around. If one directory isn't working, try the other!
 
 ## What are the advantages of writing in R?
 
 ### Reproducibility
 
-Your analyses and text are all in one place, so you will always know what you did to create a specific plot or how you got a certain p-value. Others will be able to follow your process by reading your code, and if you make your code and data availble, they can replicate your analyses (and ideally end up with the same numbers!).
+Your analyses and text are all in one place, so you will always know what you did to create a specific plot or how you got a certain p-value. Others will be able to follow your process by reading your code, and if you make your code and data availble, they can replicate your analyses (and ideally end up with the same results!).
 
 ### Efficiency
 
@@ -211,13 +213,15 @@ Since you can define your colours, fonts, and ggplot theme at the beginning of y
 
 ### No more manual formatting!
 
-You don't need to worry about the layout of your document at all. You do not need to manually number your figures or subheadings, format your Table of Contents, or readjust paragraphs each time you insert or remove a picture. You can easily cross-reference figures, equations and chapters. To insert a list of figures, just type \\listoffigures - see, it's very doable!
+You don't need to worry about the layout of your document at all. You do not need to manually number your figures or subheadings, format your Table of Contents, or readjust paragraphs each time you insert or remove a picture. You can easily cross-reference figures, equations and chapters. To insert a list of figures, just type `\\listoffigures` - see, it's very doable!
 
 Since RMarkdown is a plain-text document, your computer will be able to handle large documents much more easily than Word. It will not get buggy or slow when you have lots of high-resolution pictures.
 
 ### Beautiful typography
 
-When you knit a document using a PDF, R uses \LaTeX. \LaTeX\ is a typesetting engine that uses mathematical algorithms to arrange text into the most ideal way according to typesetting rules. The resulting documents look very elegant. \LaTeX-produced documents look very distinctive and after a while, you'll be able to easily tell the differences between a document produced using \LaTeX\ vs. Word.
+When you knit your document into a PDF, R uses \LaTeX. \LaTeX\ is a typesetting engine that uses mathematical algorithms to arrange text into the most ideal way according to typesetting rules. For example, it will justify the text to the right and left sides without leaving large gaps between words.
+
+The resulting documents look very elegant. \LaTeX-produced documents look very distinctive and after a while, you'll be able to easily tell the differences between a document produced using \LaTeX\ vs. Word.
 
 Even if you stick to just the defaults, your documents will look great. If you need to use equations, \LaTeX\ is one of the best ways to create clean, well-aligned equations. Look in the \LaTeX\ documentation to learn how to align by equal signs or other characters!
 
@@ -250,7 +254,7 @@ If you're not familiar with R, RMarkdown, and \LaTeX, it will take much longer t
 
 ### Troubleshooting
 
-Things will break down, and sometimes you'll spend way more time than you had anticipated dealing with error messages. During these times, it does seem much easier to just open a Word document and type there.
+Things will break down, and you'll spend way more time than you had anticipated dealing with error messages. During these times, it does seem much easier to just open a Word document and start typing. 
 
 To minimize errors, I would suggest these things:
 
@@ -261,6 +265,7 @@ To minimize errors, I would suggest these things:
   - Frequently use `Run` -> `Restart R and clear output` to prevent objects from cluttering your workspace and causing dependencies. For example, if you define a variable in the console, but not your document you won't realize the problem until you have a fresh R session. 
   - Use knitr::knit_exit() to stop knitting early. It can be a useful way to identify the specific line of code that is causing knitting issues.
   - Make sure that your PDF is closed when you knit. If you're knitting the file and the PDF is still open somewhere on your computer, it will break the code.
+  - Be sure to use R Projects [# expand on R projects].
 
 ### Separate content and layout
 
@@ -281,11 +286,7 @@ Citation managers like Zotero (free; highly recommended) make it easy to link yo
 
 [Insert info about setting up citation keys]
 
-Now, you can type something like [\@demeyts2000], and the citation will be rendered as an in-text citation.
-
-\begin{quote}
-Insulin is a hormone that regulates blood glucose levels, digestive processes, and body weight [@demeyts2000].
-\end{quote}
+Now, you can type something like [\@demeyts2000], and the citation will be rendered as an in-text citation: Insulin is a hormone that regulates blood glucose levels, digestive processes, and body weight [@demeyts2000].
 
 This document uses APA formatting because of the 'apa.csl' file in the `Templates/` folder. If you want a different format, you can download the appropriate CSL file online and replace `apa.csl` with your new csl file name in the YAML header.
 
@@ -300,13 +301,17 @@ You can plot figures in R. This is one of the best parts - R will generate the p
 
 cars %>% 
   ggplot(aes(x = speed, y = dist)) +
-  geom_point() +
+  geom_point(color = my_colours[1]) +
   labs(x = "Speed", y = "Distance")
 ```
 
 ## Inserting images
 
-You can insert images that were generated elsewhere (.PNG, .JPG, etc.) through knitr. fig.cap can be quite long, and you can also add a label in the form of '\\\\label{text}' When you write a reference to Figure '\\\\label{insulin-pathway}', \LaTeX\ will print out the text "Figure \ref{insulin-pathway}". If you reorder your figures, \LaTeX\ will automatically change the figure numbers.
+You can insert images that were generated elsewhere (.PNG, .JPG, etc.) through knitr. This gives you the option to add figure captions, adjust the relative size of the image, and much more. The chunk option `fig.cap` is for the figure caption that will appear within the paper. This caption can be quite long.
+
+### Figure References
+
+At the end of the `fig.cap` chunk option, you also have the option of adding a figure label in the form of '\\\\label{text}'. When you write a reference to Figure '\\\\label{insulin-pathway}', \LaTeX\ will print out the text "Figure \ref{insulin-pathway}". If you reorder your figures, \LaTeX\ will automatically change the figure numbers.
 
 *Important:* To use `fig.cap` and `fig.scap`, you must define an `out.width` in the chunk options. If not, R will not recognize these as \LaTeX\ commands.
 
@@ -514,193 +519,3 @@ To create high-quality schematics, I would highly recommend [Inkscape](https://i
 # Use knit_exit() anytime throughout your document to create a stop point. This is useful for if you only have the first part of your document finished or if you are troubleshooting.
 knitr::knit_exit()
 ```
-
-# R Review
-
-Here are some chunks if you need a refresher with R.
-
-```{r r-calculator}
-# You can use R as a calculator
-2+3
-
-3*5
-
-2/5
-```
-
-```{r assign-variables}
-# You can assign values to variables
-# Make x equal to 2
-x <- 2
-
-# Use variables in equations
-3*x
-
-x + 2
-```
-
-
-```{r making-lists}
-# Defining lists in R
-
-number_list <- c(1, 9, 8, 3, 4, 2, 2)
-
-
-# Use functions like mean()
-mean(number_list)
-max(number_list)
-min(number_list)
-```
-
-## Importing data
-
-The following sample code is for a project where the goal was to analyze changes in a neuron's current amplitude over time.
-
-```{r import-data}
-# Import cell data from "Sample-data.csv"
-# This comes from the folder Data/
-# Header = True because I already have named my columns
-
-raw_df <- read.csv(here("Data/Sample-data.csv"), header = T)
-```
-
-```{r head-data}
-# Get a preview of the first few rows of the data
-head(raw_df)
-```
-
-```{r mutate-data}
-# Clampex records negative values for currents
-# Negative transform P1 and P2
-
-raw_df <- raw_df %>%
-  mutate(
-    P1 = P1*-1,
-    P2 = P2*-1
-  )
-```
-
-## Filter data
-
-```{r filtering}
-# Show cells from male rats only
-
-raw_df %>%
-  filter(Sex == "Male")
-```
-
-## Dealing with errors
-
-R is very picky about typos, upper-case vs. lower-case, and other details. What are the mistakes below?
-
-```{r errors, eval=F}
-# What is the mistake below?
-raw_df %>%
-   filter(sex == "Male")
-```
-
-```{r errors-two, eval=F}
-# What is the problem below?
-raw_df %>%
-  filter(Sex = "Female")
-```
-
-```{r errors-three, eval=F}
-# What is wrong with the code below?
-raw_df %>%
-  filter(Sex == "Female"')
-
-```
-
-## Plotting
-
-The goal is to make a scatterplot of P1 vs. Time for various cells. First, I am showing an example of plotting filtering just one recording of interest. This has the ID "L".
-
-```{r filter-l}
-# Filter one recording of interest
-cell_L <- raw_df %>%
-  filter(Letter == "L")
-```
-
-```{r plot-l}
-# Plot cell L only
-# P1 is on the y-axis
-# Time is on the x-axis
-# Use geom_point() because this is a scatterplot
-
-ggplot(cell_L, aes(x = Time, y = P1)) +
-  geom_point()
-```
-To add customizations to your plot, you can keep adding new layers. The first layer that I'm adding here is the labs() layer to make more informative axis titles.
-
-```{r plot-l-axis-labels}
-# Example: adding better axis labels
-ggplot(cell_L, aes(x = Time, y = P1)) +
-  geom_point() +
-  labs(
-    x = "Time (min)",
-    y = "eEPSC amplitude (pA)"
-  )
-```
-
-I recorded cells in 5-minute intervals. I included `color = ID` to colour each recording separately. This is just to show an example of how you can include additional variables in a plot.
-
-```{r plot-l-color-id}
-# Color by ID
-ggplot(cell_L, aes(x = Time, y = P1, color = ID)) +
-  geom_point() +
-  theme_classic()
-```
-
-You can use `ggplot` to make beautiful plots very easily. Here are some examples that show some of ggplot's capabilities.
-
-The plot below shows the data for all of my cells on the same plot. I used `color = Letter` to make each cell a different colour.
-
-
-```{r plot-all-cells}
-# Plot all cells
-# Use a different color for each recording
-
-ggplot(raw_df, aes(x = Time, y = P1, color = Letter)) +
-  geom_point() +
-  theme_minimal() +
-  theme(legend.position = "none") # hide legend
-```
-
-In Excel and Prism, it is very difficult to make faceted plots. R makes this very simple. Here is a faceted plot showing all of the cells from male rats with the PPP treatment applied. It is *much* easier to use facet plots instead of creating individual scatterplots for each letter.
-
-```{r facet-plot}
-raw_df %>%
-  filter(Sex == "Female" & Treatment == "PPP") %>%
-  ggplot(aes(x = Time, y = P1, color = Letter)) +
-  geom_point() +
-  theme_minimal() +
-  theme(legend.position = "none") +
-  facet_wrap(.~Letter, ncol = 3)
-```
-
-You can use R to make art!
-
-```{r art-example}
-# Artistic example!
-raw_df %>%
-  filter(Time <=30) %>%
-  ggplot(aes(x = Time, y = P1, color = Letter)) +
-  geom_point(alpha = 0.6, size = 1.4) +
-  theme_void() +
-  theme(legend.position = "none")
-```
-
-## Practice
-
-If you want some extra practice, try changing the code and seeing what happens. You can also try these questions.
-
-1a. Create a variable called "y" and assign it to a value of 25.
-1b. Use a function to calculate the square root of y.
-
-2a. Filter the data to only include cells where I applied a certain treatment.
-2b. Filter the data to only include cells from male rats in the control condition. (Hint: Use the & symbol to connect two conditions).
-
-3a. Make a plot of P1 vs. Time for recording "AA".
-3b. Make a plot of P1 vs. Time for female rats only.
-3c. Make a plot of P1 vs. Time for PPP-treated cells only, and color it by cell.
