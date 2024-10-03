@@ -24,19 +24,14 @@ always_allow_html: true
 # Use nocite to include any citations that aren't included in-text (i.e. R packages)
 ---
 
-```{r set-global-options, echo=FALSE}
-# ------------ Set chunk options --------------------------------------------------------------
-# cairo_pdf encodes high-quality plots with searchable text
-# Hide chunk warnings to reduce distractions
-# comment = NA removes the double hash tags next to chunk output
-
+```{r set-global-chunk-options, echo=FALSE}
 knitr::opts_chunk$set(
-  dev = c("cairo_pdf"),
+  dev = c("cairo_pdf"), # high-quality plots; searchable text
   dpi = 600,
   fig.align = "center",
-  comment = NA,
+  comment = NA, # remove double hash tags in chunk output
   echo = FALSE,
-  message = FALSE,
+  message = FALSE, # reduce distracting messages in thesis
   warning = FALSE
 )
 ```
@@ -46,16 +41,16 @@ knitr::opts_chunk$set(
 # Here are some potentially useful packages to start off with - free feel to delete them if you don't need them
 library(here)
 library(dplyr) # Data manipulation
-library(tidyr) # Reformat data frames from wide to long and vice versa 
+#library(tidyr) # Reformat data frames from wide to long and vice versa 
 library(stringr) # Manipulating text objects
 library(ggplot2) # Make plots
 library(viridis) # Accessible and beautiful colour palettes
 library(extrafont) # Required for custom fonts in plots. Don't forget to run font_import() the first time you load this package. This is only required once per R version.
-library(ggtext) # Required for formatting plot text (e.g. coloured text in title)
-library(patchwork) # Required for multi-plot layouts
-library(ggsignif) # Required for significance stars and brackets on plots
-library(ggh4x) # Required to create nested x-axis labels
-library(ggpubr) # Required for significance brackets
+#library(ggtext) # Required for formatting plot text (e.g. coloured text in title)
+#library(patchwork) # Required for multi-plot layouts
+#library(ggsignif) # Required for significance stars and brackets on plots
+#library(ggh4x) # Required to create nested x-axis labels
+#library(ggpubr) # Required for significance brackets
 library(broom) # Required to format statistical test output into tidy dataframes
 library(knitr) # Required to access better table formatting through kable
 library(kableExtra) # Required for full width tables
@@ -63,58 +58,31 @@ library(lazyWeave) # Provides the pvalString() function to format publication-re
 # Generate a bibliography of all packages used in this file
 # I will use this later to cite all packages that I used in my bibliography
 
-#knitr::write_bib(file = here("Templates","packages.bib"))
-```
-
-```{r set-plot-options}
-# ---------- Set plot theme, colours & sizes --------------------------------------------------------------------------------
-# Set save_choice to "yes" if you want to save plots (! this will increase the run time; generally only run this after adding new data)
-# To use this, set up an if/else statement with ggsave nested within it
-
-save_choice <- "no"
-
-# Set colours here only for consistency. Here is an example
-# Refer to these colours in your ggplot code, for example geom_point(color = my_colours[2]) for blue points.
-
-my_colours <- c("#6600cc", "#0093fb", "#55b323","#ffe70f","#e86c00","#333333", "#411900","#e11584")
-
-# Custom fonts may cause issues depending on what fonts you have in your system
-# Troubleshooting steps: 
-  # Try changing the font to one that you have on your computer
-  # If it does not work, you could always delete 'family = plot_font_family' in the ggplot theme set below
-plot_font_family <- "Segoe UI"
-
-# A consistent y-axis enables comparison across multiple experiments, treatments, etc.
-# To use this, define variables like y_axis_limit and then use these as limits in coord_cartesian() in your ggplots.
-
-y_axis_limit <- 175
+knitr::write_bib(file = here("Templates","packages.bib"))
 ```
 
 ```{r set-ggplot2-theme}
-# ----------- Set ggplot theme ----------------------------------------------------------------------------------
-# You should experiment to find a ggplot theme that works for your project
-# Here is an example of defining a ggplot theme.
+# Here is an example of defining a ggplot theme. Experiment to find one that works for you!
 
 # This theme increases the axis font sizes and removes the default gray background.
-# Requires the extrafont() package (loaded in the load-libraries chunk) for custom font
 
 theme_set(
   theme_classic() %+replace%
     theme(
       text = element_text(
-        family = plot_font_family
+        #family = plot_font_family
       ),
       plot.title = element_text(
         color = "black",
         size = 20,
-        family = plot_font_family,
+        #family = plot_font_family,
         margin = margin(b = 25),
         hjust = 0.5
       ),
       plot.margin = margin(25, 25, 25, 25),
       plot.caption = element_text(
         hjust = 0,
-        family = plot_font_family,
+        #family = plot_font_family,
         size = 12
       ),
       plot.caption.position = "plot",
@@ -190,32 +158,24 @@ This document was typeset in R Markdown and the text was set in EB Garamond. The
 
 # Introduction
 
-Writing a paper in R can be challenging at first, but it is a rewarding process that will save you lots of time, effort and stress over the long term. This document provides examples and code for you to get started. It is also a sample RMarkdown document to see if you can knit PDFs from R and RStudio. Ideally, you should be able to click on Knit -> Knit to PDF and generate this file as a PDF without issues. 
+Writing a paper in R is a challenging and rewarding process that will save you lots of time, effort and stress over the long term. This document provides code snippets and tips to help you get started. It is also a sample RMarkdown document to see if you can knit PDFs from R and RStudio. Ideally, you should be able to click on Knit → Knit to PDF and generate this file as a PDF without issues.
 
-
-*A note for Mac Users:* When you knit the document the first time, you might see error messages with something about Cairo and your graphics device. Every device is different, but you might be able to fix it by installing XQuartz and then Cairo.
-
-You may also receive error messages about missing fonts. To fix this, replace `plot_font_family = "Segoe UI"` with a font that is on your system.
-
-*A note for all users:* If you're getting error messages about images not being found, don't forget to check your knit settings (dropdown arrow by the *Knit* icon). Click on the Project Directory setting. You may need to switch the Knit Directory from *Document Directory* to *Project Directory* or the other way around. If one directory isn't working, try the other!
 
 ## What are the advantages of writing in R?
 
 ### Reproducibility
 
-Your analyses and text are all in one place, so you will always know what you did to create a specific plot or how you got a certain p-value. Others will be able to follow your process by reading your code, and if you make your code and data availble, they can replicate your analyses (and ideally end up with the same results!).
+Your analyses and text are all in one place, so you will always know what you did to create a specific plot or how you got a certain \textit{p}-value. Others will be able to follow your process by reading your code, and if you make your code and data available, they can replicate your analyses (and ideally end up with the same results!).
 
 ### Efficiency
 
-Rather than typing the same things over and over again, you can set up functions to complete tasks like completing a statistical test or creating a plot. By using in-text R code, you won't need to manually type p-values and statistics and change them each time you re-do your analysis (hurray!!). Once your code is set up, it is easy to run your paper again with new data, and generate new plots, p-values, and statistical output tables.
+Rather than typing the same things over and over again, you can set up functions to complete tasks like running a statistical test or creating a plot. By using in-text R code, you won't need to manually type p-values and statistics and change them each time you re-do your analysis (hurray!!). Once your code is set up, it is easy to run your paper again with new data, and generate new plots, \textit{p}-values, and statistical output tables.
 
 Since you can define your colours, fonts, and ggplot theme at the beginning of your document, you don't need to fiddle with formatting each plot. All plots will have the same formatting, and it is easy to change colours/styling for all plots at once.
 
 ### No more manual formatting!
 
 You don't need to worry about the layout of your document at all. You do not need to manually number your figures or subheadings, format your Table of Contents, or readjust paragraphs each time you insert or remove a picture. You can easily cross-reference figures, equations and chapters. To insert a list of figures, just type `\\listoffigures` - see, it's very doable!
-
-Since RMarkdown is a plain-text document, your computer will be able to handle large documents much more easily than Word. It will not get buggy or slow when you have lots of high-resolution pictures.
 
 ### Beautiful typography
 
@@ -241,9 +201,11 @@ R, Rmarkdown, \LaTeX\ and the packages you'll use are all free and open-source.
 
 Your documents are plain text files, which  means that they don't take up much space on your computer, and you can open them up years later in any plain text editor (even Notepad!). It also means that your files will always be available, and you won't get locked into a specific version of proprietary software.
 
+Since RMarkdown is a plain-text document, your computer will be able to handle large documents much more easily than Word. It will not get buggy or slow when you have lots of high-resolution pictures.
+
 ### Version Control
 
-It is easy to set up version control with R, Git and GitHub (which is also free). I would highly recommend learning how to set up a project on GitHub. Each time you make a change to the document on your computer, Git will also save the changes to the online version of your file, hosted on GitHub. It means that you'll always have a backup copy, and if something wrong happens, you can revert back to an older version and see what changes you made.
+Plaintext files like RMarkdown files are easy to track using version control software. I would highly recommend trying out R, Git and GitHub (which is also free). Each time you make a change to the document on your computer, Git will also save the changes to the online version of your file, hosted on GitHub. It means that you'll always have a backup copy, and if something wrong happens, you can revert back to an older version and see what changes you made.
 
 
 ## What are the disadvantages of writing in R?
@@ -280,6 +242,27 @@ Unlike Word, you can't use track changes, comments, or shared files. The best wa
 
 # How-Tos
 
+## Tips
+
+Try putting a setup chunk at the start of your document with things like the colour themes, libraries you need, and any fonts that you plan to use.
+
+Q: How do you change the font?
+A: Add th code to change the text family in the ggplot theme.
+
+# Custom fonts may cause issues depending on what fonts you have in your system
+# Troubleshooting steps: 
+  # Try changing the font to one that you have on your computer
+  # If it does not work, you could always delete 'family = plot_font_family' in the ggplot theme set below
+plot_font_family <- "Segoe UI"
+
+## Try knitting this document!
+
+*A note for Mac Users:* When you knit the document the first time, you might see error messages with something about Cairo and your graphics device. Every device is different, but you might be able to fix it by installing XQuartz and then Cairo.
+
+You may also receive error messages about missing fonts. To fix this, replace `plot_font_family = "Segoe UI"` with a font that is on your system.
+
+*A note for all users:* If you're getting error messages about images not being found, don't forget to check your knit settings (dropdown arrow by the *Knit* icon). Click on the Project Directory setting. You may need to switch the Knit Directory from *Document Directory* to *Project Directory* or the other way around. If one directory isn't working, try the other!
+
 ## Inserting citations
 
 Citation managers like Zotero (free; highly recommended) make it easy to link your citations in R. [Insert info here about the BetterBibTeX package]
@@ -301,13 +284,16 @@ You can plot figures in R. This is one of the best parts - R will generate the p
 
 cars %>% 
   ggplot(aes(x = speed, y = dist)) +
-  geom_point(color = my_colours[1]) +
+  geom_point(color = "#553399") +
   labs(x = "Speed", y = "Distance")
 ```
 
 ## Inserting images
 
 You can insert images that were generated elsewhere (.PNG, .JPG, etc.) through knitr. This gives you the option to add figure captions, adjust the relative size of the image, and much more. The chunk option `fig.cap` is for the figure caption that will appear within the paper. This caption can be quite long.
+
+
+# TODO: Add information about images shot captions
 
 ### Figure References
 
@@ -501,6 +487,9 @@ If you want to make any cross references, you can define them using labels. You 
 
 
 It's not recommended to do too much formatting within your document. Ideally, all of your formatting styles should be defined in the preamble.
+
+
+## Adforn package
 
 
 ## Changing the formatting
