@@ -158,7 +158,7 @@ This document was typeset in R Markdown and the text was set in EB Garamond. The
 
 # Introduction
 
-Writing a paper in R is a challenging and rewarding process that will save you lots of time, effort and stress over the long term. This document provides code snippets and tips to help you get started. It is also a sample RMarkdown document to see if you can knit PDFs from R and RStudio. Ideally, you should be able to click on Knit → Knit to PDF and generate this file as a PDF without issues.
+Writing a paper in R is a challenging and rewarding process that will save you lots of time, effort and stress over the long term. This book provides code snippets and tips to help you get started. You'll learn how to create PDF output
 
 
 ## What are the advantages of writing in R?
