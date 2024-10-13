@@ -356,7 +356,7 @@ To minimize errors, I would suggest these things:
     from cluttering your workspace and causing dependencies. For example, if you
     define a variable in the console, but not your document you won't realize
     the problem until you have a fresh R session.
--   Use knitr::knit_exit() to stop knitting early. It can be a useful way to
+-   Use `knitr::knit_exit()` to stop knitting early. It can be a useful way to
     identify the specific line of code that is causing knitting issues.
 -   Make sure that your PDF is closed when you knit. If you're knitting the file
     and the PDF is still open somewhere on your computer, it will break the
