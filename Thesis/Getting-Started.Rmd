@@ -19,9 +19,9 @@ classoption: oneside
 indent: true
 editor_options:
   chunk_output_type: inline
+  markdown: 
+    wrap: 80
 always_allow_html: true
-
-# Use nocite to include any citations that aren't included in-text (i.e. R packages)
 ---
 
 ```{r set-global-chunk-options, echo=FALSE}
@@ -62,9 +62,9 @@ knitr::write_bib(file = here("Templates","packages.bib"))
 ```
 
 ```{r set-ggplot2-theme}
-# Here is an example of defining a ggplot theme. Experiment to find one that works for you!
-
-# This theme increases the axis font sizes and removes the default gray background.
+# Here is an example of defining a ggplot theme. Experiment to find one that
+# works for you! This theme increases the axis font sizes and removes the
+# default gray background.
 
 theme_set(
   theme_classic() %+replace%
@@ -107,7 +107,6 @@ theme_set(
 )
 ```
 
-
 \begin{centering}
 \begin{spacing}{1}
 \LARGE
@@ -116,10 +115,8 @@ Christelinda Laureijs
 
 \end{spacing}
 \end{centering}
-
 \large
 \vspace*{\fill}
-
 \begin{centering}
 \begin{spacing}{1}
 A short guide for curious and motivated researchers
@@ -128,154 +125,274 @@ A short guide for curious and motivated researchers
 
 \end{spacing}
 \end{centering}
-
-
 \newpage
 \vspace*{\fill}
 \large
-
-
-<!-- The preamble includes \usepackage{adforn}. Adforn enables you to add fancy decorative embellishments. Look up adforn on CTAN to see a list of available symbols. -->
+<!-- The preamble includes \usepackage{adforn}. Adforn enables you to add fancy
+decorative embellishments. Look up adforn on CTAN to see a list of available
+symbols. -->
 
 \adforn{20} *COLOPHON* \adforn{48}
 
 \normalsize
 
-This document was typeset in R Markdown and the text was set in EB Garamond. The data and code used to produce this document are available at [*https://github.com/christelinda-laureijs/reproducible-thesis*](https://github.com/christelinda-laureijs/reproducible-thesis).
+This document was typeset in R Markdown and the text was set in EB Garamond. The
+data and code used to produce this document are available at
+[*https://github.com/christelinda-laureijs/reproducible-thesis*](https://github.com/christelinda-laureijs/reproducible-thesis).
 
 \newpage
 \pagenumbering{roman}
-
-
 \setcounter{tocdepth}{2}
 \tableofcontents
 \listoffigures
-
 \cleardoublepage
 \normalsize
 \pagenumbering{arabic}
 
-
 # Introduction
 
-Writing a paper in R is a challenging and rewarding process that will save you lots of time, effort and stress over the long term. This book provides code snippets and tips to help you get started. You'll learn how to create PDF output
-
+Writing a paper in R is a challenging but rewarding process that will save you
+lots of time, effort and stress. If you're tired of repeatedly copying and
+pasting plots and \textit{p}-values into Word and struggling with formatting
+issues, this book is for you! It contains tips and code snippets as well as
+answers to common questions about writing with R. Feel free to jump around to
+different sections and try things out in R as you go through the guide!
 
 ## What are the advantages of writing in R?
 
-### Reproducibility
-
-Your analyses and text are all in one place, so you will always know what you did to create a specific plot or how you got a certain \textit{p}-value. Others will be able to follow your process by reading your code, and if you make your code and data available, they can replicate your analyses (and ideally end up with the same results!).
-
 ### Efficiency
 
-Rather than typing the same things over and over again, you can set up functions to complete tasks like running a statistical test or creating a plot. By using in-text R code, you won't need to manually type p-values and statistics and change them each time you re-do your analysis (hurray!!). Once your code is set up, it is easy to run your paper again with new data, and generate new plots, \textit{p}-values, and statistical output tables.
+The biggest advantage of writing in R is that it makes your workflow very
+efficient. Let's start off with a comparison. A typical workflow requires you to
+move between different software and do lots of manual work:
 
-Since you can define your colours, fonts, and ggplot theme at the beginning of your document, you don't need to fiddle with formatting each plot. All plots will have the same formatting, and it is easy to change colours/styling for all plots at once.
+1.  Import, clean and process data
+2.  Run statistical tests
+3.  Copy the data to software like GraphPad Prism.
+4.  Create a plot
+5.  Adjust the plot to make it look better than the program defaults
+6.  Save or copy the plot
+7.  Paste the plot into Word
+8.  Add a figure caption and number it correctly.
+9.  Write the results section and paste in \textit{p}-values and statistical
+    output from Step 2.
+10. Add a table of contents
+11. Oh no! You found a mistake or you have new data! Or, you want to change the
+    formatting of your plot(s)
+12. Go back to step 1 and repeat
+13. Oh no! You need to delete or move a section of the paper!
+14. Re-number everything
+15. Update the table of contents
+16. Shift images and paragraphs around if they've created awkward page breaks.
+17. Repeat as needed
+
+With R, you can do everything in one document and a lot of it can be automated.
+
+1.  Import, clean and process data
+2.  Run statistical tests
+3.  Write code for a theme that applies formatting to all plots in the document
+4.  Create a plot
+5.  Write the figure caption.
+6.  Write the results section and use inline code to refer to \textit{p}-values
+    and statistical output
+7.  Click on the "Knit" button in RStudio
+8.  Your text, figures with figure captions, and statistical results will all
+    appear in a PDF document!
+9.  If you change anything, click "Knit" again and R will automatically
+    regenerate your PDF with updated figures, \textit{p}-values and statistical
+    output tables.
+10. To change the colours, fonts, or formatting of all your plots, modify the
+    ggplot theme and everything will change at once.
+11. If you move anything around, R will automatically re-number the sections and
+    figure captions.
+
+Rather than typing the same things over and over again, you can even set up
+functions to automate tasks like running a statistical test or creating many
+similar plots.
+
+### Reproducibility
+
+Your analyses and text are all in one place, so you will always know what you
+did to create a specific plot or how you got a certain \textit{p}-value. Others
+will be able to follow your process by reading your code, and if you make your
+code and data available, they can replicate your analyses (and ideally end up
+with the same results!). If you're passionate about open science, this is a
+great way to make the entire writing process transparent.
 
 ### No more manual formatting!
 
-You don't need to worry about the layout of your document at all. You do not need to manually number your figures or subheadings, format your Table of Contents, or readjust paragraphs each time you insert or remove a picture. You can easily cross-reference figures, equations and chapters. To insert a list of figures, just type `\\listoffigures` - see, it's very doable!
+R will save you from spending a lot of time on manual formatting. The ggplot
+theme that you set up will ensure that your plots look consistent. You do not
+need to manually number your figures or subheadings, format your Table of
+Contents, or readjust paragraphs each time you insert or remove a picture. You
+can easily cross-reference figures, equations and chapters. To insert a list of
+figures, just type `\\listoffigures` – see, it's very doable!
 
 ### Beautiful typography
 
-When you knit your document into a PDF, R uses \LaTeX. \LaTeX\ is a typesetting engine that uses mathematical algorithms to arrange text into the most ideal way according to typesetting rules. For example, it will justify the text to the right and left sides without leaving large gaps between words.
+When you knit your document into a PDF, R uses \LaTeX. \LaTeX is a typesetting
+engine that uses mathematical algorithms to arrange text into the most ideal way
+according to typesetting rules. For example, it will justify the text to the
+right and left sides without leaving large gaps between words.
 
-The resulting documents look very elegant. \LaTeX-produced documents look very distinctive and after a while, you'll be able to easily tell the differences between a document produced using \LaTeX\ vs. Word.
+The resulting documents look very elegant. \LaTeX-produced documents look very
+distinctive and after a while, you'll be able to easily tell the differences
+between a document produced using \LaTeX vs. Word.
 
-Even if you stick to just the defaults, your documents will look great. If you need to use equations, \LaTeX\ is one of the best ways to create clean, well-aligned equations. Look in the \LaTeX\ documentation to learn how to align by equal signs or other characters!
+Even if you stick to just the defaults, your documents will look great. If you
+need to use equations, \LaTeX is one of the best ways to create clean,
+well-aligned equations. Look in the \LaTeX documentation to learn how to align
+by equal signs or other characters!
 
 \begin{equation}
 \int_{a}^{b} x^2 \,dx
-\end{equation}
-
-\begin{equation}
+\end{equation} \begin{equation}
 x = \frac {-b \pm \sqrt{b^2 -4ac}} {2a}
 \end{equation}
 
 ### Free
 
-R, Rmarkdown, \LaTeX\ and the packages you'll use are all free and open-source.
+R, Rmarkdown, \LaTeX and the packages you'll use are all free and open-source.
 
 ### Longevity
 
-Your documents are plain text files, which  means that they don't take up much space on your computer, and you can open them up years later in any plain text editor (even Notepad!). It also means that your files will always be available, and you won't get locked into a specific version of proprietary software.
+\LaTeX and the
 
-Since RMarkdown is a plain-text document, your computer will be able to handle large documents much more easily than Word. It will not get buggy or slow when you have lots of high-resolution pictures.
+Your documents are plain text files, which means that they don't take up much
+space on your computer, and you can open them up years later in any plain text
+editor (even Notepad!). It also means that your files will always be available,
+and you won't get locked into a specific version of proprietary software.
+
+Since RMarkdown is a plain-text document, your computer will be able to handle
+large documents much more easily than Word. It will not get buggy or slow when
+you have lots of high-resolution pictures.
 
 ### Version Control
 
-Plaintext files like RMarkdown files are easy to track using version control software. I would highly recommend trying out R, Git and GitHub (which is also free). Each time you make a change to the document on your computer, Git will also save the changes to the online version of your file, hosted on GitHub. It means that you'll always have a backup copy, and if something wrong happens, you can revert back to an older version and see what changes you made.
-
+Plaintext files like RMarkdown files are easy to track using version control
+software. I would highly recommend trying out R, Git and GitHub (which is also
+free). Each time you make a change to the document on your computer, Git will
+also save the changes to the online version of your file, hosted on GitHub. It
+means that you'll always have a backup copy, and if something wrong happens, you
+can revert back to an older version and see what changes you made.
 
 ## What are the disadvantages of writing in R?
 
 ### Learning curve
 
-If you're not familiar with R, RMarkdown, and \LaTeX, it will take much longer to set up your paper than in Word. It will also take a while to format your preamble to make your document look exactly the way you want it. You'll likely spend a lot of time googling things and reading through answers on StackOverflow and GitHub.
+If you're not familiar with R, RMarkdown, and \LaTeX, it will take much longer
+to set up your paper than in Word. It will also take a while to format your
+preamble to make your document look exactly the way you want it. You'll likely
+spend a lot of time Googling things and reading through answers on StackOverflow
+and GitHub.
 
 ### Troubleshooting
 
-Things will break down, and you'll spend way more time than you had anticipated dealing with error messages. During these times, it does seem much easier to just open a Word document and start typing. 
+Things will break down, and you'll spend way more time than you had anticipated
+dealing with error messages. During these times, it does seem much easier to
+just open a Word document and start typing.
 
 To minimize errors, I would suggest these things:
 
-  - Run each code chunk from top to bottom to catch any errors. Ensure that everything runs before knitting.
-  - Knit your document frequently as you go to help spot errors. 
-  - R will knit documents using a blank R session, so everything that needs to be in the document must be defined in your script.
-  - Turn off the "Save workspace image" option in your R Global Options to prevent old loaded packages and hidden variables from 'hovering' in the background and creating strange rrors.
-  - Frequently use `Run` -> `Restart R and clear output` to prevent objects from cluttering your workspace and causing dependencies. For example, if you define a variable in the console, but not your document you won't realize the problem until you have a fresh R session. 
-  - Use knitr::knit_exit() to stop knitting early. It can be a useful way to identify the specific line of code that is causing knitting issues.
-  - Make sure that your PDF is closed when you knit. If you're knitting the file and the PDF is still open somewhere on your computer, it will break the code.
-  - Be sure to use R Projects [# expand on R projects].
+-   Run each code chunk from top to bottom to catch any errors. Ensure that
+    everything runs before knitting.
+-   Knit your document frequently as you go to help spot errors.
+-   R will knit documents using a blank R session, so everything that needs to
+    be in the document must be defined in your script.
+-   Turn off the "Save workspace image" option in your R Global Options to
+    prevent old loaded packages and hidden variables from 'hovering' in the
+    background and creating strange rrors.
+-   Frequently use `Run` -\> `Restart R and clear output` to prevent objects
+    from cluttering your workspace and causing dependencies. For example, if you
+    define a variable in the console, but not your document you won't realize
+    the problem until you have a fresh R session.
+-   Use knitr::knit_exit() to stop knitting early. It can be a useful way to
+    identify the specific line of code that is causing knitting issues.
+-   Make sure that your PDF is closed when you knit. If you're knitting the file
+    and the PDF is still open somewhere on your computer, it will break the
+    code.
+-   Be sure to use R Projects [\# expand on R projects].
 
 ### Separate content and layout
 
-You don't get to see what your document looks like until you knit it. This can be disconcerting for some people but great for others because you aren't distracted by formatting. Although you should knit your document often, don't fuss around with formatting until your paper is almost done. Things like paragraph spacing will change, and it is better to wait until the end.
+You don't get to see what your document looks like until you knit it. This can
+be disconcerting for some people but great for others because you aren't
+distracted by formatting. Although you should knit your document often, don't
+fuss around with formatting until your paper is almost done. Things like
+paragraph spacing will change, and it is better to wait until the end.
 
-At the beginning, you may worry about floats (things like pictures, plots, and tables). \LaTeX\ will 'float' these over the text and then plop them down in a way that minimizes the number of paragraph breaks and blank spots. This means that your floats will often be further from where you want them. It is very, very difficult to 'force' floats to go into a specific spot, and the place that \LaTeX\ chooses is often the best layout-wise. Always use references like Figure 1, rather than "the figure below".
+At the beginning, you may worry about floats (things like pictures, plots, and
+tables). \LaTeX will 'float' these over the text and then plop them down in a
+way that minimizes the number of paragraph breaks and blank spots. This means
+that your floats will often be further from where you want them. It is very,
+very difficult to 'force' floats to go into a specific spot, and the place that
+\LaTeX chooses is often the best layout-wise. Always use references like Figure
+1, rather than "the figure below".
 
 ### Collaboration issues
 
-Unlike Word, you can't use track changes, comments, or shared files. The best way to simulate this is to set up a GitHub repository and add your supervisor as a collaborator. They could then use pull requests to suggest changes. This may cause issues if you have a supervisor who doesn't know how to use GitHub. You also may not be able to make this work if your supervisor doesn't want to or know how to comment a PDF.
-
+Unlike Word, you can't use track changes, comments, or shared files. The best
+way to simulate this is to set up a GitHub repository and add your supervisor as
+a collaborator. They could then use pull requests to suggest changes. This may
+cause issues if you have a supervisor who doesn't know how to use GitHub. You
+also may not be able to make this work if your supervisor doesn't want to or
+know how to comment a PDF.
 
 # How-Tos
 
 ## Tips
 
-Try putting a setup chunk at the start of your document with things like the colour themes, libraries you need, and any fonts that you plan to use.
+Try putting a setup chunk at the start of your document with things like the
+colour themes, libraries you need, and any fonts that you plan to use.
 
-Q: How do you change the font?
-A: Add th code to change the text family in the ggplot theme.
+Q: How do you change the font? A: Add th code to change the text family in the
+ggplot theme.
 
 # Custom fonts may cause issues depending on what fonts you have in your system
-# Troubleshooting steps: 
-  # Try changing the font to one that you have on your computer
-  # If it does not work, you could always delete 'family = plot_font_family' in the ggplot theme set below
-plot_font_family <- "Segoe UI"
+
+# Troubleshooting steps:
+
+\# Try changing the font to one that you have on your computer \# If it does not
+work, you could always delete 'family = plot_font_family' in the ggplot theme
+set below plot_font_family \<- "Segoe UI"
 
 ## Try knitting this document!
 
-*A note for Mac Users:* When you knit the document the first time, you might see error messages with something about Cairo and your graphics device. Every device is different, but you might be able to fix it by installing XQuartz and then Cairo.
+*A note for Mac Users:* When you knit the document the first time, you might see
+error messages with something about Cairo and your graphics device. Every device
+is different, but you might be able to fix it by installing XQuartz and then
+Cairo.
 
-You may also receive error messages about missing fonts. To fix this, replace `plot_font_family = "Segoe UI"` with a font that is on your system.
+You may also receive error messages about missing fonts. To fix this, replace
+`plot_font_family = "Segoe UI"` with a font that is on your system.
 
-*A note for all users:* If you're getting error messages about images not being found, don't forget to check your knit settings (dropdown arrow by the *Knit* icon). Click on the Project Directory setting. You may need to switch the Knit Directory from *Document Directory* to *Project Directory* or the other way around. If one directory isn't working, try the other!
+*A note for all users:* If you're getting error messages about images not being
+found, don't forget to check your knit settings (dropdown arrow by the *Knit*
+icon). Click on the Project Directory setting. You may need to switch the Knit
+Directory from *Document Directory* to *Project Directory* or the other way
+around. If one directory isn't working, try the other!
 
 ## Inserting citations
 
-Citation managers like Zotero (free; highly recommended) make it easy to link your citations in R. [Insert info here about the BetterBibTeX package]
+Citation managers like Zotero (free; highly recommended) make it easy to link
+your citations in R. [Insert info here about the BetterBibTeX package]
 
 [Insert info about setting up citation keys]
 
-Now, you can type something like [\@demeyts2000], and the citation will be rendered as an in-text citation: Insulin is a hormone that regulates blood glucose levels, digestive processes, and body weight [@demeyts2000].
+Now, you can type something like [\@demeyts2000], and the citation will be
+rendered as an in-text citation: Insulin is a hormone that regulates blood
+glucose levels, digestive processes, and body weight [@demeyts2000].
 
-This document uses APA formatting because of the 'apa.csl' file in the `Templates/` folder. If you want a different format, you can download the appropriate CSL file online and replace `apa.csl` with your new csl file name in the YAML header.
+This document uses APA formatting because of the 'apa.csl' file in the
+`Templates/` folder. If you want a different format, you can download the
+appropriate CSL file online and replace `apa.csl` with your new csl file name in
+the YAML header.
 
 ## Inserting plots
 
-You can plot figures in R. This is one of the best parts - R will generate the plots each time the document knits so you don't have to repeatedly copy and paste pictures into your paper!
+You can plot figures in R. This is one of the best parts - R will generate the
+plots each time the document knits so you don't have to repeatedly copy and
+paste pictures into your paper!
 
 ```{r sample-cars-plot}
 #| fig.cap = "Braking distance is positively correlated with driving speed.",
@@ -290,16 +407,23 @@ cars %>%
 
 ## Inserting images
 
-You can insert images that were generated elsewhere (.PNG, .JPG, etc.) through knitr. This gives you the option to add figure captions, adjust the relative size of the image, and much more. The chunk option `fig.cap` is for the figure caption that will appear within the paper. This caption can be quite long.
-
+You can insert images that were generated elsewhere (.PNG, .JPG, etc.) through
+knitr. This gives you the option to add figure captions, adjust the relative
+size of the image, and much more. The chunk option `fig.cap` is for the figure
+caption that will appear within the paper. This caption can be quite long.
 
 # TODO: Add information about images shot captions
 
 ### Figure References
 
-At the end of the `fig.cap` chunk option, you also have the option of adding a figure label in the form of '\\\\label{text}'. When you write a reference to Figure '\\\\label{insulin-pathway}', \LaTeX\ will print out the text "Figure \ref{insulin-pathway}". If you reorder your figures, \LaTeX\ will automatically change the figure numbers.
+At the end of the `fig.cap` chunk option, you also have the option of adding a
+figure label in the form of '\\\\label{text}'. When you write a reference to
+Figure '\\\\label{insulin-pathway}', \LaTeX will print out the text "Figure
+\ref{insulin-pathway}". If you reorder your figures, \LaTeX will automatically
+change the figure numbers.
 
-*Important:* To use `fig.cap` and `fig.scap`, you must define an `out.width` in the chunk options. If not, R will not recognize these as \LaTeX\ commands.
+*Important:* To use `fig.cap` and `fig.scap`, you must define an `out.width` in
+the chunk options. If not, R will not recognize these as \LaTeX commands.
 
 ```{r insulin-schematic}
 #| fig.cap = "When insulin binds to a cell, it activates a series of molecular pathways involved in energy metabolism and gene expression...[if your figure caption is too long, you should define a short figure caption (fig.scap) which will go into the list of figures]...although it looks like there are two distinct pathways, the downstream components of the P13K and MAPK pathways frequently interact with one another (De Meyts, 2000). \\label{insulin-pathway}",
@@ -314,11 +438,14 @@ At the end of the `fig.cap` chunk option, you also have the option of adding a f
 knitr::include_graphics(here("Figures/Insulin-schematic.png"))
 ```
 
-
-
 ## Analysis
 
-I'm using one of R's built-in datasets (*PlantGrowth*) to show examples of inserting model summary tables, results, plots, and p-values in a paper. This sample dataset explores plant mass after applying one of three treatment conditions (control, treatment 1 and treatment 2). I've hidden the code in the output document (chunk options `echo=F`) because you will probably not be displaying your code in your paper.
+I'm using one of R's built-in datasets (*PlantGrowth*) to show examples of
+inserting model summary tables, results, plots, and p-values in a paper. This
+sample dataset explores plant mass after applying one of three treatment
+conditions (control, treatment 1 and treatment 2). I've hidden the code in the
+output document (chunk options `echo=F`) because you will probably not be
+displaying your code in your paper.
 
 ```{r plant-dataset-analysis}
 # Import data
@@ -346,7 +473,9 @@ plant_qq_plot <- ggplot(plant_data_aov, aes(sample = plant_data_aov_res)) +
 
 ## In-text R code
 
-You can embed R code within normal text to create dynamic reports. For example, if you write \` r nrow(plant_data) \`, this will be printed out as `r nrow(plant_data)`, as in:
+You can embed R code within normal text to create dynamic reports. For example,
+if you write \` r nrow(plant_data) \`, this will be printed out as
+`r nrow(plant_data)`, as in:
 
 \begin{quote}
 We weighed `r nrow(plant_data)` plants.
@@ -354,11 +483,20 @@ We weighed `r nrow(plant_data)` plants.
 
 ### Extracting P-values
 
-You can take this even further to embed p-values, t-test statistics, and other values within the body text - no more copying and pasting! This will save you lots of time in the results section. It also reduces the likelihood of mistakes.
+You can take this even further to embed p-values, t-test statistics, and other
+values within the body text - no more copying and pasting! This will save you
+lots of time in the results section, since R will regenerate these values each
+time you re-do your analysis (hurray!!). It also reduces the likelihood of
+mistakes.
 
-It will take some time to find out how to extract p-values from different data types. In RStudio, always check what class your model is. Then, you can google things like "Extract p-value from an object of class anova in r".
+It will take some time to find out how to extract p-values from different data
+types. In RStudio, always check what class your model is. Then, you can google
+things like "Extract p-value from an object of class anova in r".
 
-If you click on the model summary object in RStudio, it will open the model in a new window. You can click on any one of the green arrow icons on the right-hand side. The code required to select it will then appear in the console, where you can copy and paste it.
+If you click on the model summary object in RStudio, it will open the model in a
+new window. You can click on any one of the green arrow icons on the right-hand
+side. The code required to select it will then appear in the console, where you
+can copy and paste it.
 
 ```{r select-value-schematic}
 #| fig.cap = "RStudio provides a handy selection tool to help you find the code needed to extract a specific value from an object. Click on the green arrow icon to see the appropriate selection code appear in your console. \\label{select-value-schematic}",
@@ -369,31 +507,47 @@ If you click on the model summary object in RStudio, it will open the model in a
 knitr::include_graphics(here("Figures/Extract-values-annotated.png"))
 ```
 
-If you're stuck, you could also use the `str()` function to see the structure of the model. This can provide a list of the parts of the model and give you an idea of which variables you need to select the specific p-value that you want.
+If you're stuck, you could also use the `str()` function to see the structure of
+the model. This can provide a list of the parts of the model and give you an
+idea of which variables you need to select the specific p-value that you want.
 
 ```{r aov-structure, echo=T}
 str(plant_aov_summary)
 ```
 
-Look at the results. If I want to extract the p-value row, it looks like I will need to write plant_aov_summary[[1]][["Pr(>F)"]]. The [[1]] is because this is a list of one, and the values we need are in the first element of the list. Notice how this returns another list:
+Look at the results. If I want to extract the p-value row, it looks like I will
+need to write plant_aov_summary[[1]][["Pr(\>F)"]]. The [[1]] is because this is
+a list of one, and the values we need are in the first element of the list.
+Notice how this returns another list:
 
 ```{r extract-p-values, echo=T}
 plant_aov_summary[[1]][["Pr(>F)"]]
 ```
-The first p-value is the p-value associated with the treatment groups. The second is NA because it is for the model residuals. To extract the first p-value, add another [[1]] to select the first element of this list. The final code is:
+
+The first p-value is the p-value associated with the treatment groups. The
+second is NA because it is for the model residuals. To extract the first
+p-value, add another [[1]] to select the first element of this list. The final
+code is:
 
 ```{r extract-p-values-first-element, echo=T}
 plant_aov_summary[[1]][["Pr(>F)"]][[1]]
 ```
+
 ### Rounding
 
-To make "prettier" p-values you could round them to 3 digits using the `round()` function. However, I would suggest using the `pvalString()` function from the `LazyWeave` package. This rounds p-values to three digits, and automatically formats them to publication style p-values if they are smaller or larger than typical endpoints. As an example, pvalString(0.00000005) will become p `r pvalString(0.0000005)`.
+To make "prettier" p-values you could round them to 3 digits using the `round()`
+function. However, I would suggest using the `pvalString()` function from the
+`LazyWeave` package. This rounds p-values to three digits, and automatically
+formats them to publication style p-values if they are smaller or larger than
+typical endpoints. As an example, pvalString(0.00000005) will become p
+`r pvalString(0.0000005)`.
 
 ```{r extract-p-values-pval-string, echo=T}
 pvalString(plant_aov_summary[[1]][["Pr(>F)"]][[1]])
 ```
 
-Now, putting it into an in-text R code block, we can write something like this with automatically inserted p-values.
+Now, putting it into an in-text R code block, we can write something like this
+with automatically inserted p-values.
 
 \begin{quote}
 Plant mass varied significantly according to treatment type (p = `r pvalString(plant_aov_summary[[1]][["Pr(>F)"]][[1]])`).
@@ -401,20 +555,29 @@ Plant mass varied significantly according to treatment type (p = `r pvalString(p
 
 ## Tables
 
-There are many packages that will allow you to create publication-quality tables out of summary tables in R. This is good, because the default summary tables are not visually appealing:
+There are many packages that will allow you to create publication-quality tables
+out of summary tables in R. This is good, because the default summary tables are
+not visually appealing:
 
 ```{r default-anova-table, echo=T}
 summary(plant_data_aov)
 ```
 
-The first step is to use the `tidy()` function from the `broom` library. This reformats the summary object to a tibble (a special type of dataframe) and does some automatic cleaning. For example, it removes the significance codes and converts the column names to code-friendly names with no spaces.
+The first step is to use the `tidy()` function from the `broom` library. This
+reformats the summary object to a tibble (a special type of dataframe) and does
+some automatic cleaning. For example, it removes the significance codes and
+converts the column names to code-friendly names with no spaces.
 
 ```{r tidy-anova-table, echo=T}
 plant_data_aov %>%
   tidy()
 ```
 
-The next step is to round the values and re-format the p-values. The `across()` function from `dplyr` allows us to apply the same rounding function to multiple columns simultaneously. We can also change the term names to title case using `str_to_title(term)`. Lastly, we can use the `rename()` function to give the columns more useful names for a publication.
+The next step is to round the values and re-format the p-values. The `across()`
+function from `dplyr` allows us to apply the same rounding function to multiple
+columns simultaneously. We can also change the term names to title case using
+`str_to_title(term)`. Lastly, we can use the `rename()` function to give the
+columns more useful names for a publication.
 
 ```{r tidy-mutate-anova-table, echo=T}
 plant_data_aov %>%
@@ -433,8 +596,12 @@ plant_data_aov %>%
   )
 ```
 
-The last step is to use the `kable()` package to modify the table style and presentation. The documentation for the `kable` and `kableExtra` packages has lots of useful information on the available arguments. A particularly useful argument is `align`, which allows you to specify how the text is aligned in the columns. For example, `align = c('l', 'c', 'l')` will generate columns that are left-, centre- and left-aligned.
-
+The last step is to use the `kable()` package to modify the table style and
+presentation. The documentation for the `kable` and `kableExtra` packages has
+lots of useful information on the available arguments. A particularly useful
+argument is `align`, which allows you to specify how the text is aligned in the
+columns. For example, `align = c('l', 'c', 'l')` will generate columns that are
+left-, centre- and left-aligned.
 
 The new code section looks like this:
 
@@ -472,35 +639,41 @@ plant_data_aov %>%
               width = "1.5in")
 ```
 
+## \LaTeX Basics
 
-## \LaTeX\ Basics
+You can learn a lot about \LaTeX as you customize your paper. This is a very
+valuable skill, and it will be particularly useful if you're planning to stay in
+academia.
 
-You can learn a lot about \LaTeX\ as you customize your paper. This is a very valuable skill, and it will be particularly useful if you're planning to stay in academia.
+Most \LaTeX commands start with a forward slash and include arguments in curly
+brackets. Many of them are intuitive:
 
-Most \LaTeX\ commands start with a forward slash and include arguments in curly brackets. Many of them are intuitive:
-
-Use `\\setcounter{tocdepth}{2}` to set the table of content depth to header 2  
+Use `\\setcounter{tocdepth}{2}` to set the table of content depth to header 2
 
 Use `\\tableofcontents` to insert a table of contents
 
-If you want to make any cross references, you can define them using labels. You may have seen this in the *Inserting Images* section. For example, you can write Figure '\\\\label{insulin-pathway}' to automatically include the correct figure number.
+If you want to make any cross references, you can define them using labels. You
+may have seen this in the *Inserting Images* section. For example, you can write
+Figure '\\\\label{insulin-pathway}' to automatically include the correct figure
+number.
 
-
-It's not recommended to do too much formatting within your document. Ideally, all of your formatting styles should be defined in the preamble.
-
+It's not recommended to do too much formatting within your document. Ideally,
+all of your formatting styles should be defined in the preamble.
 
 ## Adforn package
 
-
 ## Changing the formatting
 
-If you want to change how any part of this document looks, go to Templates/MtA-Thesis-Preamble.tex.
-
+If you want to change how any part of this document looks, go to
+Templates/MtA-Thesis-Preamble.tex.
 
 ### Other Tools
 
-To create high-quality schematics, I would highly recommend [Inkscape](https://inkscape.org/), which is a free and open source vector editor. You're probably familiar with using the shapes tools in PowerPoint. Inkscape is like this, but you have much more control over the alignment, and many helpful tools that allow you to do more advanced techniques.
-
+To create high-quality schematics, I would highly recommend
+[Inkscape](https://inkscape.org/), which is a free and open source vector
+editor. You're probably familiar with using the shapes tools in PowerPoint.
+Inkscape is like this, but you have much more control over the alignment, and
+many helpful tools that allow you to do more advanced techniques.
 
 # References
 
