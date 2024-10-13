@@ -163,8 +163,8 @@ different sections and try things out in R as you go through the guide!
 ### Efficiency
 
 The biggest advantage of writing in R is that it makes your workflow very
-efficient. Let's start off with a comparison. A typical workflow requires you to
-move between different software and do lots of manual work:
+efficient. A typical workflow requires you to move between software and do lots
+of manual work:
 
 1.  Import, clean and process data
 2.  Run statistical tests
@@ -202,7 +202,7 @@ With R, you can do everything in one document and a lot of it can be automated.
     regenerate your PDF with updated figures, \textit{p}-values and statistical
     output tables.
 10. To change the colours, fonts, or formatting of all your plots, modify the
-    ggplot theme and everything will change at once.
+    ggplot theme and everything will change if you "Knit" again.
 11. If you move anything around, R will automatically re-number the sections and
     figure captions.
 
@@ -228,19 +228,71 @@ Contents, or readjust paragraphs each time you insert or remove a picture. You
 can easily cross-reference figures, equations and chapters. To insert a list of
 figures, just type `\\listoffigures` – see, it's very doable!
 
+Typesetting details like paragraph spacing, margins, and fonts are all specified
+in the document preamble. You just need to write and \LaTeX will handle the
+rest. This creates consistently formatted documents and allows you to focus on
+writing!
+
+When it eventually comes time to print your thesis, you can easily change
+parameters like the binding offset and page layout.
+
+### Handles large, complex documents well
+
+R makes it easy for you to manage large documents like a thesis or book because
+it allows for easy cross-referencing of figures, footnotes, quotes, and
+citations. Inserting a new page or image into a lengthy document (typically a
+harrowing process in Word) is not difficult in R and you have a lot of control
+over the layout of your sections. It's easy to move things around, and R will
+automatically re-number your figures, table of contents, list of figures and
+footnotes.
+
+If you have a very large document, you could even consider breaking it up into
+smaller .Rmd files (called "child documents") and knitting them into one "parent
+document".
+
 ### Beautiful typography
 
-When you knit your document into a PDF, R uses \LaTeX. \LaTeX is a typesetting
-engine that uses mathematical algorithms to arrange text into the most ideal way
-according to typesetting rules. For example, it will justify the text to the
-right and left sides without leaving large gaps between words.
+When you knit your document into a PDF, R uses \LaTeX behind-the-scenes.
+\LaTeX is a typesetting engine that uses mathematical algorithms to arrange text
+into the most ideal way according to typesetting rules. \LaTeX automatically
+handles a lot of typesetting details including:
 
-The resulting documents look very elegant. \LaTeX-produced documents look very
-distinctive and after a while, you'll be able to easily tell the differences
-between a document produced using \LaTeX vs. Word.
+\begin{itemize}
 
-Even if you stick to just the defaults, your documents will look great. If you
-need to use equations, \LaTeX is one of the best ways to create clean,
+\item Kerning - aesthetically pleasing spacing between letters based on their shapes
+\item Ligatures - new characters for letter combinations like fi and ff, which often crash into each other in Word documents (see Figure \ref{ligatures} for a comparison).
+\item Text justification without creating large gaps between words.
+\item Consistent styles for section headers, citations, figure captions and numbering, etc.
+\item and more!
+
+\end{itemize}
+
+Really, only typography nerds will notice these details. But
+professional-quality typesetting does have a huge impact on the appearance of
+the document. \LaTeX-produced documents look very distinctive and after a while,
+you'll be able to easily tell the differences between a document produced using
+\LaTeX vs. Word. Your writing will look neat, elegant, and perfectly arranged
+with minimal effort!
+
+```{r ligatures-comparison}
+#| fig.cap = "Ligatures are specialized characters that replace letter combinations like \\textit{fi}. Left: Word does not automatically include ligatures, so these letters clash. In this Word example, notice the collision between the curve of the \\textit{f} and the dot in \\textit{i}. The word \\textit{office} also has slightly misaligned \\textit{f}'s. Disclaimer: I used a Garamond typeface that doesn't have ligatures, which is why the letters look different than the ones on the right. Right: \\LaTeX{} has full support for ligatures. These words showcase the \\textit{ffi} and \\textit{fi} ligatures. \\label{ligatures}",
+#| fig.scap = "Ligatures example",
+#| out.width = "70%",
+#| purl = FALSE
+
+knitr::include_graphics(here::here("Figures/Ligature-comparison.png"))
+```
+
+```{r drop-caps-comparison}
+#| fig.cap = "This figure highlights some key differences between typesetting in Word (left) and \\LaTeX{} (right). Notice how Word creates a misaligned drop-cap and awkward justification, with several gaps (highlighted in red). \\LaTeX{} produces neatly aligned text, and it even uses small caps to emphasize the first word. \\label{drops}",
+#| fig.scap = "Word vs. \\LaTeX{} comparison",
+#| out.width = "70%",
+#| purl = FALSE
+
+knitr::include_graphics(here::here("Figures/Dropcaps-comparison.png"))
+```
+
+If you need to use equations, \LaTeX is one of the best ways to create clean,
 well-aligned equations. Look in the \LaTeX documentation to learn how to align
 by equal signs or other characters!
 
@@ -254,9 +306,7 @@ x = \frac {-b \pm \sqrt{b^2 -4ac}} {2a}
 
 R, Rmarkdown, \LaTeX and the packages you'll use are all free and open-source.
 
-### Longevity
-
-\LaTeX and the
+### Uses plain text files
 
 Your documents are plain text files, which means that they don't take up much
 space on your computer, and you can open them up years later in any plain text
@@ -264,8 +314,8 @@ editor (even Notepad!). It also means that your files will always be available,
 and you won't get locked into a specific version of proprietary software.
 
 Since RMarkdown is a plain-text document, your computer will be able to handle
-large documents much more easily than Word. It will not get buggy or slow when
-you have lots of high-resolution pictures.
+large documents much more easily than Word. It will not get buggy or crash when
+you have a huge document with lots of high-resolution pictures.
 
 ### Version Control
 
@@ -311,7 +361,8 @@ To minimize errors, I would suggest these things:
 -   Make sure that your PDF is closed when you knit. If you're knitting the file
     and the PDF is still open somewhere on your computer, it will break the
     code.
--   Be sure to use R Projects [\# expand on R projects].
+-   Be sure to use R Projects and a tidy project framework to make it easy for R
+    and you to find things.
 
 ### Separate content and layout
 
@@ -412,7 +463,11 @@ knitr. This gives you the option to add figure captions, adjust the relative
 size of the image, and much more. The chunk option `fig.cap` is for the figure
 caption that will appear within the paper. This caption can be quite long.
 
-# TODO: Add information about images shot captions
+The `fig.scap` chunk option is for a short figure caption. Often, the figure
+caption in your thesis is quite long, but it is useful to have a shorter caption
+for the list of figures. The text in `fig.scap` will appear in your list of
+figures. Word currently doesn't have this option, so it's great that you can use
+it in R.
 
 ### Figure References
 
@@ -648,9 +703,9 @@ academia.
 Most \LaTeX commands start with a forward slash and include arguments in curly
 brackets. Many of them are intuitive:
 
-Use `\\setcounter{tocdepth}{2}` to set the table of content depth to header 2
+Use `\\setcounter{tocdepth}{2}` to set the table of content depth to header 2.
 
-Use `\\tableofcontents` to insert a table of contents
+Use `\\tableofcontents` to insert a table of contents.
 
 If you want to make any cross references, you can define them using labels. You
 may have seen this in the *Inserting Images* section. For example, you can write

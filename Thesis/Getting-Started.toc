@@ -1,34 +1,35 @@
 \contentsline {section}{List of Figures}{ii}{section*.2}%
 \contentsline {section}{Introduction}{1}{section*.3}%
 \contentsline {subsection}{What are the advantages of writing in R?}{1}{section*.4}%
-\contentsline {subsubsection}{Reproducibility}{1}{section*.5}%
-\contentsline {subsubsection}{Efficiency}{1}{section*.6}%
-\contentsline {subsubsection}{No more manual formatting!}{2}{section*.7}%
-\contentsline {subsubsection}{Beautiful typography}{2}{section*.8}%
-\contentsline {subsubsection}{Free}{2}{section*.9}%
-\contentsline {subsubsection}{Longevity}{3}{section*.10}%
-\contentsline {subsubsection}{Version Control}{3}{section*.11}%
-\contentsline {subsection}{What are the disadvantages of writing in R?}{3}{section*.12}%
-\contentsline {subsubsection}{Learning curve}{3}{section*.13}%
-\contentsline {subsubsection}{Troubleshooting}{3}{section*.14}%
-\contentsline {subsubsection}{Separate content and layout}{4}{section*.15}%
-\contentsline {subsubsection}{Collaboration issues}{5}{section*.16}%
-\contentsline {section}{How-Tos}{6}{section*.17}%
-\contentsline {subsection}{Tips}{6}{section*.18}%
-\contentsline {section}{Custom fonts may cause issues depending on what fonts you have in your system}{7}{section*.19}%
-\contentsline {section}{Troubleshooting steps:}{8}{section*.20}%
-\contentsline {subsection}{Try knitting this document!}{8}{section*.21}%
-\contentsline {subsection}{Inserting citations}{8}{section*.22}%
-\contentsline {subsection}{Inserting plots}{9}{section*.23}%
-\contentsline {subsection}{Inserting images}{10}{section*.25}%
-\contentsline {subsubsection}{Figure References}{10}{section*.26}%
-\contentsline {subsection}{Analysis}{10}{section*.28}%
-\contentsline {subsection}{In-text R code}{10}{section*.29}%
-\contentsline {subsubsection}{Extracting P-values}{12}{section*.30}%
-\contentsline {subsubsection}{Rounding}{13}{section*.32}%
-\contentsline {subsection}{Tables}{14}{section*.33}%
-\contentsline {subsection}{\LaTeX ~Basics}{16}{section*.34}%
-\contentsline {subsection}{Adforn package}{17}{section*.35}%
-\contentsline {subsection}{Changing the formatting}{17}{section*.36}%
-\contentsline {subsubsection}{Other Tools}{17}{section*.37}%
-\contentsline {section}{References}{18}{section*.38}%
+\contentsline {subsubsection}{Efficiency}{1}{section*.5}%
+\contentsline {subsubsection}{Reproducibility}{2}{section*.6}%
+\contentsline {subsubsection}{No more manual formatting!}{3}{section*.7}%
+\contentsline {subsubsection}{Handles large, complex documents well}{3}{section*.8}%
+\contentsline {subsubsection}{Beautiful typography}{4}{section*.9}%
+\contentsline {subsubsection}{Free}{5}{section*.12}%
+\contentsline {subsubsection}{Uses plain text files}{5}{section*.13}%
+\contentsline {subsubsection}{Version Control}{6}{section*.14}%
+\contentsline {subsection}{What are the disadvantages of writing in R?}{6}{section*.15}%
+\contentsline {subsubsection}{Learning curve}{6}{section*.16}%
+\contentsline {subsubsection}{Troubleshooting}{6}{section*.17}%
+\contentsline {subsubsection}{Separate content and layout}{7}{section*.18}%
+\contentsline {subsubsection}{Collaboration issues}{7}{section*.19}%
+\contentsline {section}{How-Tos}{8}{section*.20}%
+\contentsline {subsection}{Tips}{8}{section*.21}%
+\contentsline {section}{Custom fonts may cause issues depending on what fonts you have in your system}{9}{section*.22}%
+\contentsline {section}{Troubleshooting steps:}{10}{section*.23}%
+\contentsline {subsection}{Try knitting this document!}{10}{section*.24}%
+\contentsline {subsection}{Inserting citations}{10}{section*.25}%
+\contentsline {subsection}{Inserting plots}{11}{section*.26}%
+\contentsline {subsection}{Inserting images}{12}{section*.28}%
+\contentsline {subsubsection}{Figure References}{12}{section*.29}%
+\contentsline {subsection}{Analysis}{12}{section*.31}%
+\contentsline {subsection}{In-text R code}{12}{section*.32}%
+\contentsline {subsubsection}{Extracting P-values}{14}{section*.33}%
+\contentsline {subsubsection}{Rounding}{15}{section*.35}%
+\contentsline {subsection}{Tables}{16}{section*.36}%
+\contentsline {subsection}{\LaTeX ~Basics}{18}{section*.37}%
+\contentsline {subsection}{Adforn package}{19}{section*.38}%
+\contentsline {subsection}{Changing the formatting}{19}{section*.39}%
+\contentsline {subsubsection}{Other Tools}{19}{section*.40}%
+\contentsline {section}{References}{20}{section*.41}%
