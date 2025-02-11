@@ -533,7 +533,9 @@ if you write \` r nrow(plant_data) \`, this will be printed out as
 `r nrow(plant_data)`, as in:
 
 \begin{quote}
+
 We weighed `r nrow(plant_data)` plants.
+
 \end{quote}
 
 ### Extracting P-values

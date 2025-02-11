@@ -1,0 +1,113 @@
+---
+title: "Thesis"
+output: pdf_document
+---
+
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(
+  dev = c("cairo_pdf"),
+  dpi = 600,
+  fig.align = "center",
+  out.width = "100%",
+  comment = NA,
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+```{r load-libraries}
+library(ggplot2)
+library(dplyr)
+library(here)
+library(lazyWeave)
+library(broom)
+```
+
+```{r set-theme}
+theme_set(theme_classic() +
+  theme(text = element_text(color = "black"),
+        axis.title = element_text(size = 15, face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 20)),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        plot.margin = margin(20, 20, 20, 20)))
+```
+
+
+
+\tableofcontents
+
+\listoffigures
+
+
+# Introduction
+
+Text here...
+
+# Methods
+
+```{r methods-schematic}
+#| fig.cap = "Rats stopped at the red marker, and we measured the stopping distance. \\label{methods-schematic}",
+#| fig.scap = "Methods schematic"
+
+knitr::include_graphics(here("Figures/Rat-car-schematic.png"))
+```
+
+
+## Animals
+
+## Reagents
+
+# Results
+
+We found that faster cars took longer distances to stop (Figure \ref{cars-plot}).
+
+```{r cars-plot}
+#| fig.cap = "Faster cars take a \\textit{longer} distance to \"stop\". \\label{cars-plot}",
+#| fig.scap = "Stopping distance of cars"
+cars %>% 
+  ggplot(aes(x = speed, y = dist)) +
+  geom_point() +
+  labs(x = "Speed (mph)", y = "Distance (ft)")
+```
+
+
+```{r plantgrowthplot}
+plant_data <- PlantGrowth
+
+plant_data %>% 
+  ggplot(aes(x = group, y = weight, color = group)) +
+  scale_color_manual(values = c("#2f7318", "#875826", "#2ca303")) +
+  scale_x_discrete(labels = c("Water", "Herbicides", "Fertilizer")) +
+  labs(x = "Treatment", y = "Weight (g)") +
+  guides(color = "none") +
+  geom_jitter(width = 0.07, size = 2.2)
+```
+
+
+
+```{r anova, include=F}
+plant_data_aov <- aov(weight ~ group, data = plant_data)
+shapiro.test(resid(plant_data_aov))
+
+ggplot(plant_data_aov, aes(sample = resid(plant_data_aov))) +
+    stat_qq() +
+    stat_qq_line() +
+    labs(title = "QQ-Plot of Plant Anova Residuals")
+
+
+
+plant_aov_summary <- summary(plant_data_aov)
+```
+
+We weighed `r nrow(plant_data)` plants.
+
+
+Plant growth is affected by chemical exposure
+(p = `r pvalString(plant_aov_summary[[1]][["Pr(>F)"]][[1]])`)
+
+# Discussion
+
+
+
+
