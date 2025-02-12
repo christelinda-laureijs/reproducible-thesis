@@ -1,0 +1,6 @@
+\contentsline {section}{Introduction}{1}{section*.3}%
+\contentsline {section}{Methods}{2}{section*.4}%
+\contentsline {subsection}{Animals}{2}{section*.5}%
+\contentsline {subsection}{Reagents}{2}{section*.6}%
+\contentsline {section}{Results}{2}{section*.7}%
+\contentsline {section}{Discussion}{4}{section*.8}%

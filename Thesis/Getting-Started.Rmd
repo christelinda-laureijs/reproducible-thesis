@@ -676,33 +676,39 @@ The final table looks publication-ready!
 
 ```{r final-anova-table, eval=T}
 plant_data_aov %>%
-  tidy() %>% 
+  tidy() %>%
   mutate(
     statistic = round(statistic, 2),
     p.value = pvalString(p.value),
-    term = str_to_title(term)) %>% 
+    term = str_to_title(term)
+  ) %>%
   rename(
     Term = term,
     'Sum of Squares' = sumsq,
     'Mean Square' = meansq,
     F = statistic,
     'p-value' = p.value
-  ) %>% 
-  kable(booktabs = T,
-        linesep = '',
-        escape = F,
-        caption = "Plant growth varies significantly with treatments. ANOVA summary table for a model examining the effect of treatment on plant mass.") %>%
-  column_spec(1,
-              width = "1.5in")
+  ) %>%
+  kable(
+    booktabs = T,
+    linesep = '',
+    escape = F,
+    caption = "Plant growth varies significantly with treatments.
+        ANOVA summary table for a model examining the effect of
+        treatment on plant mass."
+  ) %>%
+  column_spec(1, width = "1.5in")
 ```
 
-## \LaTeX Basics
 
-You can learn a lot about \LaTeX as you customize your paper. This is a very
+
+## \LaTeX\ Basics
+
+You can learn a lot about \LaTeX\ as you customize your paper. This is a very
 valuable skill, and it will be particularly useful if you're planning to stay in
 academia.
 
-Most \LaTeX commands start with a forward slash and include arguments in curly
+Most \LaTeX\ commands start with a forward slash and include arguments in curly
 brackets. Many of them are intuitive:
 
 Use `\\setcounter{tocdepth}{2}` to set the table of content depth to header 2.

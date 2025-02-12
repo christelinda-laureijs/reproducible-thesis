@@ -1,15 +1,17 @@
 ---
 title: "Thesis"
-output: pdf_document
+output:
+  pdf_document:
+    includes:
+      in_header: "sample-preamble.tex"
 fontsize: 12pt
 geometry:
 - margin = 1in
-- bindingoffset = 0mm
+- bindingoffset = 50mm
 linestretch: 1.5
 classoption: twoside
 indent: true
 ---
-
 
 ```{r setup, echo = FALSE}
 knitr::opts_chunk$set(
@@ -25,20 +27,13 @@ knitr::opts_chunk$set(
 ```
 
 ```{r load-libraries}
-
-
 library(ggplot2)
 library(dplyr)
 library(here)
-
-
 library(lazyWeave)
 library(broom)
 library(stringr)
 library(knitr)
-
-
-
 ```
 
 ```{r set-theme}
@@ -50,16 +45,13 @@ theme_set(theme_classic() +
         plot.margin = margin(20, 20, 20, 20)))
 ```
 
-
-
 \tableofcontents
 
 \listoffigures
 
-
 # Introduction
 
-Text here...
+\blindtext
 
 # Methods
 
@@ -73,9 +65,17 @@ knitr::include_graphics(here("Figures/Rat-car-schematic.png"))
 
 ## Animals
 
+\blindtext
+
 ## Reagents
 
+\blindtext
+
 # Results
+
+## Cars Data
+
+\blindtext
 
 We found that faster cars took longer distances to stop (Figure \ref{cars-plot}).
 
@@ -88,6 +88,9 @@ cars %>%
   labs(x = "Speed (mph)", y = "Distance (ft)")
 ```
 
+\blindtext
+
+## Plant Data
 
 ```{r plantgrowthplot}
 plant_data <- PlantGrowth
@@ -101,8 +104,6 @@ plant_data %>%
   geom_jitter(width = 0.07, size = 2.2)
 ```
 
-
-
 ```{r anova, include=F}
 plant_data_aov <- aov(weight ~ group, data = plant_data)
 shapiro.test(resid(plant_data_aov))
@@ -115,12 +116,10 @@ ggplot(plant_data_aov, aes(sample = resid(plant_data_aov))) +
 plant_aov_summary <- summary(plant_data_aov)
 ```
 
-We weighed `r nrow(plant_data)` plants.
-
-
-Plant growth is affected by chemical exposure
+We weighed `r nrow(plant_data)` plants. Plant growth is affected by chemical exposure
 (p = `r pvalString(plant_aov_summary[[1]][["Pr(>F)"]][[1]])`)
 
+\blindtext
 
 ```{r table}
 plant_data_aov %>%
@@ -151,9 +150,9 @@ plant_data_aov %>%
 
 ```
 
-
-
 # Discussion
+
+\blindtext
 
 
 
