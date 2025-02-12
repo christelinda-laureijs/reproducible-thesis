@@ -10,7 +10,7 @@ output:
     latex_engine: xelatex
     fig_caption: true
     includes:
-      in_header: "../Templates/MtA-Thesis-Preamble.tex"
+      in_header: "../Templates/sample-preamble.tex"
 fontsize: 12pt
 geometry:
 - margin = 1in

@@ -1,0 +1,44 @@
+\pagenumbering{gobble} % Hide page number on title page
+
+\usepackage{titling}
+\pretitle{\linespread{1}\begin{center}\vspace{2cm}\Huge}
+
+
+\usepackage[skip=20pt plus1pt, indent=0pt]{parskip}
+
+\setmainfont{EBGaramond}[
+  Path=../Templates/EBGaramond-0.016/otf/,
+  Extension=.otf,
+  UprightFont=*12-Regular,
+  ItalicFont=*12-Italic,
+  RawFeature=+calt,
+]
+
+\usepackage[nottoc]{tocbibind}
+
+\usepackage{sectsty}
+
+\newcommand{\BIG}{\fontsize{36}{43}\selectfont}
+
+\makeatletter
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+      {-7ex \@plus -1ex \@minus -.2ex}%
+      {7ex \@plus.2ex}%
+      {\newpage\vspace*{-0.2in}\normalfont\BIG\SS@sectfont}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+      {-3.5ex\@plus -1ex \@minus -.2ex}%
+      {3.5ex \@plus .2ex}%
+      {\normalfont\LARGE\itshape\SS@subsectfont}}
+\makeatother
+
+
+
+\usepackage{adforn} % Ornaments
+
+\usepackage{caption}
+\captionsetup[table]{skip=10pt}
+
+\usepackage{tabto} % Enable 'tab' key to fixed positions
+\TabPositions{5em}
+
+\usepackage{blindtext} % Generate dummy text

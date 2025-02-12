@@ -2,12 +2,13 @@
 title: "Thesis"
 output:
   pdf_document:
+    latex_engine: xelatex
     includes:
-      in_header: "sample-preamble.tex"
+      in_header: "../Templates/sample-preamble.tex"
 fontsize: 12pt
 geometry:
 - margin = 1in
-- bindingoffset = 50mm
+- bindingoffset = 5mm
 linestretch: 1.5
 classoption: twoside
 indent: true
@@ -50,6 +51,12 @@ theme_set(theme_classic() +
 \listoffigures
 
 # Introduction
+
+## Heading 2
+
+\blindtext
+
+## Heading 3
 
 \blindtext
 

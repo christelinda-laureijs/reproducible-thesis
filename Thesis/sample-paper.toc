@@ -1,8 +1,11 @@
-\contentsline {section}{Introduction}{1}{section*.3}%
-\contentsline {section}{Methods}{2}{section*.4}%
-\contentsline {subsection}{Animals}{2}{section*.5}%
-\contentsline {subsection}{Reagents}{3}{section*.6}%
-\contentsline {section}{Results}{3}{section*.7}%
-\contentsline {subsection}{Cars Data}{3}{section*.8}%
-\contentsline {subsection}{Plant Data}{5}{section*.9}%
-\contentsline {section}{Discussion}{6}{section*.10}%
+\contentsline {section}{List of Figures}{}{section*.2}%
+\contentsline {section}{Introduction}{}{section*.3}%
+\contentsline {subsection}{Heading 2}{}{section*.4}%
+\contentsline {subsection}{Heading 3}{}{section*.5}%
+\contentsline {section}{Methods}{}{section*.6}%
+\contentsline {subsection}{Animals}{}{section*.8}%
+\contentsline {subsection}{Reagents}{}{section*.9}%
+\contentsline {section}{Results}{}{section*.10}%
+\contentsline {subsection}{Cars Data}{}{section*.11}%
+\contentsline {subsection}{Plant Data}{}{section*.13}%
+\contentsline {section}{Discussion}{}{section*.14}%
